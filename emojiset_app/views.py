@@ -9,22 +9,12 @@ from time import strftime
 
 @app.route("/emojiset-mining", methods=['GET', 'POST'])
 def emojiset_mining():
-    jobs = q.jobs  # Get a list of jobs in the queue
-    #q_len = len(q)  # Get the queue length
-    message = None 
-    message = "No tasks queued"
-            
-    return render_template("emojiset_mining.html", message=message, jobs=jobs)
+    return render_template("emojiset_mining.html")
 
 
 @app.route('/_run_task', methods=['POST'])
 def run_task():
-    keywords = request.form["keywords"]
-    keywords.split(",")
-
-    if(len(keywords) > 0):
-        keywords.replace(" ", "")
-    
+    keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
     if not tweet_amount:
         tweet_amount = 100

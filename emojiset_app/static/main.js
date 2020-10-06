@@ -1,21 +1,47 @@
 $(document).ready(function() {
+    let total_results = 0
+    let loader = document.getElementById("loader")
+    loader.hidden = true
 
     function flash_alert(message, category, clean) {
       if (typeof(clean) === "undefined") clean = true;
       if(clean) {
         remove_alerts();
       }
-       
+      
+      let table_id = 'table' + total_results
+      let btn_id = '#export' + total_results
+    
       var htmlString = '<div class="card mb-3">'
       htmlString += '<div class="card-body">' 
-      for (let tweet in message){  
-        htmlString += '<small class="text-muted d-block">'
-        htmlString += tweet + ": " + message[tweet]
-        htmlString += '</small>'
+      htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
+      
+      let row_style = 'style="table-row"'
+
+      let counter = 0
+      for (let tweet in message){
+        htmlString += '<tr ' + row_style + '>'
+        htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
+        htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
+        htmlString += '</tr>'
+        
+        counter += 1
+        if(counter >= 10){
+          row_style = 'style="display: none"'
+        }
       }
+
+      htmlString += '</table></div>'
+      htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
       htmlString += '</div>'
-      htmlString += '</div>'
+      
       $(htmlString).prependTo("#result_container").hide().slideDown();
+      
+      $(btn_id).click(function(){
+        $("#" + table_id).tableToCSV();
+      });
+
+      total_results++
     }
 
     function remove_alerts() {
@@ -28,12 +54,15 @@ $(document).ready(function() {
       $.getJSON(status_url, function(data) {
         switch (data.status) {
           case "unknown":
+            loader.hidden = true
             flash_alert("Unknown job id", "danger");
             break;
           case "finished":
+            loader.hidden = true
             flash_alert(data.result, "success");
             break;
           case "failed":
+            loader.hidden = true
             flash_alert("Job failed: " + data.message, "danger");
             break;
           default:
@@ -48,6 +77,8 @@ $(document).ready(function() {
     // submit form
     $("#submit").on('click', function(e) {
       e.preventDefault()
+      // add loading icon
+      loader.hidden = false
       $.ajax({
         url:  "http://127.0.0.1:5000/_run_task",
         data: $("#taskForm").serialize(),
@@ -63,4 +94,10 @@ $(document).ready(function() {
         }
       });
     });
+
+    
+    $("#keywords").emojioneArea({
+      pickerPosition: "bottom"
+    });
+    
 });

@@ -10,11 +10,49 @@
 
   <!-- Bootstrap CSS -->
   <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" href="static/keyboard/emojionearea.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+  <script src="http://www.jqueryscript.net/demo/jQuery-Plugin-To-Convert-HTML-Table-To-CSV-tabletoCSV/jquery.tabletoCSV.js"></script>
+  <script src="static/keyboard/emojionearea.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+
+  <style>
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 40px;
+      height: 40px;
+      -webkit-animation: spin 2s linear infinite; /* Safari */
+      animation: spin 2s linear infinite;
+    }
+    
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .left-element {
+      display: inline-block;
+      float: left;
+    }
+
+    .right-element {
+      margin-left: 15px;
+      display: inline-block;
+      float: left;
+    }
+  </style>
   <title>Emojiset Mining Research</title>
 </head>
 
@@ -57,28 +95,28 @@
             <form id="taskForm" class="form" method="POST">
               <div class="form-group">
                 <label>Discover Emoji Sequences from Tweets</label>
-                <input type="text" class="form-control" name="keywords" placeholder="Enter Keywords" required>
-                <small id="keywords_help" class="form-text text-muted">Examples (multiple can be inputted, separated by commas): ♏️☄️, basketball, YouTube, 🙏, Zoom)</small>
+                <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords" required>
+                <small id="keywords_help" class="form-text text-muted">Examples (multiple can be inputted, separated by commas): ♏️☄️, basketball, YouTube, 🙏, Zoom</small>
                 
                 <input type="number" name="total_tweets" min="0" max="10000" step="1" oninput="validity.valid||(value='');" class="form-control" placeholder="Total Tweets (Default is 100)">
                 <small id="tweets_amount_help" class="form-text text-muted">10000 Tweets Max</small>
-                
-                {% if message %}
-                <small id="tasks_queued_info" class="form-text text-muted">{{ message }}</small>
-                {% endif %}
               </div>
-              <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>
+              <div class="left-element">
+                <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>
+              </div>
+              <div class="right-element">
+                <div id="loader" class="loader"></div>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <br>
   <div class="container">
     <div class="row">
       <div class="col">
-        <h5 class="mt-3 mb-3">Results: </h5>
         <div id=result_container>
               {{utils.flashed_messages(container=False, dismissible=True)}}
               {% block main %} {% endblock %}
@@ -88,5 +126,4 @@
   </div>
 
 </body>
-
 </html>

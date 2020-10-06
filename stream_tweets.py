@@ -1,7 +1,7 @@
 from twarc import Twarc
 import traceback
 import time
-import emoji
+from emojiset_app import EMOJI_SET
 import regex
 import twitter_credentials
 
@@ -34,15 +34,7 @@ class Tweet_Streamer():
                 traceback.print_exc()
                 time.sleep(5)
                 pass
-
-    def process_tweet(self, status):
-        if "text" in status:
-            self.result[status["text"]] = self.emoji_split(status["text"])
-            with open("Emojis.txt.", "a+", encoding="utf-8") as emoji_file:
-                print("########################", file=emoji_file )
-                print(self.result[status["text"]], file=emoji_file)
             
-
     def get_tweet_stream(self):
         if len(self.target_list) > 0:
             query = self.target_list
@@ -68,22 +60,29 @@ class Tweet_Streamer():
         if "text" in tweet:
             grapheme_clusters = regex.findall(r"\X", tweet["text"])
             for cluster in grapheme_clusters:
-                if any(char in emoji.UNICODE_EMOJI for char in cluster):
+                if cluster in EMOJI_SET:
                     return True
         return False
 
-    def emoji_split(self, text):
-        if text is None:
-            return None
+    def process_tweet(self, tweet):
+        if "text" in tweet:
+            emojiset = self.extract_emoji_sequences(tweet["text"])
+            self.result[tweet["text"]] = str(emojiset)
 
-        emoji_list = []
-        data = regex.findall(r'\X', text)
+    #function returns emojiset list consisting of emoji sequences
+    def extract_emoji_sequences(self, text):
+        emoji_set = []
+        emoji_sequence = []
 
-        for word in data:
-            if any(char in emoji.UNICODE_EMOJI for char in word):
-                emoji_list.append(word)
-
-        if len(emoji_list) > 0:
-            return emoji_list
-        else:
-            return None
+        grapheme_clusters = regex.findall(r"\X", text)
+        
+        for char in grapheme_clusters:
+            if char in EMOJI_SET:
+                emoji_sequence.append(char)
+            else:
+                if(len(emoji_sequence) > 0):
+                    emoji_set.append(emoji_sequence)
+                    emoji_sequence = []
+        if(len(emoji_sequence) > 0):
+            emoji_set.append(emoji_sequence)
+        return emoji_set
