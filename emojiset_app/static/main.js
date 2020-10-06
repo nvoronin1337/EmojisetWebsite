@@ -80,7 +80,7 @@ $(document).ready(function() {
       // add loading icon
       loader.hidden = false
       $.ajax({
-        url:  "http://127.0.0.1:5000/_run_task",
+        url:  "http://69.43.72.217/_run_task",
         data: $("#taskForm").serialize(),
         method: "POST",
         dataType: "json",

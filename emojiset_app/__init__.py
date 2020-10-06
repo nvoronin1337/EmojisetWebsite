@@ -27,3 +27,6 @@ pop_emoji_dict()
 
 from emojiset_app import views
 from emojiset_app import tasks
+
+if __name__ == "__main__":
+	app.run()
