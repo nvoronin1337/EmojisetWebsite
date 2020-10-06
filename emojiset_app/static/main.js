@@ -19,7 +19,7 @@ $(document).ready(function() {
       let row_style = 'style="table-row"'
 
       let counter = 0
-      for (let tweet in message){
+      for (let tweet in message){ 
         htmlString += '<tr ' + row_style + '>'
         htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
         htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
