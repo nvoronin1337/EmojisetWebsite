@@ -6,6 +6,7 @@ import emoji
 from emojiset_app import EMOJI_SET
 import regex
 import twitter_credentials
+from rq import get_current_job
 
 
 class Tweet_Streamer():
@@ -19,6 +20,7 @@ class Tweet_Streamer():
         self.target_list = target_list
         self.keep_streaming = True
         self.max_tweets = max_tweets
+        self.job = get_current_job()
         self.current_tweets = 0
         
         self.result = {}
@@ -38,25 +40,37 @@ class Tweet_Streamer():
                 pass
             
     def get_tweet_stream(self):
+        discarded = 0
         if len(self.target_list) > 0:
             query = self.target_list
-            # print("Search: " + str(query))
             for tweet in self.twarc.filter(track = query):
-                #if self.contains_emoji(tweet):
-                self.process_tweet(tweet)
-                self.current_tweets += 1
-                if self.current_tweets >= self.max_tweets:
-                    self.keep_streaming = False
-                    return         
+                if self.contains_emoji(tweet):
+                    self.process_tweet(tweet)
+                    self.current_tweets += 1
+                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
+                    self.job.save_meta()
+                    if self.current_tweets >= self.max_tweets:
+                        self.keep_streaming = False
+                        return     
+                else:
+                    discarded += 1
+                    self.job.meta['discarded_tweets'] = discarded
+                    self.job.save_meta()
         else:
             print("Getting 1% sample.")
             for tweet in self.twarc.sample():
-                #if self.contains_emoji(tweet):
-                self.process_tweet(tweet)    
-                self.current_tweets += 1
-                if self.current_tweets >= self.max_tweets:
-                    self.keep_streaming = False
-                    return   
+                if self.contains_emoji(tweet):
+                    self.process_tweet(tweet)    
+                    self.current_tweets += 1
+                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
+                    self.job.save_meta()
+                    if self.current_tweets >= self.max_tweets:
+                        self.keep_streaming = False
+                        return     
+                else:
+                    discarded += 1
+                    self.job.meta['discarded_tweets'] = discarded
+                    self.job.save_meta()
 
     def contains_emoji(self, tweet):
         if "text" in tweet:

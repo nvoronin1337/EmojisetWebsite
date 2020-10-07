@@ -1,7 +1,9 @@
 $(document).ready(function() {
     let total_results = 0
-    let loader = document.getElementById("loader")
-    loader.hidden = true
+    let progress_bar = document.getElementById('progress_bar')
+    let discarded_tweets_lbl = document.getElementById('discarded_tweets')
+    progress_bar.hidden = true
+    discarded_tweets_lbl.hidden = true
 
     function flash_alert(message, category, clean) {
       if (typeof(clean) === "undefined") clean = true;
@@ -9,39 +11,46 @@ $(document).ready(function() {
         remove_alerts();
       }
       
-      let table_id = 'table' + total_results
-      let btn_id = '#export' + total_results
+      if(category == "success"){
+          let table_id = 'table' + total_results
+          let btn_id = '#export' + total_results
     
-      var htmlString = '<div class="card mb-3">'
-      htmlString += '<div class="card-body">' 
-      htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
+          var htmlString = '<div class="card mb-3">'
+          htmlString += '<div class="card-body">' 
+          htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
       
-      let row_style = 'style="table-row"'
+          let row_style = 'style="table-row"'
 
-      let counter = 0
-      for (let tweet in message){ 
-        htmlString += '<tr ' + row_style + '>'
-        htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
-        htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
-        htmlString += '</tr>'
+          let counter = 0
+          for (let tweet in message){ 
+            htmlString += '<tr ' + row_style + '>'
+            htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
+            htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
+            htmlString += '</tr>'
         
-        counter += 1
-        if(counter >= 10){
-          row_style = 'style="display: none"'
-        }
-      }
+            counter += 1
+            if(counter >= 10){
+              row_style = 'style="display: none"'
+            }
+          }
 
-      htmlString += '</table></div>'
-      htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
-      htmlString += '</div>'
+          htmlString += '</table></div>'
+          htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
+          htmlString += '</div>'
       
-      $(htmlString).prependTo("#result_container").hide().slideDown();
+          $(htmlString).prependTo("#result_container").hide().slideDown();
+          total_results++
+      }else if(category == "failed"){
+        var htmlString = '<div class="card mb-3">'
+        htmlString += '<div class="card-body">'
+        htmlString += '<small class="text-muted d-block">Job Failed!</small>'
+        htmlString += '</div></div>'
+        $(htmlString).prependTo("#result_container").hide().slideDown();
+      }
       
       $(btn_id).click(function(){
         $("#" + table_id).tableToCSV();
       });
-
-      total_results++
     }
 
     function remove_alerts() {
@@ -54,22 +63,30 @@ $(document).ready(function() {
       $.getJSON(status_url, function(data) {
         switch (data.status) {
           case "unknown":
-            loader.hidden = true
+            progress_bar.hidden = true
+            discarded_tweets_lbl.hidden = true
+            $("#submit").attr("disabled", false);
             flash_alert("Unknown job id", "danger");
             break;
           case "finished":
-            loader.hidden = true
+            progress_bar.hidden = true
+            discarded_tweets_lbl.hidden = true
+            $("#submit").attr("disabled", false);
             flash_alert(data.result, "success");
             break;
           case "failed":
-            loader.hidden = true
+            progress_bar.hidden = true
+            discarded_tweets_lbl.hidden = true
+            $("#submit").attr("disabled", false);
             flash_alert("Job failed: " + data.message, "danger");
             break;
           default:
-            // queued/started/deferred
+            //queued/started/deferred
+            $("#progress_bar").val(data.progress)
+            discarded_tweets_lbl.innerText = "Discarded tweets: " + data.discarded_tweets
             setTimeout(function() {
               check_job_status(status_url);
-            }, 500);
+            }, 10);
         }
       });
     }
@@ -77,10 +94,12 @@ $(document).ready(function() {
     // submit form
     $("#submit").on('click', function(e) {
       e.preventDefault()
-      // add loading icon
-      loader.hidden = false
+      $("#submit").attr("disabled", true);
+      progress_bar.hidden = false
+      discarded_tweets_lbl.hidden = false
       $.ajax({
-        url:  "http://69.43.72.217/_run_task",
+        //url:  "http://69.43.72.217/_run_task",
+        url:  "http://127.0.0.1:5000/_run_task",
         data: $("#taskForm").serialize(),
         method: "POST",
         dataType: "json",

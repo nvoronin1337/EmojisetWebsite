@@ -16,12 +16,16 @@ def emojiset_mining():
 def run_task():
     keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
+    
     if not tweet_amount:
         tweet_amount = 100
     else:
         tweet_amount = int(tweet_amount)
     
     job = q.enqueue(stream_task, keywords, tweet_amount, result_ttl=500)  # Send a job to the task queue
+    job.meta['progress'] = 0
+    job.meta['discarded_tweets'] = 0
+    job.save_meta()
 
     return jsonify({}), 202, {'Location': url_for('job_status', job_key=job.id)}
 
@@ -35,6 +39,8 @@ def job_status(job_key):
     else:
         response = {
             'status': job.get_status(),
+            'progress': job.meta['progress'],
+            'discarded_tweets': job.meta['discarded_tweets'],
             'result': job.result,
         }
     if job.is_failed:
