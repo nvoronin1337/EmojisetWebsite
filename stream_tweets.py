@@ -42,12 +42,12 @@ class Tweet_Streamer():
             query = self.target_list
             # print("Search: " + str(query))
             for tweet in self.twarc.filter(track = query):
-                if self.contains_emoji(tweet):
-                    self.process_tweet(tweet)
-                    self.current_tweets += 1
-                    if self.current_tweets >= self.max_tweets:
-                        self.keep_streaming = False
-                        return         
+                #if self.contains_emoji(tweet):
+                self.process_tweet(tweet)
+                self.current_tweets += 1
+                if self.current_tweets >= self.max_tweets:
+                    self.keep_streaming = False
+                    return         
         else:
             print("Getting 1% sample.")
             for tweet in self.twarc.sample():
@@ -73,7 +73,6 @@ class Tweet_Streamer():
 
     #function returns emojiset list consisting of emoji sequences
     def extract_emoji_sequences(self, text):
-        #emoji_set = []
         emoji_sequence = []
         emojiset_str = '['
 
@@ -85,14 +84,14 @@ class Tweet_Streamer():
             else:
                 if(len(emoji_sequence) > 0):
                     emojiset_str += "[" + ", ".join(emoji_sequence) + "], "
-                    #emoji_set.append(emoji_sequence)
                     emoji_sequence = []
 
         if(len(emoji_sequence) > 0):
             emojiset_str += "[" + ", ".join(emoji_sequence) + "]"
         else:
-            emojiset_str = emojiset_str[:-2]
-            #emoji_set.append(emoji_sequence)
+            if(len(emojiset_str) > 1):
+                emojiset_str = emojiset_str[:-2]
+        
         emojiset_str += ']'
 
         return emojiset_str
