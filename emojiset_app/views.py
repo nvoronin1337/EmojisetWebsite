@@ -16,13 +16,19 @@ def emojiset_mining():
 def run_task():
     keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
+    discard = False
+
+    discard_checked = "discard_box" in request.form
+    
+    if discard_checked:
+        discard = True
     
     if not tweet_amount:
         tweet_amount = 100
     else:
         tweet_amount = int(tweet_amount)
-    
-    job = q.enqueue(stream_task, keywords, tweet_amount, result_ttl=500)  # Send a job to the task queue
+
+    job = q.enqueue(stream_task, keywords, tweet_amount, discard, result_ttl=500)  # Send a job to the task queue
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
     job.save_meta()

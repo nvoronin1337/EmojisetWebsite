@@ -96,10 +96,14 @@
               <div class="form-group">
                 <label>Discover Emoji Sequences from Tweets</label>
                 <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords" required>
-                <small id="keywords_help" class="form-text text-muted">Examples (multiple can be inputted, separated by commas): ♏️☄️, basketball, YouTube, 🙏, Zoom</small>
-                
+                <small id="keywords_help" class="form-text text-muted">Examples multiple can be inputted, separated by commas: (♏️☄️, basketball, YouTube, 🙏, Zoom)</small>
                 <input type="number" name="total_tweets" min="0" max="10000" step="1" oninput="validity.valid||(value='');" class="form-control" placeholder="Total Tweets (Default is 100)">
                 <small id="tweets_amount_help" class="form-text text-muted">10000 Tweets Max</small>
+                <br>
+                <div>
+                  <input type="checkbox" id="discard_box" name="discard_box" value="discard">
+                  <label for="discard_box">Discard tweets without emojis</label>
+                </div>
               </div>
               <div class="left-element">
                 <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>

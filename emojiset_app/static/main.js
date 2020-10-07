@@ -29,7 +29,6 @@ $(document).ready(function() {
             htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
             htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
             htmlString += '</tr>'
-        
             counter += 1
             if(counter >= 10){
               row_style = 'style="display: none"'
@@ -87,10 +86,13 @@ $(document).ready(function() {
           default:
             //queued/started/deferred
             $("#progress_bar").val(data.progress)
+            if(data.discarded_tweets != 0){
+                discarded_tweets_lbl.hidden = false
+            }
             discarded_tweets_lbl.innerText = "Discarded tweets: " + data.discarded_tweets
             setTimeout(function() {
               check_job_status(status_url);
-            }, 10);
+            }, 300);
         }
       });
     }
@@ -100,7 +102,6 @@ $(document).ready(function() {
       e.preventDefault()
       $("#submit").attr("disabled", true);
       progress_bar.hidden = false
-      discarded_tweets_lbl.hidden = false
       $.ajax({
         //url:  "http://69.43.72.217/_run_task",
         url:  "http://127.0.0.1:5000/_run_task",

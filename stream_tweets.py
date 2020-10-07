@@ -10,7 +10,7 @@ from rq import get_current_job
 
 
 class Tweet_Streamer():
-    def __init__(self, target_list, max_tweets):
+    def __init__(self, target_list, max_tweets, discard):
         self.consumer_key = twitter_credentials.CONSUMER_KEY
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
         self.access_token = twitter_credentials.ACCESS_TOKEN
@@ -20,9 +20,11 @@ class Tweet_Streamer():
         self.target_list = target_list
         self.keep_streaming = True
         self.max_tweets = max_tweets
+        self.discard = discard
         self.job = get_current_job()
         self.current_tweets = 0
         
+        self.discarded = 0
         self.result = {}
 
     def stream(self):
@@ -38,45 +40,42 @@ class Tweet_Streamer():
                 traceback.print_exc()
                 time.sleep(5)
                 pass
-            
+
+    def process_tweet(self, tweet):
+        if self.discard:
+            if self.contains_emoji(tweet):
+                self.extract_emoji_from_tweet(tweet)
+                self.current_tweets += 1
+                self.job.refresh()
+                self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
+                self.job.save_meta()
+            else:
+                self.discarded += 1
+                self.job.refresh()
+                self.job.meta['discarded_tweets'] = self.discarded
+                self.job.save_meta()
+        else:
+            self.extract_emoji_from_tweet(tweet)
+            self.current_tweets += 1
+            self.job.refresh()
+            self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
+            self.job.save_meta()
+
     def get_tweet_stream(self):
-        discarded = 0
         if len(self.target_list) > 0:
             query = self.target_list
             for tweet in self.twarc.filter(track = query):
-                if self.contains_emoji(tweet):
-                    self.process_tweet(tweet)
-                    self.current_tweets += 1
-                    self.job.refresh()
-                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
-                    self.job.save_meta()
-                    #self.job.refresh()
-                    if self.current_tweets >= self.max_tweets:
-                        self.keep_streaming = False
-                        return     
-                else:
-                    discarded += 1
-                    self.job.refresh()
-                    self.job.meta['discarded_tweets'] = discarded
-                    self.job.save_meta()
-                    #self.job.refresh()
+                self.process_tweet(tweet)
+                if self.current_tweets >= self.max_tweets:
+                    self.keep_streaming = False
+                    break
         else:
             print("Getting 1% sample.")
             for tweet in self.twarc.sample():
-                if self.contains_emoji(tweet):
-                    self.process_tweet(tweet)    
-                    self.current_tweets += 1
-                    self.job.refresh()
-                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
-                    self.job.save_meta()
-                    if self.current_tweets >= self.max_tweets:
-                        self.keep_streaming = False
-                        return     
-                else:
-                    discarded += 1
-                    self.job.refresh()
-                    self.job.meta['discarded_tweets'] = discarded
-                    self.job.save_meta()
+                self.process_tweet(tweet)
+                if self.current_tweets >= self.max_tweets:
+                    self.keep_streaming = False
+                    break
 
     def contains_emoji(self, tweet):
         if "text" in tweet:
@@ -86,7 +85,7 @@ class Tweet_Streamer():
                     return True
         return False
 
-    def process_tweet(self, tweet):
+    def extract_emoji_from_tweet(self, tweet):
         if "text" in tweet:
             emojiset = self.extract_emoji_sequences(tweet["text"])
             self.result[tweet["text"]] = emojiset
