@@ -49,6 +49,7 @@ class Tweet_Streamer():
                     self.current_tweets += 1
                     self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
                     self.job.save_meta()
+                    #self.job.refresh()
                     if self.current_tweets >= self.max_tweets:
                         self.keep_streaming = False
                         return     
@@ -56,6 +57,7 @@ class Tweet_Streamer():
                     discarded += 1
                     self.job.meta['discarded_tweets'] = discarded
                     self.job.save_meta()
+                    #self.job.refresh()
         else:
             print("Getting 1% sample.")
             for tweet in self.twarc.sample():

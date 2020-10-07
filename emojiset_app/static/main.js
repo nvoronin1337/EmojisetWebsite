@@ -4,6 +4,8 @@ $(document).ready(function() {
     let discarded_tweets_lbl = document.getElementById('discarded_tweets')
     progress_bar.hidden = true
     discarded_tweets_lbl.hidden = true
+    let table_id = ""
+    let btn_id = ""
 
     function flash_alert(message, category, clean) {
       if (typeof(clean) === "undefined") clean = true;
@@ -12,8 +14,8 @@ $(document).ready(function() {
       }
       
       if(category == "success"){
-          let table_id = 'table' + total_results
-          let btn_id = '#export' + total_results
+          table_id = 'table' + total_results
+          btn_id = '#export' + total_results
     
           var htmlString = '<div class="card mb-3">'
           htmlString += '<div class="card-body">' 
@@ -40,6 +42,7 @@ $(document).ready(function() {
       
           $(htmlString).prependTo("#result_container").hide().slideDown();
           total_results++
+      
       }else if(category == "failed"){
         var htmlString = '<div class="card mb-3">'
         htmlString += '<div class="card-body">'
@@ -47,6 +50,7 @@ $(document).ready(function() {
         htmlString += '</div></div>'
         $(htmlString).prependTo("#result_container").hide().slideDown();
       }
+      
       
       $(btn_id).click(function(){
         $("#" + table_id).tableToCSV();
