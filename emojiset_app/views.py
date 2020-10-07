@@ -33,6 +33,7 @@ def run_task():
 @app.route("/status/<job_key>", methods=['GET'])
 def job_status(job_key):
     job = q.fetch_job(job_key)
+    job.refresh()
     print("job key: " + job_key)
     if job is None:
         response = {'status': 'unknown'}

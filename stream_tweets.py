@@ -47,6 +47,7 @@ class Tweet_Streamer():
                 if self.contains_emoji(tweet):
                     self.process_tweet(tweet)
                     self.current_tweets += 1
+                    self.job.refresh()
                     self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
                     self.job.save_meta()
                     #self.job.refresh()
@@ -55,6 +56,7 @@ class Tweet_Streamer():
                         return     
                 else:
                     discarded += 1
+                    self.job.refresh()
                     self.job.meta['discarded_tweets'] = discarded
                     self.job.save_meta()
                     #self.job.refresh()
@@ -64,6 +66,7 @@ class Tweet_Streamer():
                 if self.contains_emoji(tweet):
                     self.process_tweet(tweet)    
                     self.current_tweets += 1
+                    self.job.refresh()
                     self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
                     self.job.save_meta()
                     if self.current_tweets >= self.max_tweets:
@@ -71,6 +74,7 @@ class Tweet_Streamer():
                         return     
                 else:
                     discarded += 1
+                    self.job.refresh()
                     self.job.meta['discarded_tweets'] = discarded
                     self.job.save_meta()
 
