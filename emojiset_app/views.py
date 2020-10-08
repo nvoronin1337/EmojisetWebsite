@@ -19,7 +19,6 @@ def run_task():
     discard = False
 
     discard_checked = "discard_box" in request.form
-    
     if discard_checked:
         discard = True
     

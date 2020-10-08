@@ -7,6 +7,7 @@ $(document).ready(function() {
     let table_id = ""
     let btn_id = ""
 
+    
     function flash_alert(message, category, clean) {
       if (typeof(clean) === "undefined") clean = true;
       if(clean) {
@@ -22,7 +23,6 @@ $(document).ready(function() {
           htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
       
           let row_style = 'style="table-row"'
-
           let counter = 0
           for (let tweet in message){ 
             htmlString += '<tr ' + row_style + '>'
@@ -34,14 +34,11 @@ $(document).ready(function() {
               row_style = 'style="display: none"'
             }
           }
-
           htmlString += '</table></div>'
           htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
           htmlString += '</div>'
-      
           $(htmlString).prependTo("#result_container").hide().slideDown();
           total_results++
-      
       }else if(category == "failed"){
         var htmlString = '<div class="card mb-3">'
         htmlString += '<div class="card-body">'
@@ -50,17 +47,18 @@ $(document).ready(function() {
         $(htmlString).prependTo("#result_container").hide().slideDown();
       }
       
-      
       $(btn_id).click(function(){
         $("#" + table_id).tableToCSV();
       });
     }
+
 
     function remove_alerts() {
       $(".alert").slideUp("normal", function() {
         $(this).remove();
       });
     }
+
 
     function check_job_status(status_url) {
       $.getJSON(status_url, function(data) {
@@ -92,11 +90,12 @@ $(document).ready(function() {
             discarded_tweets_lbl.innerText = "Discarded tweets: " + data.discarded_tweets
             setTimeout(function() {
               check_job_status(status_url);
-            }, 300);
+            }, 150);
         }
       });
     }
   
+
     // submit form
     $("#submit").on('click', function(e) {
       e.preventDefault()
@@ -118,10 +117,9 @@ $(document).ready(function() {
         }
       });
     });
+ 
 
-    
     $("#keywords").emojioneArea({
       pickerPosition: "bottom"
     });
-    
 });
