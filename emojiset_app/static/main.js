@@ -48,7 +48,10 @@ $(document).ready(function() {
       }
       
       $(btn_id).click(function(){
-        $("#" + table_id).tableToCSV();
+        //$("#" + table_id).tableToCSV();
+        $("#" + table_id).table2excel({ 
+          filename: "Emojisets.xls" 
+        }); 
       });
     }
 
