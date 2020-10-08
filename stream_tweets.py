@@ -52,6 +52,7 @@ class Tweet_Streamer():
     def get_tweet_stream(self):
         if len(self.keywords) == 0:
             self.keywords = "a,e,i,o,u,y"
+            
         if self.twarc_method == "search":
             self.text = "full_text"
             query = self.keywords.replace(",", " OR ")
