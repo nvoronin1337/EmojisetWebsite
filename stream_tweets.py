@@ -9,7 +9,7 @@ from rq import get_current_job
 
 
 class Tweet_Streamer():
-    def __init__(self, keywords, max_tweets, discard):
+    def __init__(self, keywords, max_tweets, discard, twarc_method):
         # Configuring Twarc API
         self.consumer_key = twitter_credentials.CONSUMER_KEY
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
@@ -21,11 +21,14 @@ class Tweet_Streamer():
         self.keywords = keywords
         self.max_tweets = max_tweets
         self.discard = discard
+        self.twarc_method = twarc_method
 
         self.job = get_current_job()
         self.keep_streaming = True
         self.current_tweets = 0
         self.discarded = 0
+
+        self.text = "text"
 
         # dicrionaty in the format {tweet: emojiset}
         self.result = {}
@@ -47,16 +50,20 @@ class Tweet_Streamer():
 
     # Begin streaming tweets 
     def get_tweet_stream(self):
-        if len(self.keywords) > 0:
-            query = self.keywords
+        if len(self.keywords) == 0:
+            self.keywords = "a,e,i,o,u,y"
+        if self.twarc_method == "search":
+            self.text = "full_text"
+            query = self.keywords.replace(",", " OR ")
             for tweet in self.twarc.search(query):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     self.keep_streaming = False
                     break
-        else:
-            print("Getting 1% sample.")
-            for tweet in self.twarc.sample():
+        elif self.twarc_method == "filter":
+            self.text = "text"
+            query = self.keywords
+            for tweet in self.twarc.filter(track=query):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     self.keep_streaming = False
@@ -83,17 +90,17 @@ class Tweet_Streamer():
             self.job.save_meta()
 
     def contains_emoji(self, tweet):
-        if "full_text" in tweet:
-            grapheme_clusters = regex.findall(r"\X", tweet["full_text"])
+        if self.text in tweet:
+            grapheme_clusters = regex.findall(r"\X", tweet[self.text])
             for cluster in grapheme_clusters:
                 if cluster in EMOJI_SET:
                     return True
         return False
 
     def map_tweet_to_emojiset(self, tweet):
-        if "full_text" in tweet:
-            emojiset = self.extract_emoji_sequences(tweet["full_text"])
-            self.result[tweet["full_text"]] = emojiset
+        if self.text in tweet:
+            emojiset = self.extract_emoji_sequences(tweet[self.text])
+            self.result[tweet[self.text]] = emojiset
 
     #function returns emojiset list consisting of emoji sequences
     def extract_emoji_sequences(self, text):
