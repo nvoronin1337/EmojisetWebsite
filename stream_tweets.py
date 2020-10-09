@@ -6,13 +6,12 @@ from emojiset_app import EMOJI_SET
 import regex
 import twitter_credentials
 from rq import get_current_job
-from threading import Event, Thread
-import logging
 
 
 def debug(var):
     with open('out.txt', 'w') as f:
-        print(var, file=f)      
+        print(var, file=f)     
+
 
 class Tweet_Streamer():
     def __init__(self, keywords, max_tweets, discard, twarc_method):
@@ -36,7 +35,7 @@ class Tweet_Streamer():
 
         self.text = "text"
 
-        # dicrionaty in the format {tweet: emojiset}
+        # dicrionaty in the format {index: (tweet, emojiset)}
         self.result = {}
 
     # Main streaming loop 
@@ -62,27 +61,31 @@ class Tweet_Streamer():
         if self.twarc_method == "search":
             self.text = "full_text"
             query = self.keywords.replace(",", " OR ")
-            for tweet in self.twarc.search(query):
+            for tweet in self.twarc.search(query, lang='en'):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
-            self.keep_streaming = False
         elif self.twarc_method == "filter":
             self.text = "text"
             query = self.keywords
             
             tweet_received = False
             search_query = query.replace(",", " OR ")
-            for tweet in self.twarc.search(search_query):
+            for tweet in self.twarc.search(search_query, lang='en',):
                 tweet_received = True
-                break
-            
+                break     
             if tweet_received:
-                for tweet in self.twarc.filter(track=query):
+                for tweet in self.twarc.filter(track=query, lang='en'):
                     self.process_tweet(tweet)
                     if self.current_tweets >= self.max_tweets:
                         break
-            self.keep_streaming = False
+        elif self.twarc_method == "sample":
+            self.text = "text"
+            for tweet in self.twarc.sample():
+                self.process_tweet(tweet)
+                if self.current_tweets >= self.max_tweets:
+                    break
+        self.keep_streaming = False
 
     def process_tweet(self, tweet):
         if self.discard:
@@ -115,7 +118,8 @@ class Tweet_Streamer():
     def map_tweet_to_emojiset(self, tweet):
         if self.text in tweet:
             emojiset = self.extract_emoji_sequences(tweet[self.text])
-            self.result[tweet[self.text]] = emojiset
+            self.result[self.current_tweets] = (tweet[self.text], emojiset)
+            
 
     #function returns emojiset list consisting of emoji sequences
     def extract_emoji_sequences(self, text):

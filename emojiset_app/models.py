@@ -1,7 +1,4 @@
-class StreamingResult():
-    def __init__(self, job_id, result):
-        self.job_id = job_id
-        self.result = result
-
-    def parse_result(self):
-        pass
+class Result():
+    def __init__(self, tweet, emojiset):
+        self.tweet = tweet
+        self.emojiset = emojiset

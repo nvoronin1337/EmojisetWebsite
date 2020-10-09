@@ -32,10 +32,10 @@ $(document).ready(function() {
             htmlString += '<div class="card mb-3">'
             htmlString += '<div class="card-body">' 
             htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
-            for (let tweet in message){ 
+            for (let index in message){ 
               htmlString += '<tr ' + row_style + '>'
-              htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
-              htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
+              htmlString += '<td><small class="text-muted d-block">' + (message[index])[0] + '</small></td>'
+              htmlString += '<td><small class="text-muted d-block">' + (message[index])[1] + '</small></td>'
               htmlString += '</tr>'
               counter += 1
               if(counter >= 10){
@@ -53,9 +53,7 @@ $(document).ready(function() {
             htmlString += 'There are no tweets matching your keywords!' 
             htmlString += '</div></div>'
           }
-          
-          $(htmlString).prependTo("#result_container").hide().slideDown();
-          
+          $(htmlString).prependTo("#result_container").hide().slideDown();       
       }else if(category == "danger"){
         var htmlString = '<div class="card mb-3">'
         htmlString += '<div class="card-body">'
