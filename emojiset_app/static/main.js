@@ -15,34 +15,51 @@ $(document).ready(function() {
       }
       
       if(category == "success"){
-          table_id = 'table' + total_results
-          btn_id = '#export' + total_results
-    
-          var htmlString = '<div class="card mb-3">'
-          htmlString += '<div class="card-body">' 
-          htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
-      
           let row_style = 'style="table-row"'
           let counter = 0
-          for (let tweet in message){ 
-            htmlString += '<tr ' + row_style + '>'
-            htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
-            htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
-            htmlString += '</tr>'
-            counter += 1
-            if(counter >= 10){
-              row_style = 'style="display: none"'
-            }
+          let empty_result = false
+          var htmlString = ""
+
+          if(Object.keys(message).length == 0){
+            empty_result = true
           }
-          htmlString += '</table></div>'
-          htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
-          htmlString += '</div>'
+    
+          if(!empty_result){
+            table_id = 'table' + total_results
+            btn_id = '#export' + total_results
+
+            // Creating an HTML <table>
+            htmlString += '<div class="card mb-3">'
+            htmlString += '<div class="card-body">' 
+            htmlString += '<table id="' + table_id + '"><tr><th>Tweet</th><th>Emojiset</th></tr>'
+            for (let tweet in message){ 
+              htmlString += '<tr ' + row_style + '>'
+              htmlString += '<td><small class="text-muted d-block">' + tweet + '</small></td>'
+              htmlString += '<td><small class="text-muted d-block">' + message[tweet] + '</small></td>'
+              htmlString += '</tr>'
+              counter += 1
+              if(counter >= 10){
+                row_style = 'style="display: none"'
+              }
+            }
+            htmlString += '</table></div>'
+            htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>' 
+            htmlString += '</div>'
+            total_results++
+          }
+          else{
+            htmlString = '<div class="card mb-3">'
+            htmlString += '<div class="card-body">'
+            htmlString += 'There are no tweets matching your keywords!' 
+            htmlString += '</div></div>'
+          }
+          
           $(htmlString).prependTo("#result_container").hide().slideDown();
-          total_results++
-      }else if(category == "failed"){
+          
+      }else if(category == "danger"){
         var htmlString = '<div class="card mb-3">'
         htmlString += '<div class="card-body">'
-        htmlString += '<small class="text-muted d-block">Job Failed!</small>'
+        htmlString += 'Job Failed!'
         htmlString += '</div></div>'
         $(htmlString).prependTo("#result_container").hide().slideDown();
       }

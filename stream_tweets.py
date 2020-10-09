@@ -6,7 +6,13 @@ from emojiset_app import EMOJI_SET
 import regex
 import twitter_credentials
 from rq import get_current_job
+from threading import Event, Thread
+import logging
 
+
+def debug(var):
+    with open('out.txt', 'w') as f:
+        print(var, file=f)      
 
 class Tweet_Streamer():
     def __init__(self, keywords, max_tweets, discard, twarc_method):
@@ -59,16 +65,24 @@ class Tweet_Streamer():
             for tweet in self.twarc.search(query):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
-                    self.keep_streaming = False
                     break
+            self.keep_streaming = False
         elif self.twarc_method == "filter":
             self.text = "text"
             query = self.keywords
-            for tweet in self.twarc.filter(track=query):
-                self.process_tweet(tweet)
-                if self.current_tweets >= self.max_tweets:
-                    self.keep_streaming = False
-                    break
+            
+            tweet_received = False
+            search_query = query.replace(",", " OR ")
+            for tweet in self.twarc.search(search_query):
+                tweet_received = True
+                break
+            
+            if tweet_received:
+                for tweet in self.twarc.filter(track=query):
+                    self.process_tweet(tweet)
+                    if self.current_tweets >= self.max_tweets:
+                        break
+            self.keep_streaming = False
 
     def process_tweet(self, tweet):
         if self.discard:
