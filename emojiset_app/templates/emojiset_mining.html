@@ -11,54 +11,19 @@
   <link rel="shortcut icon" href="#" />
   <link rel="stylesheet" href="static/keyboard/emojionearea.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
   <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+
+  <!-- Google MAP 
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKfgw6vvmeoI2B5sZci6QIRoxk8KFXNYI&callback=myMap"></script>
+  -->
   
   <script src="static/keyboard/emojionearea.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 
-  <style>
-    .loader {
-      border: 3px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 3px solid #3498db;
-      width: 30px;
-      height: 30px;
-      -webkit-animation: spin 2s linear infinite; /* Safari */
-      animation: spin 2s linear infinite;
-    }
-    
-    /* Safari */
-    @-webkit-keyframes spin {
-      0% { -webkit-transform: rotate(0deg); }
-      100% { -webkit-transform: rotate(360deg); }
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .horizontal-container {
-      height: 100%;
-      width: 100%;
-      display: flex;
-    }
-    
-    .left-element {
-      width: max-content;
-    }
-
-    .center-element {
-      width: 1%;
-    }
-
-    .right-element {
-      width: max-content;
-    }
-  </style>
   <title>Emojiset Mining Research</title>
 </head>
 
@@ -111,11 +76,11 @@
                   <div class="left-element">
                     <div class="card mt-3">
                       <div class="card-body">
-                        <input type="radio" id="search" name="twarc_method" value="search" checked>
+                        <input type="radio" id="search" class="twarc_method" name="twarc_method" value="search" checked>
                         <label for="search">Pull tweets from the last week</label><br>
-                        <input type="radio" id="filter" name="twarc_method" value="filter">
+                        <input type="radio" id="filter" class="twarc_method" name="twarc_method" value="filter">
                         <label for="filter">Pull tweets as they happen (slower)</label><br>
-                        <input type="radio" id="sample" name="twarc_method" value="sample">
+                        <input type="radio" id="sample" class="twarc_method" name="twarc_method" value="sample">
                         <label for="sample">Pull random sample of recent public statuses (doesn't use keywords)</label>
                         <hr>
                         <input type="checkbox" id="discard_box" name="discard_box" value="discard">
@@ -128,13 +93,16 @@
                     <div class="card mt-3">
                       <div class="card-body">
                         <label>Select Language:</label>
+                        <small class="text-muted d-block">Multiple languages can be selected</small>
                         <br>
-                        <select name="languages" id="languages">
+                        <select multiple name="languages" id="languages">
                           <option value="en">English</option>
-                          <option value="sp">Spanish</option>
-                          <option value="ch">Chinese</option>
-                          <option value="ge">German</option>
+                          <option value="es">Spanish</option>
+                          <option value="zh">Chinese</option>
+                          <option value="ar">Arabic</option>
+                          <option value="de">German</option>
                           <option value="ru">Russian</option>
+                          <option value="all">All</option>
                         </select>
                       </div>
                     </div>

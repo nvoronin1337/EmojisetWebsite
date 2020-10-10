@@ -14,7 +14,7 @@ def debug(var):
 
 
 class Tweet_Streamer():
-    def __init__(self, keywords, max_tweets, discard, twarc_method):
+    def __init__(self, keywords, max_tweets, discard, twarc_method, lang):
         # Configuring Twarc API
         self.consumer_key = twitter_credentials.CONSUMER_KEY
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
@@ -27,6 +27,9 @@ class Tweet_Streamer():
         self.max_tweets = max_tweets
         self.discard = discard
         self.twarc_method = twarc_method
+        self.lang = lang
+
+        debug(self.lang)
 
         self.job = get_current_job()
         self.keep_streaming = True
@@ -55,32 +58,26 @@ class Tweet_Streamer():
 
     # Begin streaming tweets 
     def get_tweet_stream(self):
-        if len(self.keywords) == 0:
-            self.keywords = "a,e,i,o,u,y"
-            
         if self.twarc_method == "search":
             self.text = "full_text"
             query = self.keywords.replace(",", " OR ")
-            for tweet in self.twarc.search(query, lang='en'):
+            for tweet in self.twarc.search(query, lang=self.lang):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
         elif self.twarc_method == "filter":
-            self.text = "text"
             query = self.keywords
-            
             tweet_received = False
             search_query = query.replace(",", " OR ")
-            for tweet in self.twarc.search(search_query, lang='en',):
+            for tweet in self.twarc.search(search_query, lang=self.lang):
                 tweet_received = True
                 break     
             if tweet_received:
-                for tweet in self.twarc.filter(track=query, lang='en'):
+                for tweet in self.twarc.filter(track=query, lang=self.lang):
                     self.process_tweet(tweet)
                     if self.current_tweets >= self.max_tweets:
                         break
         elif self.twarc_method == "sample":
-            self.text = "text"
             for tweet in self.twarc.sample():
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:

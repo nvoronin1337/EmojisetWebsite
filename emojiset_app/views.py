@@ -17,6 +17,7 @@ def run_task():
     keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
     twarc_method = request.form["twarc_method"]
+    languages = request.form.getlist("languages")
     discard = False
 
     discard_checked = "discard_box" in request.form
@@ -28,7 +29,15 @@ def run_task():
     else:
         tweet_amount = int(tweet_amount)
 
-    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, result_ttl=500)  # Send a job to the task queue
+    if len(languages) > 0:
+        for lang in languages:
+            if lang == "all":
+                languages = None
+        if languages:
+            languages = " AND ".join(languages)
+
+    # Send a job to the task queue
+    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_ttl=500)  
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
     job.save_meta()
