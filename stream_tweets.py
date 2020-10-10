@@ -29,8 +29,6 @@ class Tweet_Streamer():
         self.twarc_method = twarc_method
         self.lang = lang
 
-        debug(self.lang)
-
         self.job = get_current_job()
         self.keep_streaming = True
         self.current_tweets = 0
