@@ -37,7 +37,7 @@ def run_task():
             languages = " AND ".join(languages)
 
     # Send a job to the task queue
-    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_ttl=500)  
+    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_ttl=500)
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
     job.save_meta()

@@ -54,6 +54,12 @@ class Tweet_Streamer():
                 time.sleep(5)
                 pass
 
+    def construct_search_query(self):
+        if(self.twarc_method == "search"):
+            #keywords, lang, 
+            pass
+
+
     # Begin streaming tweets 
     def get_tweet_stream(self):
         if self.twarc_method == "search":
