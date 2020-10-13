@@ -24,17 +24,22 @@ def run_task():
     twarc_method = request.form["twarc_method"]
     discard_checked = "discard_box" in request.form
 
+    verified_users_only_checked = False
     additional_selection_settings_used = False
 
     #additional settings for selecting tweets (if languages are there, then everything else is there too)
     if("languages" in request.form):
         languages = request.form.getlist("languages")
         since_date = request.form["since-date"]
+        until_date = request.form["until-date"]
         hashtags = request.form["hashtags"]
         from_user = request.form['from-user']
         to_user = request.form['to-user']
         mentioned_user = request.form['mentioned-user']
         result_type = request.form["result_type"]
+        min_likes = request.form["min-likes"]
+        max_likes = request.form["max-likes"]
+        verified_users_checked = "verified" in request.form
 
         additional_selection_settings_used = True
     else:
@@ -58,7 +63,7 @@ def run_task():
             languages = " AND ".join(languages)
 
     if additional_selection_settings_used and twarc_method == 'search':
-        keywords = construct_search_query(keywords, since_date, hashtags, from_user, to_user, mentioned_user)
+        keywords = construct_search_query(keywords, since_date, until_date, hashtags, from_user, to_user, mentioned_user, min_likes, max_likes, verified_users_checked)
 
     # Send a job to the task queue
     job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, result_ttl=500)
@@ -89,10 +94,12 @@ def job_status(job_key):
 
 
 # also include until date, verified users, maube max and min amount of likes, think about geocode
-def construct_search_query(keywords, since_date, hashtags, from_user, to_user, mentioned_user):
+def construct_search_query(keywords, since_date, until_date, hashtags, from_user, to_user, mentioned_user, min_likes, max_likes, verified_users_checked):
     query = keywords.replace(" ", "").replace(",", " OR ")
     if since_date:
         query += " since:" + since_date + " "
+    if until_date:
+        query += " until:" + until_date + " "
     if from_user:
         query += " from:@" + from_user + " "
     if to_user:
@@ -101,4 +108,10 @@ def construct_search_query(keywords, since_date, hashtags, from_user, to_user, m
         query += " -from:@" + mentioned_user + " @" + mentioned_user + " "
     if hashtags: 
         query += " #" + hashtags + " "
+    if min_likes:
+        query += " min_faves:" + min_likes + " "
+    if max_likes:
+        query += " -min_faves:" + max_likes + " "
+    if verified_users_checked:
+        query += " filter:verified "
     return query

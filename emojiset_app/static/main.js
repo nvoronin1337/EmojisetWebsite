@@ -9,7 +9,29 @@ $(document).ready(function () {
   let showed = false
   let settings = $('#hidden_selection_settings').html();
   $("#selection_settings_container").hide();
-  
+
+  var now = new Date();
+  var week_ago = new Date();
+  week_ago.setDate(now.getDate() - 7);
+  var month_now = (now.getMonth() + 1);
+  var month_week_ago = (week_ago.getMonth() + 1);
+  var day_now = now.getDate();
+  var day_week_ago = week_ago.getDate();
+
+  if (month_now < 10)
+    month_now = "0" + month_now;
+  if (month_week_ago < 10)
+    month_week_ago = "0" + month_week_ago;
+  if (day_now < 10)
+    day_now = "0" + day_now;
+  if (day_week_ago < 10)
+    day_week_ago = "0" + day_week_ago;
+
+  var today = now.getFullYear() + '-' + month_now + '-' + day_now;
+  var day_week_ago = week_ago.getFullYear() + '-' + month_week_ago + '-' + day_week_ago;
+  $('#until-date').val(today);
+  $('#since-date').val(day_week_ago);
+
 
 
   function create_result(message, htmlString) {
@@ -153,22 +175,22 @@ $(document).ready(function () {
     return false;
   });
 
-  
+
   $("#tweet_selection_settings").on('click', function (e) {
     e.preventDefault()
-    
-      let twarc_method = $("input[name='twarc_method']:checked").val();
-      if(twarc_method == "search"){
-        if (!showed){
-          $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
-        }else{
-          $("#selection_settings_container").slideUp();
-        }
-        showed = !showed
-      }
-      else {
+
+    let twarc_method = $("#twarc-method option:selected" ).val();
+    if (twarc_method == "search") {
+      
+      if (!showed) {
+        $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      } else {
         $("#selection_settings_container").slideUp();
       }
+      showed = !showed
+    } else {
+      $("#selection_settings_container").slideUp();
+    }
   });
 
 
@@ -176,13 +198,13 @@ $(document).ready(function () {
     pickerPosition: "bottom"
   });
 
-  $("input[name='twarc_method']").click(function(){
-    let twarc_method = $("input[name='twarc_method']:checked").val();
-    if(twarc_method == 'sample' || twarc_method == "filter"){
+  $("#twarc-method").change(function () {
+    let twarc_method = $( "#twarc-method option:selected" ).val()
+    if (twarc_method == 'sample' || twarc_method == "filter") {
       $("#tweet_selection_settings").attr("disabled", true);
       $("#selection_settings_container").slideUp();
       showed = false
-    }else{
+    } else {
       $("#tweet_selection_settings").attr("disabled", false);
     }
   });
