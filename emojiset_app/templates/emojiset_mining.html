@@ -73,11 +73,12 @@
                 <input type="number" class="form-control" name="total_tweets" min="0" max="10000" step="1"
                   oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 100)">
                 <small id="tweets_amount_help" class="form-text text-muted">10000 Tweets Max</small>
-                
+
                 <div class="card mt-3">
                   <div class="card-body">
                     <div class="form-check">
-                      <input type="radio" id="search" class="form-check-input" name="twarc_method" value="search" checked>
+                      <input type="radio" id="search" class="form-check-input" name="twarc_method" value="search"
+                        checked>
                       <label for="search">Pull tweets from the last week</label><br>
                     </div>
                     <div class="form-check">
@@ -140,85 +141,79 @@
     </div>
   </div>
 
-  <script id='hidden_selection_settings' type="text/x-custom-template">
+  <div id='hidden_selection_settings' style="visibility: hidden;">
     <div class="container">
       <div class="card mb-3">
-          <div class="card-body">
-              <div class="row">
-                  <div class="col">
-                      <select name="languages" id="languages" class="form-control">
-                          <option value="en">English</option>
-                          <option value="es">Spanish</option>
-                          <option value="zh">Chinese</option>
-                          <option value="ar">Arabic</option>
-                          <option value="de">German</option>
-                          <option value="ru">Russian</option>
-                          <option value="all">All</option>
-                      </select>
-                      <input type="date" class="form-control" id="since" name="since-date" value="2020-10-12"
-                          min="2010-01-01" max="2020-10-12">
-                      <div class="input-group">
-                          <div class="input-group-prepend">
-                              <div class="input-group-text">#</div>
-                          </div>
-                          <input type="text" class="form-control" id="inlineFormInputGroupUsername"
-                              placeholder="Hashtags">
-                      </div>
-                  </div>
-                  <div class="col">
-                      <label class="sr-only" for="inlineFormInputGroupUsername">UsernameFrom</label>
-                      <div class="input-group">
-                          <div class="input-group-prepend">
-                              <div class="input-group-text">@</div>
-                          </div>
-                          <input type="text" class="form-control" id="inlineFormInputGroupUsername"
-                              placeholder="From user">
-                      </div>
-                      <label class="sr-only" for="inlineFormInputGroupUsername">UsernameTo</label>
-                      <div class="input-group">
-                          <div class="input-group-prepend">
-                              <div class="input-group-text">@</div>
-                          </div>
-                          <input type="text" class="form-control" id="inlineFormInputGroupUsername"
-                              placeholder="To user">
-                      </div>
-                      <label class="sr-only" for="inlineFormInputGroupUsername">UsernameMentions</label>
-                      <div class="input-group">
-                          <div class="input-group-prepend">
-                              <div class="input-group-text">@</div>
-                          </div>
-                          <input type="text" class="form-control" id="inlineFormInputGroupUsername"
-                              placeholder="Mentioned user">
-                      </div>
-                  </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <select name="languages" id="languages" class="form-control">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="zh">Chinese</option>
+                <option value="ar">Arabic</option>
+                <option value="de">German</option>
+                <option value="ru">Russian</option>
+                <option value="all">All</option>
+              </select>
+              <input type="date" class="form-control" id="since" name="since-date" value="2020-10-12" min="2010-01-01"
+                max="2020-10-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">#</div>
+                </div>
+                <input type="text" class="form-control" id="hashtags" name="hashtags" placeholder="Hashtags">
               </div>
-              <hr>
-              <div class="row">
-                  <div class="col">
-                    <div class="card mb-3">
-                      <div class="card-body">
-                      <div class="form-check">
-                          <input type="radio" id="mixed" class="form-check-input" name="result_type" value="mixed"
-                              checked>
-                          <label for="mixed">Include both popular and real time results in the response</label>
-                      </div>
-                      <div class="form-check">
-                          <input type="radio" id="recent" class="form-check-input" name="result_type" value="recent">
-                          <label for="recent">Include only the most recent results</label>
-                      </div>
-                      <div class="form-check">
-                          <input type="radio" id="popular" class="form-check-input" name="result_type"
-                              value="popular">
-                          <label for="popular">Include only the most popular results</label>
-                      </div>
+            </div>
+            <div class="col">
+              <label class="sr-only" for="inlineFormInputGroupUsername">UsernameFrom</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="from-user" name="from-user" placeholder="From user">
+              </div>
+              <label class="sr-only" for="inlineFormInputGroupUsername">UsernameTo</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="to-user" name="to-user" placeholder="To user">
+              </div>
+              <label class="sr-only" for="inlineFormInputGroupUsername">UsernameMentions</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="mentioned-user" name="mentioned-user" placeholder="Mentioned user">
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="form-check">
+                    <input type="radio" id="mixed" class="form-check-input" name="result_type" value="mixed" checked>
+                    <label for="mixed">Include both popular and real time results in the response</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" id="recent" class="form-check-input" name="result_type" value="recent">
+                    <label for="recent">Include only the most recent results</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" id="popular" class="form-check-input" name="result_type" value="popular">
+                    <label for="popular">Include only the most popular results</label>
                   </div>
                 </div>
               </div>
-              </div>
+            </div>
           </div>
+        </div>
       </div>
+    </div>
   </div>
-  </script>
 
 </body>
 

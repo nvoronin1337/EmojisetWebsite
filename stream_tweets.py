@@ -5,16 +5,11 @@ import emoji
 from emojiset_app import EMOJI_SET
 import regex
 import twitter_credentials
-from rq import get_current_job
-
-
-def debug(var):
-    with open('out.txt', 'w') as f:
-        print(var, file=f)     
+from rq import get_current_job  
 
 
 class Tweet_Streamer():
-    def __init__(self, keywords, max_tweets, discard, twarc_method, lang):
+    def __init__(self, keywords, max_tweets, discard, twarc_method, lang, result_type):
         # Configuring Twarc API
         self.consumer_key = twitter_credentials.CONSUMER_KEY
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
@@ -28,6 +23,7 @@ class Tweet_Streamer():
         self.discard = discard
         self.twarc_method = twarc_method
         self.lang = lang
+        self.result_type = result_type
 
         self.job = get_current_job()
         self.keep_streaming = True
@@ -54,18 +50,12 @@ class Tweet_Streamer():
                 time.sleep(5)
                 pass
 
-    def construct_search_query(self):
-        if(self.twarc_method == "search"):
-            #keywords, lang, 
-            pass
-
-
     # Begin streaming tweets 
     def get_tweet_stream(self):
         if self.twarc_method == "search":
             self.text = "full_text"
-            query = self.keywords.replace(",", " OR ")
-            for tweet in self.twarc.search(query, lang=self.lang):
+            query = self.keywords
+            for tweet in self.twarc.search(query, lang=self.lang, result_type=self.result_type):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
@@ -123,7 +113,7 @@ class Tweet_Streamer():
             
 
     #function returns emojiset list consisting of emoji sequences
-    def extract_emoji_sequences(self, text):
+    def extract_emoji_sequences_with_brackets(self, text):
         emoji_sequence = []
         emojiset_str = '['
 
@@ -143,4 +133,30 @@ class Tweet_Streamer():
             if(len(emojiset_str) > 1):
                 emojiset_str = emojiset_str[:-2]
         emojiset_str += ']'
+        return emojiset_str
+
+    #function returns emojiset list consisting of emoji sequences
+    def extract_emoji_sequences(self, text):
+        emoji_sequence = []
+        emojiset_str = ""
+
+        grapheme_clusters = regex.findall(r"\X", text)
+        
+        for cluster in grapheme_clusters:
+            if cluster in EMOJI_SET:
+                emoji_sequence.append(cluster)
+            else:
+                if(len(emoji_sequence) > 0):
+                    emojiset_str += "".join(emoji_sequence)
+                    emojiset_str += ","
+                    emoji_sequence = []
+
+        if(len(emoji_sequence) > 0):
+            emojiset_str += "".join(emoji_sequence)
+            emojiset_str += ","
+
+        if len(emojiset_str) > 1:
+            emojiset_str = emojiset_str[:-1]
+        
+
         return emojiset_str

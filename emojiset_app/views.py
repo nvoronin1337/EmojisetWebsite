@@ -7,6 +7,11 @@ from flask import render_template, request, redirect, url_for, jsonify
 from time import strftime
 
 
+def debug(var):
+    with open('out.txt', 'w') as f:
+        print(var, file=f)   
+
+
 @app.route("/emojiset-mining", methods=['GET', 'POST'])
 def emojiset_mining():
     return render_template("emojiset_mining.html")
@@ -17,10 +22,26 @@ def run_task():
     keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
     twarc_method = request.form["twarc_method"]
-    languages = request.form.getlist("languages")
-    discard = False
-
     discard_checked = "discard_box" in request.form
+
+    additional_selection_settings_used = False
+
+    #additional settings for selecting tweets (if languages are there, then everything else is there too)
+    if("languages" in request.form):
+        languages = request.form.getlist("languages")
+        since_date = request.form["since-date"]
+        hashtags = request.form["hashtags"]
+        from_user = request.form['from-user']
+        to_user = request.form['to-user']
+        mentioned_user = request.form['mentioned-user']
+        result_type = request.form["result_type"]
+
+        additional_selection_settings_used = True
+    else:
+        languages = ["all"]
+        result_type = None
+
+    discard = False
     if discard_checked:
         discard = True
     
@@ -36,8 +57,11 @@ def run_task():
         if languages:
             languages = " AND ".join(languages)
 
+    if additional_selection_settings_used and twarc_method == 'search':
+        keywords = construct_search_query(keywords, since_date, hashtags, from_user, to_user, mentioned_user)
+
     # Send a job to the task queue
-    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_ttl=500)
+    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, result_ttl=500)
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
     job.save_meta()
@@ -62,3 +86,19 @@ def job_status(job_key):
     if job.is_failed:
         response['message'] = job.exc_info.strip().split('\n')[-1]
     return jsonify(response)
+
+
+# also include until date, verified users, maube max and min amount of likes, think about geocode
+def construct_search_query(keywords, since_date, hashtags, from_user, to_user, mentioned_user):
+    query = keywords.replace(" ", "").replace(",", " OR ")
+    if since_date:
+        query += " since:" + since_date + " "
+    if from_user:
+        query += " from:@" + from_user + " "
+    if to_user:
+        query += " to:@" + to_user + " "
+    if mentioned_user:
+        query += " -from:@" + mentioned_user + " @" + mentioned_user + " "
+    if hashtags: 
+        query += " #" + hashtags + " "
+    return query

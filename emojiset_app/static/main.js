@@ -6,8 +6,9 @@ $(document).ready(function () {
   discarded_tweets_lbl.hidden = true
   let table_id = ""
   let btn_id = ""
-  let showed = true
+  let showed = false
   let settings = $('#hidden_selection_settings').html();
+  $("#selection_settings_container").hide();
   
 
 
@@ -20,12 +21,12 @@ $(document).ready(function () {
     // Creating an HTML <table>
     htmlString = '<div class="card mb-3">'
     htmlString += '<div class="card-body">'
-    htmlString += '<table id="' + table_id + '" style="width: 100%"><tr><th>Tweet</th><th>Emojiset</th></tr>'
+    htmlString += '<table id="' + table_id + '" style="width: 100%;"><tr><th>Tweet</th><th>Emojiset</th></tr>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
     for (let index in message) {
       htmlString += '<tr ' + row_style + '>'
-      htmlString += '<td><small class="text-muted d-block">' + (message[index])[0] + '</small></td>'
-      htmlString += '<td><small class="text-muted d-block">' + (message[index])[1] + '</small></td>'
+      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message[index])[0] + '</small></td>'
+      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message[index])[1] + '</small></td>'
       htmlString += '</tr>'
       counter += 1
       if (counter >= 10) {
@@ -127,7 +128,7 @@ $(document).ready(function () {
   $("#submit").on('click', function (e) {
     e.preventDefault()
     let keywords = $('#keywords').val();
-    let twarc_method = $('.twarc_method:checked').val();
+    let twarc_method = $("input[name='twarc_method']:checked").val();
     if (keywords || twarc_method == 'sample') {
       $("#submit").attr("disabled", true);
       progress_bar.hidden = false;
@@ -155,16 +156,19 @@ $(document).ready(function () {
   
   $("#tweet_selection_settings").on('click', function (e) {
     e.preventDefault()
-    showed = !showed
     
-    if (!showed) {
       let twarc_method = $("input[name='twarc_method']:checked").val();
-      if(twarc_method == "search" || twarc_method == "filter"){
-        $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      if(twarc_method == "search"){
+        if (!showed){
+          $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+        }else{
+          $("#selection_settings_container").slideUp();
+        }
+        showed = !showed
       }
-    } else {
-      $("#selection_settings_container").slideUp();
-    }
+      else {
+        $("#selection_settings_container").slideUp();
+      }
   });
 
 
@@ -174,12 +178,10 @@ $(document).ready(function () {
 
   $("input[name='twarc_method']").click(function(){
     let twarc_method = $("input[name='twarc_method']:checked").val();
-    if(twarc_method == 'sample'){
-      if (!$('#hidden_selection_settings').is(':visible')){
-        showed = !showed
-      }
+    if(twarc_method == 'sample' || twarc_method == "filter"){
       $("#tweet_selection_settings").attr("disabled", true);
       $("#selection_settings_container").slideUp();
+      showed = false
     }else{
       $("#tweet_selection_settings").attr("disabled", false);
     }
