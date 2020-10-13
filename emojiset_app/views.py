@@ -21,7 +21,7 @@ def emojiset_mining():
 def run_task():
     keywords = request.form["keywords"]    
     tweet_amount = request.form["total_tweets"]
-    twarc_method = request.form["twarc_method"]
+    twarc_method = request.form["twarc-method"]
     discard_checked = "discard_box" in request.form
 
     verified_users_only_checked = False
