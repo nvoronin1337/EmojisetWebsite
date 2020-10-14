@@ -8,8 +8,12 @@ import twitter_credentials
 from rq import get_current_job  
 
 
+def debug(var):
+    with open('out.txt', 'w') as f:
+        print(var, file=f)   
+
 class Tweet_Streamer():
-    def __init__(self, keywords, max_tweets, discard, twarc_method, lang, result_type):
+    def __init__(self, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo):
         # Configuring Twarc API
         self.consumer_key = twitter_credentials.CONSUMER_KEY
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
@@ -24,7 +28,12 @@ class Tweet_Streamer():
         self.twarc_method = twarc_method
         self.lang = lang
         self.result_type = result_type
+        self.follow = follow
+        if self.follow:
+            self.follow = self.follow.replace(' ', "").split(',')
+        self.geo = geo
 
+        self.user_ids = []
         self.job = get_current_job()
         self.keep_streaming = True
         self.current_tweets = 0
@@ -55,7 +64,7 @@ class Tweet_Streamer():
         if self.twarc_method == "search":
             self.text = "full_text"
             query = self.keywords
-            for tweet in self.twarc.search(query, lang=self.lang, result_type=self.result_type):
+            for tweet in self.twarc.search(query, lang=self.lang, result_type=self.result_type, geocode=self.geo):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
@@ -63,11 +72,18 @@ class Tweet_Streamer():
             query = self.keywords
             tweet_received = False
             search_query = query.replace(",", " OR ")
-            for tweet in self.twarc.search(search_query, lang=self.lang):
-                tweet_received = True
-                break     
-            if tweet_received:
-                for tweet in self.twarc.filter(track=query, lang=self.lang):
+             
+            if self.follow:
+                for user in self.twarc.user_lookup(ids=self.follow, id_type="screen_name"):
+                    self.user_ids.append(user['id_str']) 
+            else:
+                if len(search_query) > 0:
+                    for tweet in self.twarc.search(search_query, lang=self.lang):
+                        tweet_received = True
+                        break
+
+            if tweet_received or self.follow or self.geo:
+                for tweet in self.twarc.filter(track=query, lang=self.lang, follow=",".join(self.user_ids), locations=self.geo):
                     self.process_tweet(tweet)
                     if self.current_tweets >= self.max_tweets:
                         break

@@ -6,33 +6,58 @@ $(document).ready(function () {
   discarded_tweets_lbl.hidden = true
   let table_id = ""
   let btn_id = ""
-  let showed = false
   let settings = $('#hidden_selection_settings').html();
+  let filter_settings = $('#hidden_filter_selection_settings').html();
   $("#selection_settings_container").hide();
 
-  var now = new Date();
-  var week_ago = new Date();
-  week_ago.setDate(now.getDate() - 7);
-  var month_now = (now.getMonth() + 1);
-  var month_week_ago = (week_ago.getMonth() + 1);
-  var day_now = now.getDate();
-  var day_week_ago = week_ago.getDate();
+  function set_date() {
+    var now = new Date();
+    var week_ago = new Date();
+    week_ago.setDate(now.getDate() - 7);
+    var month_now = (now.getMonth() + 1);
+    var month_week_ago = (week_ago.getMonth() + 1);
+    var day_now = now.getDate();
+    var day_week_ago = week_ago.getDate();
 
-  if (month_now < 10)
-    month_now = "0" + month_now;
-  if (month_week_ago < 10)
-    month_week_ago = "0" + month_week_ago;
-  if (day_now < 10)
-    day_now = "0" + day_now;
-  if (day_week_ago < 10)
-    day_week_ago = "0" + day_week_ago;
+    if (month_now < 10)
+      month_now = "0" + month_now;
+    if (month_week_ago < 10)
+      month_week_ago = "0" + month_week_ago;
+    if (day_now < 10)
+      day_now = "0" + day_now;
+    if (day_week_ago < 10)
+      day_week_ago = "0" + day_week_ago;
 
-  var today = now.getFullYear() + '-' + month_now + '-' + day_now;
-  var day_week_ago = week_ago.getFullYear() + '-' + month_week_ago + '-' + day_week_ago;
-  $('#until-date').val(today);
-  $('#since-date').val(day_week_ago);
+    var today = now.getFullYear() + '-' + month_now + '-' + day_now;
+    var day_week_ago = week_ago.getFullYear() + '-' + month_week_ago + '-' + day_week_ago;
+    $('#until-date').val(today);
+    $('#since-date').val(day_week_ago);
+  }
 
+  function display_search_settings() {
+    if (!$('#selection_settings_container').is(':visible')) {
+      $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      set_date();
+      $("#near-me").change(function () {
+        if (this.checked) {
+          $("#city").attr("disabled", true);
+        } else {
+          $("#city").attr("disabled", false);
+        }
+      });
+    } else {
+      $("#selection_settings_container").slideUp();
+    }
 
+  }
+
+  function display_filter_settings() {
+    if (!$('#selection_settings_container').is(':visible')) {
+      $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
+    } else {
+      $("#selection_settings_container").slideUp();
+    }
+  }
 
   function create_result(message, htmlString) {
     let row_style = 'style="table-row"'
@@ -73,8 +98,6 @@ $(document).ready(function () {
       if (Object.keys(message).length == 0) {
         empty_result = true
       }
-
-
       let htmlString = ""
 
       if (!empty_result) {
@@ -149,63 +172,67 @@ $(document).ready(function () {
   // submit form
   $("#submit").on('click', function (e) {
     e.preventDefault()
-    let keywords = $('#keywords').val();
-    let twarc_method = $("input[name='twarc_method']:checked").val();
-    if (keywords || twarc_method == 'sample') {
-      $("#submit").attr("disabled", true);
-      progress_bar.hidden = false;
-      $.ajax({
-        //url:  "http://69.43.72.217/_run_task",
-        url: "http://127.0.0.1:5000/_run_task",
-        data: $("#taskForm").serialize(),
-        method: "POST",
-        dataType: "json",
-        success: function (data, status, request) {
-          var status_url = request.getResponseHeader('Location');
-          console.log("Status URL: " + status_url)
-          check_job_status(status_url);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          console.log("error")
-        }
-      });
-    } else {
-      alert("Please enter some keywords!")
-    }
+    $("#submit").attr("disabled", true);
+    progress_bar.hidden = false;
+    $.ajax({
+      //url:  "http://69.43.72.217/_run_task",
+      url: "http://127.0.0.1:5000/_run_task",
+      data: $("#taskForm").serialize(),
+      method: "POST",
+      dataType: "json",
+      success: function (data, status, request) {
+        var status_url = request.getResponseHeader('Location');
+        console.log("Status URL: " + status_url)
+        check_job_status(status_url);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log("error")
+      }
+    });
     return false;
   });
 
 
+  // additional settings button (on click event)
   $("#tweet_selection_settings").on('click', function (e) {
     e.preventDefault()
 
-    let twarc_method = $("#twarc-method option:selected" ).val();
+    let twarc_method = $("#twarc-method option:selected").val();
     if (twarc_method == "search") {
-      
-      if (!showed) {
-        $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
-      } else {
-        $("#selection_settings_container").slideUp();
-      }
-      showed = !showed
+      display_search_settings();
+    } else if (twarc_method == "filter") {
+      display_filter_settings();
     } else {
       $("#selection_settings_container").slideUp();
+    }
+  });
+
+
+  // twarc method selection changed
+  $("#twarc-method").change(function () {
+    let twarc_method = $("#twarc-method option:selected").val()
+    if (twarc_method == 'sample') {
+      $("#tweet_selection_settings").attr("disabled", true);
+      $("#selection_settings_container").slideUp();
+    } else if (twarc_method == 'search') {
+      $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      set_date();
+      $("#near-me").change(function () {
+        if (this.checked) {
+          $("#city").attr("disabled", true);
+        } else {
+          $("#city").attr("disabled", false);
+        }
+      });
+      $("#tweet_selection_settings").attr("disabled", false);
+    } else if (twarc_method == 'filter') {
+      $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
+      $("#tweet_selection_settings").attr("disabled", false);
     }
   });
 
 
   $("#keywords").emojioneArea({
     pickerPosition: "bottom"
-  });
-
-  $("#twarc-method").change(function () {
-    let twarc_method = $( "#twarc-method option:selected" ).val()
-    if (twarc_method == 'sample' || twarc_method == "filter") {
-      $("#tweet_selection_settings").attr("disabled", true);
-      $("#selection_settings_container").slideUp();
-      showed = false
-    } else {
-      $("#tweet_selection_settings").attr("disabled", false);
-    }
   });
 });
