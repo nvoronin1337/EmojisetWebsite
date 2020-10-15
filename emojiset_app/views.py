@@ -61,8 +61,8 @@ def run_task():
                 'min_likes': request.form["min-likes"],
                 'max_likes': request.form["max-likes"],
                 'verified_users_checked': "verified" in request.form,
-                'near_me_checked': "near-me" in request.form,
-                'city': request.form["city"],
+                #'near_me_checked': "near-me" in request.form,
+                #'city': request.form["city"],
                 'radius': request.form["radius"],
                 'units': request.form["units"],
             }
@@ -164,6 +164,7 @@ def construct_search_query(keywords, additional_settings, operator):
     if additional_settings['verified_users_checked']:
         query += " filter:verified" + ' ' + operator
     
+    '''
     # premium API settings (city and near me)
     if additional_settings['near_me_checked']:
         query += " near:me"
@@ -173,7 +174,7 @@ def construct_search_query(keywords, additional_settings, operator):
         query += " near:" + additional_settings['city']
         if additional_settings['radius']:
             query += " within:" + additional_settings['radius'] + additional_settings['units']
-
+    '''
     # removing extra AND/OR at the end of the string 
     if(query[-4:] == ' AND'):
         query = query[:-4]
