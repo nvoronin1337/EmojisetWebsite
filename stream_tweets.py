@@ -20,7 +20,8 @@ class Tweet_Streamer():
         self.access_token = twitter_credentials.ACCESS_TOKEN
         self.access_token_secret = twitter_credentials.ACCESS_TOKEN_SECRET
         
-        self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret)
+        # check what connection_errors is used for
+        self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, connection_errors=3)
 
         self.keywords = keywords
         self.max_tweets = max_tweets
@@ -30,12 +31,11 @@ class Tweet_Streamer():
         self.result_type = result_type
         self.follow = follow
         if self.follow:
-            self.follow = self.follow.replace(' ', "").split(',')
+            self.follow = self.follow.replace('@', '').replace(' ', "").split(',')
         self.geo = geo
 
         self.user_ids = []
         self.job = get_current_job()
-        self.keep_streaming = True
         self.current_tweets = 0
         self.discarded = 0
 
@@ -44,20 +44,16 @@ class Tweet_Streamer():
         # dicrionaty in the format {index: (tweet, emojiset)}
         self.result = {}
 
-    # Main streaming loop 
     def stream(self):
-        while self.keep_streaming:
-            try:
-                self.get_tweet_stream()
-            except KeyboardInterrupt:
-                print("Keyboard interrupt...")
-                # Handle cleanup (save data, etc)
-                return
-            except Exception:
-                print("Error. Restarting...")
-                traceback.print_exc()
-                time.sleep(5)
-                pass
+        try:
+            self.get_tweet_stream()
+        except KeyboardInterrupt:
+            print("Keyboard interrupt...")
+            return
+        except Exception:
+            print("Error. Quitting...")
+            traceback.print_exc()
+            return
 
     # Begin streaming tweets 
     def get_tweet_stream(self):
@@ -87,12 +83,12 @@ class Tweet_Streamer():
                     self.process_tweet(tweet)
                     if self.current_tweets >= self.max_tweets:
                         break
+                
         elif self.twarc_method == "sample":
             for tweet in self.twarc.sample():
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
-        self.keep_streaming = False
 
     def process_tweet(self, tweet):
         if self.discard:
@@ -128,7 +124,7 @@ class Tweet_Streamer():
             self.result[self.current_tweets] = (tweet[self.text], emojiset)
             
 
-    #function returns emojiset list consisting of emoji sequences
+    #function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)
     def extract_emoji_sequences_with_brackets(self, text):
         emoji_sequence = []
         emojiset_str = '['
@@ -151,7 +147,7 @@ class Tweet_Streamer():
         emojiset_str += ']'
         return emojiset_str
 
-    #function returns emojiset list consisting of emoji sequences
+    #function returns emojiset list consisting of emoji sequences (a string)
     def extract_emoji_sequences(self, text):
         emoji_sequence = []
         emojiset_str = ""
