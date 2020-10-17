@@ -67,7 +67,8 @@ class Tweet_Streamer():
         elif self.twarc_method == "filter":
             query = self.keywords
             tweet_received = False
-            search_query = query.replace(",", " OR ")
+            #search_query = query.replace(",", " OR ")
+            search_query = query
              
             if self.follow:
                 for user in self.twarc.user_lookup(ids=self.follow, id_type="screen_name"):

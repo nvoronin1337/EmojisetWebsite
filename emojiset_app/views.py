@@ -6,9 +6,11 @@ from emojiset_app.tasks import stream_task
 from flask import render_template, request, redirect, url_for, jsonify
 from time import strftime
 
+
 def debug(var):
     with open('out.txt', 'w') as f:
         print(var, file=f)
+
 
 def create_bounding_box(long, lat, radius):
     long = float(long)
@@ -21,9 +23,11 @@ def create_bounding_box(long, lat, radius):
     down = round(lat - (radius * km),4)
     return (down,left, up, right)
 
-@app.route("/emojiset-mining", methods=['GET', 'POST'])
+
+@app.route("/emojiset-mining", methods=['GET'])
 def emojiset_mining():
     return render_template("emojiset_mining.html")
+
 
 @app.route('/_run_task', methods=['POST'])
 def run_task():
@@ -46,6 +50,8 @@ def run_task():
     # read additional settings
     if "languages" in request.form:
         languages = request.form["languages"]
+        if languages == 'all':
+            languages = None
         additional_settings = {}
         additional_selection_settings_used = True
         # settings for search method
@@ -57,25 +63,23 @@ def run_task():
                 'from_user': request.form['from-user'],
                 'to_user': request.form['to-user'],
                 'mentioned_user': request.form['mentioned-user'],
-                'result_type': request.form["result_type"],
                 'min_likes': request.form["min-likes"],
                 'max_likes': request.form["max-likes"],
                 'verified_users_checked': "verified" in request.form,
-                #'near_me_checked': "near-me" in request.form,
-                #'city': request.form["city"],
-                'radius': request.form["radius"],
-                'units': request.form["units"],
             }
-            radius = additional_settings["radius"]
+            result_type = request.form["result_type"]
+            radius = request.form['radius']
             if not radius:
                 additional_settings['radius'] = '10'
                 radius = '10'
+
             units = request.form["units"]
             geo = request.form['long'] + ',' + request.form['lat']
             if len(geo) < 2:
                 geo = None 
             else:
                 geo += ',' + radius + units
+
             if additional_settings['from_user'] == additional_settings['mentioned_user']:
                 additional_settings['from_user'] = ""
         # settings for filter method
@@ -143,63 +147,86 @@ def job_status(job_key):
 def construct_search_query(keywords, additional_settings, operator):
     query = ""
     if len(keywords) > 0:
-        query = keywords.replace(",", " OR ")
-        #query += " " + operator + " "
+        keywords_list = keywords.split(',')
+        query = " OR ".join(keywords_list)
+
+    # search by mentioned users: -from:@user @user OR/AND -from:user2 @user2 (-from@user insures that we don't get tweets from the user, only mentiones of him posted by other uses)
     if additional_settings['mentioned_user']:
-        query += make_multiple_arguments_query(additional_settings['mentioned_user'], '-from:@', " OR ", '@') + ' ' + operator
-    if additional_settings['since_date']:
-        query += " since:" + additional_settings['since_date'] + ' ' + operator
-    if additional_settings['until_date']:
-        query += " until:" + additional_settings['until_date'] + ' ' + operator
+        mentioned_users_query = make_multiple_arguments_query(additional_settings['mentioned_user'], '-from:@', "OR", '@')
+        if len(query) > 0:
+            query += " " + operator + ' ' + mentioned_users_query
+        else:
+            query += mentioned_users_query
+
     if additional_settings['from_user']:
-        query += make_multiple_arguments_query(additional_settings['from_user'], "from:@", " OR ") + ' ' + operator
+        from_users_query = make_multiple_arguments_query(additional_settings['from_user'], "from:@", "OR")
+        if len(query) > 0:
+            query += " " + operator + ' ' + from_users_query
+        else:
+            query += from_users_query
+
     if additional_settings['to_user']:
-        query += make_multiple_arguments_query(additional_settings['to_user'], "to:@", " OR ") + ' ' + operator
+        to_user_query = make_multiple_arguments_query(additional_settings['to_user'], "to:@", "OR")
+        if len(query) > 0:
+            query += " " + operator + ' ' + to_user_query
+        else:
+            query += to_user_query
+
     if additional_settings['hashtags']: 
-        query += make_multiple_arguments_query(additional_settings['hashtags'], "#", " OR ") + ' ' + operator
-    if additional_settings['min_likes']:
-        query += " min_faves:" + additional_settings['min_likes'] + ' ' + operator
-    if additional_settings['max_likes']:
-        query += " -min_faves:" + additional_settings['max_likes'] + ' ' + operator
+        hashtags_query = make_multiple_arguments_query(additional_settings['hashtags'], "#", "OR")
+        if len(query) > 0:
+            query += " " + operator + ' ' + hashtags_query
+        else:
+            query += hashtags_query
+
+    if additional_settings['min_likes'] and additional_settings['max_likes']:
+        min_likes_query = "min_faves:" + additional_settings['min_likes']
+        max_likes_query = "-min_faves:" + additional_settings['max_likes']
+
+        if len(query) > 0:
+            query += " " + operator + ' ' + min_likes_query
+        else:
+            query += min_likes_query
+        if len(query) > 0:
+            query += " " + operator + ' ' + max_likes_query
+        else:
+            query += max_likes_query
+
     if additional_settings['verified_users_checked']:
-        query += " filter:verified" + ' ' + operator
-    
-    '''
-    # premium API settings (city and near me)
-    if additional_settings['near_me_checked']:
-        query += " near:me"
-        if additional_settings['radius']:
-            query += " within:" + additional_settings['radius'] + additional_settings['units']
-    elif additional_settings['city']:
-        query += " near:" + additional_settings['city']
-        if additional_settings['radius']:
-            query += " within:" + additional_settings['radius'] + additional_settings['units']
-    '''
-    # removing extra AND/OR at the end of the string 
-    if(query[-4:] == ' AND'):
-        query = query[:-4]
-    elif query[-3:] == ' OR':
-        query = query[:-3]
-    debug(query)
+        verified_user_query = "filter:verified"
+        if len(query) > 0:
+            query += " " + operator + " " + verified_user_query
+        else:
+            query += verified_user_query
+
+    #appending valid query for dates
+    if additional_settings['since_date'] and additional_settings['until_date']:
+        dates_range_query = "since:" + additional_settings['since_date'] + ' ' + "until:" + additional_settings['until_date']
+        if len(query) > 0:
+            query += " AND " + dates_range_query
+        else:
+            query += dates_range_query
     return query
 
 
 def construct_filter_query(keywords, additional_settings):
     query = keywords
     if additional_settings['hashtags']:
-        query += make_multiple_arguments_query(additional_settings['hashtags'], '#', ' , ')
+        if len(query) > 0:
+            query += ' ' + make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
+        else:
+            query += make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
     return query
 
 
-# creates a valid multi parameter query (EX:'hashtag1, hashtag2' => ' #hashtag1 OR #hashtag2')
+# creates a valid multi parameter query (EX:'hashtag1, hashtag2' => ' #hashtag1 OR/AND #hashtag2')
 def make_multiple_arguments_query(input_str, param_name, separator, second_param_name=None):
-    query = " "
-    input_list = input_str.split(',')
+    query = ""
+    input_list = input_str.replace(' ','').replace('#','').replace('@','').split(',')
     for input in input_list:
-        input = input.replace(' ','').replace('#','').replace('@','')
         if(second_param_name):
-            query += param_name + input + ' ' + second_param_name + input + separator
-        else:
-            query += param_name + input + separator
-    return query[:-4]
-
+            query += param_name + input + ' ' + second_param_name + input + ' ' + separator + ' '
+        else:         
+            query += param_name + input + ' ' + separator + ' '
+    query = query[:-4]
+    return query
