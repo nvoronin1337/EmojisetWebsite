@@ -35,6 +35,7 @@ def create_bounding_box(long, lat, radius):
 def emojiset_mining():
     return render_template("emojiset_mining.html")
 
+
 # --- this URL can't be directly accessed by user ---*
 # --- this URL is being called using AJAX call when the submit button is clicked ---*
 # --- request.form data is being passed to this URL in the AJAX call (request.form contains data that users has entered in the form) ---*
@@ -115,7 +116,7 @@ def run_task():
     if discard_checked:
         discard = True
     if not tweet_amount:
-        tweet_amount = 100
+        tweet_amount = 10
     else:
         tweet_amount = int(tweet_amount)
 
@@ -128,7 +129,7 @@ def run_task():
             keywords = construct_filter_query(keywords, additional_settings)
 
     # ---send a job to the task queue---*
-    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, follow, geo, result_ttl=500)
+    job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, follow, geo, result_ttl=10)
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
     job.save_meta()

@@ -61,6 +61,7 @@ $(document).ready(function () {
 
   }
 
+
   /** Displays additional settings for FILTER (real time stream) */
   function display_filter_settings() {
     if (!$('#selection_settings_container').is(':visible')) {
@@ -69,6 +70,7 @@ $(document).ready(function () {
       $("#selection_settings_container").slideUp();
     }
   }
+
 
   /** 
    * Takes a job result from check_job_status js function and structures it as a HTML table
@@ -213,7 +215,7 @@ $(document).ready(function () {
    * IF the AJAX call was successful -> get Location header from the json
    *    call check_job_status function with Location as a parameter
    * IF ERROR log error to the console and return
-   */ 
+   */
   $("#submit").on('click', function (e) {
     e.preventDefault()
     $("#submit").attr("disabled", true);
@@ -240,7 +242,6 @@ $(document).ready(function () {
   // additional settings button on click event listener
   $("#tweet_selection_settings").on('click', function (e) {
     e.preventDefault()
-
     let twarc_method = $("#twarc-method option:selected").val();
     if (twarc_method == "search") {
       display_search_settings();
