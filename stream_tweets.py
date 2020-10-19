@@ -67,7 +67,6 @@ class Tweet_Streamer():
         elif self.twarc_method == "filter":
             query = self.keywords
             tweet_received = False
-            #search_query = query.replace(",", " OR ")
             search_query = query
              
             if self.follow:
@@ -170,6 +169,4 @@ class Tweet_Streamer():
 
         if len(emojiset_str) > 1:
             emojiset_str = emojiset_str[:-1]
-        
-
         return emojiset_str

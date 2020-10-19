@@ -113,6 +113,7 @@ def run_task():
             keywords = construct_search_query(keywords, additional_settings, operator)
         if twarc_method == 'filter':
             keywords = construct_filter_query(keywords, additional_settings)
+    debug(keywords)
 
     # Send a job to the task queue
     job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, follow, geo, result_ttl=500)
@@ -143,7 +144,7 @@ def job_status(job_key):
     return jsonify(response)
 
 
-#TO DO: (make country and city work for premium API)
+#TO DO: (make country, city, and near me options work for premium API)
 def construct_search_query(keywords, additional_settings, operator):
     query = ""
     if len(keywords) > 0:
@@ -152,49 +153,52 @@ def construct_search_query(keywords, additional_settings, operator):
 
     # search by mentioned users: -from:@user @user OR/AND -from:user2 @user2 (-from@user insures that we don't get tweets from the user, only mentiones of him posted by other uses)
     if additional_settings['mentioned_user']:
-        mentioned_users_query = make_multiple_arguments_query(additional_settings['mentioned_user'], '-from:@', "OR", '@')
-        if len(query) > 0:
+        mentioned_users_query = make_multiple_arguments_query(additional_settings['mentioned_user'], '-from:@', "OR", second_param_name='@')
+        if query:
             query += " " + operator + ' ' + mentioned_users_query
         else:
             query += mentioned_users_query
 
     if additional_settings['from_user']:
         from_users_query = make_multiple_arguments_query(additional_settings['from_user'], "from:@", "OR")
-        if len(query) > 0:
+        if query:
             query += " " + operator + ' ' + from_users_query
         else:
             query += from_users_query
 
     if additional_settings['to_user']:
         to_user_query = make_multiple_arguments_query(additional_settings['to_user'], "to:@", "OR")
-        if len(query) > 0:
+        if query:
             query += " " + operator + ' ' + to_user_query
         else:
             query += to_user_query
 
     if additional_settings['hashtags']: 
         hashtags_query = make_multiple_arguments_query(additional_settings['hashtags'], "#", "OR")
-        if len(query) > 0:
+        if query:
             query += " " + operator + ' ' + hashtags_query
         else:
             query += hashtags_query
 
     if additional_settings['min_likes'] and additional_settings['max_likes']:
         min_likes_query = "min_faves:" + additional_settings['min_likes']
-        max_likes_query = "-min_faves:" + additional_settings['max_likes']
-
-        if len(query) > 0:
+        if query:
             query += " " + operator + ' ' + min_likes_query
         else:
             query += min_likes_query
-        if len(query) > 0:
+        
+
+    if additional_settings['max_likes']:
+        max_likes_query = "-min_faves:" + additional_settings['max_likes']
+        if query:
             query += " " + operator + ' ' + max_likes_query
         else:
             query += max_likes_query
 
+
     if additional_settings['verified_users_checked']:
         verified_user_query = "filter:verified"
-        if len(query) > 0:
+        if query:
             query += " " + operator + " " + verified_user_query
         else:
             query += verified_user_query
@@ -202,7 +206,7 @@ def construct_search_query(keywords, additional_settings, operator):
     #appending valid query for dates
     if additional_settings['since_date'] and additional_settings['until_date']:
         dates_range_query = "since:" + additional_settings['since_date'] + ' ' + "until:" + additional_settings['until_date']
-        if len(query) > 0:
+        if query:
             query += " AND " + dates_range_query
         else:
             query += dates_range_query
@@ -212,7 +216,7 @@ def construct_search_query(keywords, additional_settings, operator):
 def construct_filter_query(keywords, additional_settings):
     query = keywords
     if additional_settings['hashtags']:
-        if len(query) > 0:
+        if query:
             query += ' ' + make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
         else:
             query += make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
@@ -221,12 +225,12 @@ def construct_filter_query(keywords, additional_settings):
 
 # creates a valid multi parameter query (EX:'hashtag1, hashtag2' => ' #hashtag1 OR/AND #hashtag2')
 def make_multiple_arguments_query(input_str, param_name, separator, second_param_name=None):
-    query = ""
+    query = "("
     input_list = input_str.replace(' ','').replace('#','').replace('@','').split(',')
     for input in input_list:
         if(second_param_name):
             query += param_name + input + ' ' + second_param_name + input + ' ' + separator + ' '
         else:         
             query += param_name + input + ' ' + separator + ' '
-    query = query[:-4]
+    query = query[:-(len(separator) + 2)] + ")"
     return query
