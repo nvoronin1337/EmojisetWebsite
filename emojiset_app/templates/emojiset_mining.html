@@ -26,6 +26,7 @@
 </head>
 
 <body>
+  <!--Navigation bar (Navbar: Home, Team, Research, About*-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -60,10 +61,11 @@
   <div class="container">
     <div class="row">
       <div class="col">
+        <!--Title of Project*-->
         <h5 class="mt-3">Emojiset Mining Research</h5>
         <div class="card mt-3">
           <div class="card-body">
-
+            <!--Establish form with 2 textboxes for user input (keywords (defaults to using sample) and # of tweets (defaults to 100))*-->
             <form id="taskForm" class="form" method="POST">
               <div class="form-group">
                 <label>Discover Emoji Sequences from Tweets</label>
@@ -77,7 +79,7 @@
                 <small id="tweets_amount_help" class="form-text text-muted">1000 Tweets Max</small>
 
                 <hr>
-
+                <!--User chooses between search, filter, and sample (search by default, if filter is used with no keywords, no tweets are found)*-->
                 <select name="twarc-method" id="twarc-method" class="form-control">
                   <option value="search">Pull tweets from the last week</option>
                   <option value="filter">Pull tweets as they happen (slower)</option>
@@ -87,16 +89,13 @@
                 <input type="checkbox" id="discard_box" name="discard_box" value="discard">
                 <label for="discard_box"><small class="form-text text-muted">Discard tweets
                     without emojis</small></label>
-
                 <br>
-
+                <!--Leaving button closed will ignore all options within, will open automatically if switch is made between search or filter but can be closed if desired*-->
                 <div class="horizontal-container">
                   <button id="tweet_selection_settings" style="width: 100%" class="btn btn-secondary">Additional tweet
                     selection settings</button>
                 </div>
-
                 <br>
-
                 <div id='selection_settings_container'>
                 </div>
                 <div class="horizontal-container">
@@ -114,13 +113,13 @@
                 </div>
               </div>
             </form>
-
           </div>
         </div>
       </div>
     </div>
   </div>
   <br>
+  <!--Refers to main.js and returns results (implemented in main.js)*-->
   <div class="container">
     <div class="row">
       <div class="col">
@@ -132,6 +131,7 @@
     </div>
   </div>
 
+  <!--Additional selection settings for SEARCH* (initially hidden)-->
   <div id='hidden_selection_settings' style="visibility: hidden;">
     <div class="container">
       <div class="row">
@@ -210,6 +210,8 @@
               <label for="verified"><small class="form-text text-muted">Verified users only <img
                     src="/static/images/verified.png" width="15" height="15"></small></label>
             </div>
+            <!--Search finds results in this kind of format: language OR location OR mentioned users OR etc...*-->
+            <!--The operator below can change the default OR to AND, however similar search queries will always use OR (ie: English AND (#charity OR #trees) AND minimum 100 likes)*-->
             <label for="operator">
               <medium class="form-text text-muted">Tweets fit:</medium>
             </label>
@@ -223,6 +225,7 @@
         </div>
       </div>
       <hr>
+      <!--Search finds locations using longitude and latitude*-->
       <h7 class="mt-3">Location</h5>
         <div class="row">
           <div class="col">
@@ -233,6 +236,7 @@
           </div>
         </div>
         <br>
+        <!--Only available with premium twitter dev accounts*-->
         <small class="form-text text-muted">City and 'near me' are only available with premium API</small>
         <div class="row">
           <div class="col-sm-3">
@@ -247,8 +251,8 @@
               <option value="mi">mi</option>
             </select>
           </div>
-
         </div>
+        <!--Only available with premium twitter dev accounts*-->
         <div class="row">
           <div class="col">
             <input type="checkbox" id="near-me" name="near-me" value="near" disabled>
@@ -260,6 +264,9 @@
     <br>
   </div>
 
+  <!--Additional selection settings for FILTER*-->
+  <!--Filter finds results in this kind of format: language AND location AND mentioned users AND etc...*-->
+  <!--With the way the api is built, it is only possible to search in this kind of format: English AND (#charity OR #trees) AND minimum 100 likes*-->
   <div id="hidden_filter_selection_settings" style="visibility: hidden;">
     <div class="container">
       <div class="row">
@@ -274,6 +281,8 @@
             <option value="all">All</option>
           </select>
           <br>
+          <!--Filter find location by forming a square around the desired location using 4 points*-->
+          <!--To be consistent in formatting, we would take the coordinates and radius from the user and convert it to a square ("def create_bounding_box(long, lat, radius)"" in views.py)*-->
           <h7 class="mt-3">Location</h5>
             <div class="row">
               <div class="col">
@@ -299,6 +308,7 @@
           <div style="line-height:160%;">
             <br>
           </div>
+          <!--Filter is unable to use UsernameTo and UsernameMentions*-->
           <label class="sr-only" for="inlineFormInputGroupUsername">UsernameFrom</label>
           <div class="input-group">
             <div class="input-group-prepend">

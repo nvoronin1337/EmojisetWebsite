@@ -1,15 +1,23 @@
 $(document).ready(function () {
   let total_results = 0
+  let table_id = ""
+  let btn_id = ""
+
+  // initialli hide the settings container
+  $("#selection_settings_container").hide();
+
+  // read hidden settings <div> contents as a string of HTML code
+  let settings = $('#hidden_selection_settings').html();
+  let filter_settings = $('#hidden_filter_selection_settings').html();
+
+  // hide the progress bar and the label (discarded tweets)
   let progress_bar = document.getElementById('progress_bar')
   let discarded_tweets_lbl = document.getElementById('discarded_tweets')
   progress_bar.hidden = true
   discarded_tweets_lbl.hidden = true
-  let table_id = ""
-  let btn_id = ""
-  let settings = $('#hidden_selection_settings').html();
-  let filter_settings = $('#hidden_filter_selection_settings').html();
-  $("#selection_settings_container").hide();
 
+
+  /** Sets default dates for the date input fields */
   function set_date() {
     var now = new Date();
     var week_ago = new Date();
@@ -34,6 +42,8 @@ $(document).ready(function () {
     $('#since-date').val(day_week_ago);
   }
 
+
+  /** Displays additional settings for SEARCH (historical stream)*/
   function display_search_settings() {
     if (!$('#selection_settings_container').is(':visible')) {
       $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
@@ -51,6 +61,7 @@ $(document).ready(function () {
 
   }
 
+  /** Displays additional settings for FILTER (real time stream) */
   function display_filter_settings() {
     if (!$('#selection_settings_container').is(':visible')) {
       $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
@@ -59,13 +70,16 @@ $(document).ready(function () {
     }
   }
 
+  /** 
+   * Takes a job result from check_job_status js function and structures it as a HTML table
+   *  Also takes an empty string (htmlString) which is then filled with HTML code and returned
+   */
   function create_result(message, htmlString) {
     let row_style = 'style="table-row"'
     let counter = 0
     table_id = 'table' + total_results
     btn_id = '#export' + total_results
 
-    // Creating an HTML <table>
     htmlString = '<div class="card mb-3">'
     htmlString += '<div class="card-body">'
     htmlString += '<table id="' + table_id + '" style="width: 100%;"><tr><th>Tweet</th><th>Emojiset</th></tr>'
@@ -84,24 +98,31 @@ $(document).ready(function () {
     htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>'
     htmlString += '</div>'
     total_results++
-    $(htmlString).prependTo("#result_container").hide().slideDown();
+    return htmlString
   }
 
+
+  /**
+   * Accepts a message (either a result dictionary or a string describing the error)
+   * Aceepts a messages cattegory ('success' OR 'danger')
+   * Accepts a boolean which specifies if previous alerts should be cleaned (removed from page)
+   * Creates a HTML element (either a table using create_result function or a simple error message)
+   * Appends HTML element to the result_container div (result placeholder)
+   * Creates an event listener for the download results button
+   */
   function flash_alert(message, category, clean) {
     if (typeof (clean) === "undefined") clean = true;
     if (clean) {
       remove_alerts();
     }
-
     if (category == "success") {
       let empty_result = false
       if (Object.keys(message).length == 0) {
         empty_result = true
       }
       let htmlString = ""
-
       if (!empty_result) {
-        create_result(message, htmlString)
+        htmlString = create_result(message, htmlString)
       } else {
         htmlString = '<div class="card mb-3">'
         htmlString += '<div class="card-body">'
@@ -126,6 +147,7 @@ $(document).ready(function () {
   }
 
 
+  /* Used to remove previous alerts from the page */
   function remove_alerts() {
     $(".alert").slideUp("normal", function () {
       $(this).remove();
@@ -133,6 +155,20 @@ $(document).ready(function () {
   }
 
 
+  /**
+   * 
+   * @param {*} status_url -> website/status/job_key
+   * Called from the submit button event listener
+   * Attempts to read json located at the specified URL every 150ms (timeout time can be changed)
+   * Json file (our data object) has multiple attributes:
+   *  status: job status ('unknown', 'finished', 'failed', or for our default case: queued/started/deferred)
+   *  progress: integer (received tweets / total desired tweets) 
+   *  discarded_tweets: integer 
+   *  result: dictionary in the format index:(tweet, emojiset)
+   * Depending on the job status, it either sleeps and runs again, 
+   *  or calls flash_alert function with (data.result, 'success') on 'finished'
+   *  or calls flash_alert function with ('error message', 'danger') on 'failed' or 'unknown'
+   */
   function check_job_status(status_url) {
     $.getJSON(status_url, function (data) {
       switch (data.status) {
@@ -169,7 +205,15 @@ $(document).ready(function () {
   }
 
 
-  // submit form
+  /**
+   * Submit button event listener
+   * Sends a POST request an AJAX call to the website/_run_task url (see views.py)
+   * POST request includes data from the form on the page
+   * Expects to receive back json file
+   * IF the AJAX call was successful -> get Location header from the json
+   *    call check_job_status function with Location as a parameter
+   * IF ERROR log error to the console and return
+   */ 
   $("#submit").on('click', function (e) {
     e.preventDefault()
     $("#submit").attr("disabled", true);
@@ -186,14 +230,14 @@ $(document).ready(function () {
         check_job_status(status_url);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        console.log("error")
+        console.log(textStatus)
       }
     });
     return false;
   });
 
 
-  // additional settings button (on click event)
+  // additional settings button on click event listener
   $("#tweet_selection_settings").on('click', function (e) {
     e.preventDefault()
 
@@ -208,7 +252,7 @@ $(document).ready(function () {
   });
 
 
-  // twarc method selection changed
+  // twarc method selection changed event listener
   $("#twarc-method").change(function () {
     let twarc_method = $("#twarc-method option:selected").val()
     if (twarc_method == 'sample') {
@@ -231,7 +275,7 @@ $(document).ready(function () {
     }
   });
 
-
+  // Used for properly displaying emoji keyboard
   $("#keywords").emojioneArea({
     pickerPosition: "bottom"
   });

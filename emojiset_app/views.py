@@ -7,11 +7,16 @@ from flask import render_template, request, redirect, url_for, jsonify
 from time import strftime
 
 
+# ---converts error to txt file and immediately outputs---*
 def debug(var):
     with open('out.txt', 'w') as f:
         print(var, file=f)
 
 
+# --- creates box for filter's location option ---*
+# --- accepts longitude, latitude and radius ---*
+# --- creates a rombus with 'radius' being its width ---*
+# --- returns 4 points that represent the rombus on the map ---*
 def create_bounding_box(long, lat, radius):
     long = float(long)
     lat = float(lat)
@@ -24,11 +29,18 @@ def create_bounding_box(long, lat, radius):
     return (down,left, up, right)
 
 
+# --- this function is called when user opens website/emojiset-mining url ---*
+# --- displays the html page located in /templates forder
 @app.route("/emojiset-mining", methods=['GET'])
 def emojiset_mining():
     return render_template("emojiset_mining.html")
 
-
+# --- this URL can't be directly accessed by user ---*
+# --- this URL is being called using AJAX call when the submit button is clicked ---*
+# --- request.form data is being passed to this URL in the AJAX call (request.form contains data that users has entered in the form) ---*
+# --- this function reads all the values and parses them to insure they are valid ---*
+# --- after all of the data is read and parsed, creates a new job object which takes the function name, and parameters (check tasks.py) ---*
+# --- returns empty json with one header (Location: website/status/<job_key>) which is later used to check the jobs status by its id (job_key) ---*
 @app.route('/_run_task', methods=['POST'])
 def run_task():
     # read values that are always present
@@ -47,14 +59,14 @@ def run_task():
     additional_settings = {}
     additional_selection_settings_used = False
 
-    # read additional settings
+    # ---read additional settings---*
     if "languages" in request.form:
         languages = request.form["languages"]
         if languages == 'all':
             languages = None
         additional_settings = {}
         additional_selection_settings_used = True
-        # settings for search method
+        # ---settings for search method---*
         if twarc_method == "search":
             additional_settings = {
                 'since_date': request.form["since-date"],
@@ -82,7 +94,7 @@ def run_task():
 
             if additional_settings['from_user'] == additional_settings['mentioned_user']:
                 additional_settings['from_user'] = ""
-        # settings for filter method
+        # ---settings for filter method---*
         elif twarc_method == "filter":
             follow = request.form['from-user']
             additional_settings = {
@@ -107,15 +119,15 @@ def run_task():
     else:
         tweet_amount = int(tweet_amount)
 
+    # ---to use additional settings properly we need to make sure that the query is constructed correctly---*
     if additional_selection_settings_used:
         if twarc_method == 'search':
             operator = request.form['operator']
             keywords = construct_search_query(keywords, additional_settings, operator)
         if twarc_method == 'filter':
             keywords = construct_filter_query(keywords, additional_settings)
-    debug(keywords)
 
-    # Send a job to the task queue
+    # ---send a job to the task queue---*
     job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, languages, result_type, follow, geo, result_ttl=500)
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
@@ -124,7 +136,7 @@ def run_task():
     return jsonify({}), 202, {'Location': url_for('job_status', job_key=job.id)}
 
 
-# get job object from the queue by the id and check its status (finished or not)
+# ---get job object from the queue by the id and check its status (finished or not)---*
 @app.route("/status/<job_key>", methods=['GET'])
 def job_status(job_key):
     job = q.fetch_job(job_key)
@@ -151,7 +163,7 @@ def construct_search_query(keywords, additional_settings, operator):
         keywords_list = keywords.split(',')
         query = " OR ".join(keywords_list)
 
-    # search by mentioned users: -from:@user @user OR/AND -from:user2 @user2 (-from@user insures that we don't get tweets from the user, only mentiones of him posted by other uses)
+    # ---search by mentioned users: -from:@user @user OR -from:user2 @user2 (-from@user insures that we don't get tweets from the user, only mentiones of him posted by other uses)---*
     if additional_settings['mentioned_user']:
         mentioned_users_query = make_multiple_arguments_query(additional_settings['mentioned_user'], '-from:@', "OR", second_param_name='@')
         if query:
@@ -159,6 +171,7 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += mentioned_users_query
 
+    # ---search tweets posted by user: from:user OR from:user2---*
     if additional_settings['from_user']:
         from_users_query = make_multiple_arguments_query(additional_settings['from_user'], "from:@", "OR")
         if query:
@@ -166,6 +179,7 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += from_users_query
 
+    # ---search tweets directed to user: to:user OR to:user2---*
     if additional_settings['to_user']:
         to_user_query = make_multiple_arguments_query(additional_settings['to_user'], "to:@", "OR")
         if query:
@@ -173,6 +187,7 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += to_user_query
 
+    # ---search tweets that contain a hashtag, basically it is same as just looking for keywords, #hash OR #hash1---*
     if additional_settings['hashtags']: 
         hashtags_query = make_multiple_arguments_query(additional_settings['hashtags'], "#", "OR")
         if query:
@@ -180,14 +195,15 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += hashtags_query
 
-    if additional_settings['min_likes'] and additional_settings['max_likes']:
+    # ---search tweets that have at least specified amount of likes: min_faves:100---*
+    if additional_settings['min_likes']:
         min_likes_query = "min_faves:" + additional_settings['min_likes']
         if query:
             query += " " + operator + ' ' + min_likes_query
         else:
             query += min_likes_query
-        
 
+    # ---search tweets that have no more than specified amount of likes: -min_faves:500---*
     if additional_settings['max_likes']:
         max_likes_query = "-min_faves:" + additional_settings['max_likes']
         if query:
@@ -195,7 +211,7 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += max_likes_query
 
-
+    # ---search tweets posted by verified users only: filter:verified---*
     if additional_settings['verified_users_checked']:
         verified_user_query = "filter:verified"
         if query:
@@ -203,7 +219,7 @@ def construct_search_query(keywords, additional_settings, operator):
         else:
             query += verified_user_query
 
-    #appending valid query for dates
+    # ---appending valid query for dates---*
     if additional_settings['since_date'] and additional_settings['until_date']:
         dates_range_query = "since:" + additional_settings['since_date'] + ' ' + "until:" + additional_settings['until_date']
         if query:
@@ -213,24 +229,25 @@ def construct_search_query(keywords, additional_settings, operator):
     return query
 
 
+# --- simillar to construct_search_query but has less available options
 def construct_filter_query(keywords, additional_settings):
     query = keywords
     if additional_settings['hashtags']:
         if query:
-            query += ' ' + make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
+            query += ' ' + make_multiple_arguments_query(additional_settings['hashtags'], '#', ',')
         else:
-            query += make_multiple_arguments_query(additional_settings['hashtags'], '#', ', ')
+            query += make_multiple_arguments_query(additional_settings['hashtags'], '#', ',')
     return query
 
 
-# creates a valid multi parameter query (EX:'hashtag1, hashtag2' => ' #hashtag1 OR/AND #hashtag2')
+# ---creates a valid multi parameter query (EX:'hashtag1, hashtag2' => ' #hashtag1 OR/AND #hashtag2')---*
 def make_multiple_arguments_query(input_str, param_name, separator, second_param_name=None):
-    query = "("
+    query = ""
     input_list = input_str.replace(' ','').replace('#','').replace('@','').split(',')
     for input in input_list:
         if(second_param_name):
             query += param_name + input + ' ' + second_param_name + input + ' ' + separator + ' '
         else:         
             query += param_name + input + ' ' + separator + ' '
-    query = query[:-(len(separator) + 2)] + ")"
+    query = query[:-(len(separator) + 2)]
     return query
