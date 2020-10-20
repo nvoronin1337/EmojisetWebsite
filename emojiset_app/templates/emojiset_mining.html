@@ -71,8 +71,8 @@
                 <label>Discover Emoji Sequences from Tweets</label>
                 <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords"
                   aria-describedby="keywords_help">
-                <small id="keywords_help" class="form-text text-muted">Example: multiple can be inputted, separated by
-                  commas: (♏️☄️, basketball, YouTube, 🙏, Zoom)</small>
+                <small id="keywords_help" class="form-text text-muted">Example: multiple can be inputted, <span style="color: red;">separated by
+                  commas</span>: (♏️☄️, basketball, YouTube, 🙏, Zoom)</small>
                 <input type="number" class="form-control" name="total_tweets" min="0" max="100" step="1"
                   oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 10)"
                   aria-describedby="tweets_amount_help">
@@ -137,13 +137,13 @@
       <div class="row">
         <div class="col">
           <select name="languages" id="languages" class="form-control">
+            <option value="all">All</option>
             <option value="en">English</option>
             <option value="es">Spanish</option>
             <option value="zh">Chinese</option>
             <option value="ar">Arabic</option>
             <option value="de">German</option>
             <option value="ru">Russian</option>
-            <option value="all">All</option>
           </select>
           <br>
           <div class="row">
@@ -272,13 +272,13 @@
       <div class="row">
         <div class="col">
           <select name="languages" id="languages" class="form-control">
+            <option value="all">All</option>
             <option value="en">English</option>
             <option value="es">Spanish</option>
             <option value="zh">Chinese</option>
             <option value="ar">Arabic</option>
             <option value="de">German</option>
             <option value="ru">Russian</option>
-            <option value="all">All</option>
           </select>
           <br>
           <!--Filter find location by forming a square around the desired location using 4 points*-->

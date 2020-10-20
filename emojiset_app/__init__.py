@@ -5,6 +5,8 @@ from flask_bootstrap import Bootstrap
 import emoji
 import rq_dashboard
 
+from emojiset_app.utils import debug
+
 # ---initialises flask app---*
 app = Flask(__name__)   
 
@@ -15,7 +17,10 @@ bootstrap = Bootstrap(app)
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()
-q = Queue(connection=r, default_timeout=120)
+q = Queue('default', connection=r, default_timeout=120)
+#q_low = Queue('low', connection=r, default_timeout=120)
+#worker = Worker([q], connection=r, name='foo', )
+#debug(worker.name)
 
 # ---populate EMOJI_SET---*
 EMOJI_SET = set()

@@ -159,7 +159,7 @@ $(document).ready(function () {
 
   /**
    * 
-   * @param {*} status_url -> website/status/job_key
+   * @param status_url -> website/status/job_key
    * Called from the submit button event listener
    * Attempts to read json located at the specified URL every 150ms (timeout time can be changed)
    * Json file (our data object) has multiple attributes:
