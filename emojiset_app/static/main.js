@@ -21,10 +21,10 @@ $(document).ready(function () {
   function set_date() {
     var now = new Date();
     var week_ago = new Date();
-    week_ago.setDate(now.getDate() - 7);
+    week_ago.setDate(now.getDate() - 6);
     var month_now = (now.getMonth() + 1);
     var month_week_ago = (week_ago.getMonth() + 1);
-    var day_now = now.getDate();
+    var day_now = now.getDate() + 1;
     var day_week_ago = week_ago.getDate();
 
     if (month_now < 10)
@@ -58,7 +58,6 @@ $(document).ready(function () {
     } else {
       $("#selection_settings_container").slideUp();
     }
-
   }
 
 
@@ -84,12 +83,13 @@ $(document).ready(function () {
 
     htmlString = '<div class="card mb-3">'
     htmlString += '<div class="card-body">'
-    htmlString += '<table id="' + table_id + '" style="width: 100%;"><tr><th>Tweet</th><th>Emojiset</th></tr>'
+    htmlString += "<p style=\"text-align:left\">Query: " + message.query + "</p>"
+    htmlString += '<table id="' + table_id + '" style="width: 100%;"><tr><th style="text-align:center">Tweet</th><th style="text-align:center">Emojiset</th></tr>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
-    for (let index in message) {
+    for (let index in message.result) {
       htmlString += '<tr ' + row_style + '>'
-      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message[index])[0] + '</small></td>'
-      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message[index])[1] + '</small></td>'
+      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message.result[index])[0] + '</small></td>'
+      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message.result[index])[1] + '</small></td>'
       htmlString += '</tr>'
       counter += 1
       if (counter >= 10) {
@@ -119,7 +119,7 @@ $(document).ready(function () {
     }
     if (category == "success") {
       let empty_result = false
-      if (Object.keys(message).length == 0) {
+      if (Object.keys(message.result).length == 0) {
         empty_result = true
       }
       let htmlString = ""
@@ -184,7 +184,7 @@ $(document).ready(function () {
           progress_bar.hidden = true
           discarded_tweets_lbl.hidden = true
           $("#submit").attr("disabled", false);
-          flash_alert(data.result, "success");
+          flash_alert(data, "success");
           break;
         case "failed":
           progress_bar.hidden = true
@@ -221,8 +221,8 @@ $(document).ready(function () {
     $("#submit").attr("disabled", true);
     progress_bar.hidden = false;
     $.ajax({
-      //url:  "http://69.43.72.217/_run_task",
-      url: "http://127.0.0.1:5000/_run_task",
+      url:  "http://69.43.72.217/_run_task",
+      //url: "http://127.0.0.1:5000/_run_task",
       data: $("#taskForm").serialize(),
       method: "POST",
       dataType: "json",
@@ -257,10 +257,16 @@ $(document).ready(function () {
   $("#twarc-method").change(function () {
     let twarc_method = $("#twarc-method option:selected").val()
     if (twarc_method == 'sample') {
+    
+      $("#keywords").data("emojioneArea").disable();
+      $('#keywords').prop('disabled',true);
+      
       $("#tweet_selection_settings").attr("disabled", true);
       $("#selection_settings_container").slideUp();
     } else if (twarc_method == 'search') {
       $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      $("#keywords").data("emojioneArea").enable();
+      $('#keywords').prop('disabled',false);
       set_date();
       $("#near-me").change(function () {
         if (this.checked) {
@@ -272,10 +278,13 @@ $(document).ready(function () {
       $("#tweet_selection_settings").attr("disabled", false);
     } else if (twarc_method == 'filter') {
       $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
+      $("#keywords").data("emojioneArea").enable();
+      $('#keywords').prop('disabled',false);
       $("#tweet_selection_settings").attr("disabled", false);
     }
   });
 
+  
   // Used for properly displaying emoji keyboard
   $("#keywords").emojioneArea({
     pickerPosition: "bottom"

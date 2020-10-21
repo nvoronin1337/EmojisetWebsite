@@ -9,10 +9,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="shortcut icon" href="#" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
   <link rel="stylesheet" href="static/keyboard/emojionearea.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
@@ -71,10 +73,14 @@
                 <label>Discover Emoji Sequences from Tweets</label>
                 <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords"
                   aria-describedby="keywords_help">
-                <small id="keywords_help" class="form-text text-muted">Example: multiple can be inputted, <span style="color: red;">separated by
-                  commas</span>: (♏️☄️, basketball, YouTube, 🙏, Zoom)</small>
-                <input type="number" class="form-control" name="total_tweets" min="0" max="100" step="1"
-                  oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 10)"
+                <small id="keywords_help" class="form-text text-muted">Multiple can be inputted <span
+                    style="font-weight:bold;">separated by
+                    commas</span>. Example query: (♏️☄️, vote 2020, YouTube, 🙏, Zoom)</small>
+                <div style="line-height:30%;">
+                  <br>
+                </div>
+                <input type="number" class="form-control" id="total_tweets" name="total_tweets" min="0" max="100"
+                  step="1" oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 10)"
                   aria-describedby="tweets_amount_help">
                 <small id="tweets_amount_help" class="form-text text-muted">100 Tweets Max</small>
 

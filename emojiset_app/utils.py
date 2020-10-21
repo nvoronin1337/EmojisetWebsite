@@ -1,23 +1,27 @@
 # ---converts error to txt file and immediately outputs---*
-def debug(var):
-    with open('out.txt', 'w') as f:
-        print(var, file=f)
+def debug(var, var2=""):
+    with open('out.txt', 'a+') as f:
+        print(var + ' ' + var2, file=f)
 
 
 def split_search_keywords(keywords):
     keywords_stripped_list = []
     keywords_list = keywords.split(',')
     for keyword in keywords_list:
-        keywords_stripped_list.append(keyword.strip())
+        keyword = keyword.strip()
+        keyword = keyword.strip('"')
+        keywords_stripped_list.append(keyword)
     keywords = " OR ".join(keywords_stripped_list)
-    return keyword
+    return keywords
 
 
 def split_filter_keywords(keywords):
     keywords_list = []
     keywords = keywords.split(',')
     for key in keywords:
-        keywords_list.append(key.strip())
+        key = key.strip()
+        key = key.strip('"')
+        keywords_list.append(key)
     return keywords_list
 
 

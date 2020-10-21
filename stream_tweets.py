@@ -82,7 +82,7 @@ class Tweet_Streamer():
         elif self.twarc_method == "sample":
             self.text = "text"
             for tweet in self.twarc.sample():
-                if "text" in tweet:
+                if self.text in tweet:
                     self.process_tweet(tweet)
                     if self.current_tweets >= self.max_tweets:
                         break
@@ -102,16 +102,13 @@ class Tweet_Streamer():
                 self.job.meta['discarded_tweets'] = self.discarded                             
                 self.job.save_meta()                                                           # saves new update to # of discarded tweets message*
         else:   
-            if self.contains_emoji(tweet):
-                self.map_tweet_to_emojiset(tweet)
-            else:
-                self.result[self.current_tweets] = (tweet[self.text], "")
+            self.map_tweet_to_emojiset(tweet)
             self.current_tweets += 1
             self.job.refresh()
             self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
             self.job.save_meta()
 
-    # ---checks to see if any emojis are grapheme clusters and returns the emoji based on the ZWJ sequence---*
+    # ---checks to see if any emojis are present---*
     def contains_emoji(self, tweet):
         if self.text in tweet:
             grapheme_clusters = regex.findall(r"\X", tweet[self.text])
@@ -120,12 +117,32 @@ class Tweet_Streamer():
                     return True
         return False
 
+    # ---Extracts full tweet text, extracts emojiset from that text, saves it to the result dictionary---*
     def map_tweet_to_emojiset(self, tweet):
         if self.text in tweet:
-            emojiset = self.extract_emoji_sequences(tweet[self.text])
-            self.result[self.current_tweets] = (tweet[self.text], emojiset)       # appends new record to the results dictionary {index:(tweet, emojiset)}
+            if 'retweeted_status' in tweet:
+                # ---if tweet is a retweet---*
+                if 'extended_tweet' in tweet['retweeted_status']:
+                    # ---if tweet was found using filter API---*
+                    retweet = "RT " + tweet['user']['screen_name'] + ': ' + tweet['retweeted_status']['extended_tweet']['full_text']
+                    emojiset = self.extract_emoji_sequences(tweet['retweeted_status']['extended_tweet']['full_text'])
+                    self.result[self.current_tweets] = (retweet, emojiset)
+                else:
+                    # ---if tweet was found using search API---*
+                    retweet = "RT " + tweet['user']['screen_name'] + ': ' + tweet['retweeted_status'][self.text]
+                    emojiset = self.extract_emoji_sequences(tweet['retweeted_status'][self.text])
+                    self.result[self.current_tweets] = (retweet, emojiset)
+            else:
+                # ---if not a retweet---*
+                if 'extended_tweet' in tweet:
+                    # ---if not retweet but still truncated---*
+                    emojiset = self.extract_emoji_sequences(tweet['extended_tweet']['full_text'])
+                    self.result[self.current_tweets] = (tweet['extended_tweet']['full_text'], emojiset)
+                else:
+                    # ---if not a retweet and not tuncated---*
+                    emojiset = self.extract_emoji_sequences(tweet[self.text])
+                    self.result[self.current_tweets] = (tweet[self.text], emojiset)
             
-
     # ---function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)---*
     def extract_emoji_sequences_with_brackets(self, text):
         emoji_sequence = []

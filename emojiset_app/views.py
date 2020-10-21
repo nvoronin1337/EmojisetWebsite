@@ -23,11 +23,14 @@ def emojiset_mining():
 @app.route('/_run_task', methods=['POST'])
 def run_task():
     # read values that are always present
-    keywords = request.form["keywords"]    
-    tweet_amount = request.form["total_tweets"]
     twarc_method = request.form["twarc-method"]
+    tweet_amount = request.form["total_tweets"]
     discard_checked = "discard_box" in request.form
-
+    
+    keywords = ""
+    if 'keywords' in request.form:
+        keywords = request.form["keywords"]    
+    
     discard = False
     if discard_checked:
         discard = True
@@ -61,6 +64,7 @@ def run_task():
         job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
     job.meta['progress'] = 0
     job.meta['discarded_tweets'] = 0
+    job.meta['query'] = keywords
     job.save_meta()
 
     return jsonify({}), 202, {'Location': url_for('job_status', job_key=job.id)}
@@ -80,6 +84,7 @@ def job_status(job_key):
             'progress': job.meta['progress'],
             'discarded_tweets': job.meta['discarded_tweets'],
             'result': job.result,
+            'query': job.meta['query']
         }
     if job.is_failed:
         response['message'] = job.exc_info.strip().split('\n')[-1]
