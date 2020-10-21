@@ -9,7 +9,7 @@ def split_search_keywords(keywords):
     keywords_list = keywords.split(',')
     for keyword in keywords_list:
         keyword = keyword.strip()
-        keyword = keyword.strip('"')
+        #keyword = keyword.strip('"')
         keywords_stripped_list.append(keyword)
     keywords = " OR ".join(keywords_stripped_list)
     return keywords
