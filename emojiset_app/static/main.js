@@ -267,8 +267,6 @@ $(document).ready(function () {
     } else if (twarc_method == 'search') {
       if ($('#selection_settings_container').is(':visible')) {
         $("#selection_settings_container").empty().append(settings).hide().slideDown();
-        $("#keywords").data("emojioneArea").enable();
-        $('#keywords').prop('disabled', false);
         set_date();
         $("#near-me").change(function () {
           if (this.checked) {
@@ -278,13 +276,15 @@ $(document).ready(function () {
           }
         });
       }
+      $("#keywords").data("emojioneArea").enable();
+      $('#keywords').prop('disabled', false);
       $("#tweet_selection_settings").attr("disabled", false);
     } else if (twarc_method == 'filter') {
       if ($('#selection_settings_container').is(':visible')) {
         $("#selection_settings_container").empty().append(filter_settings).hide().slideDown();
-        $("#keywords").data("emojioneArea").enable();
-        $('#keywords').prop('disabled', false);
       }
+      $("#keywords").data("emojioneArea").enable();
+      $('#keywords').prop('disabled', false);
       $("#tweet_selection_settings").attr("disabled", false);
     }
   });
