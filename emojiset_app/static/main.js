@@ -16,7 +16,6 @@ $(document).ready(function () {
   progress_bar.hidden = true
   discarded_tweets_lbl.hidden = true
 
-
   /** Sets default dates for the date input fields */
   function set_date() {
     var now = new Date();
@@ -46,7 +45,7 @@ $(document).ready(function () {
   /** Displays additional settings for SEARCH (historical stream)*/
   function display_search_settings() {
     if (!$('#selection_settings_container').is(':visible')) {
-      $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
+      $("#selection_settings_container").empty().append(settings).hide().slideDown();
       set_date();
       $("#near-me").change(function () {
         if (this.checked) {
@@ -57,6 +56,7 @@ $(document).ready(function () {
       });
     } else {
       $("#selection_settings_container").slideUp();
+      $("#selection_settings_container").empty();
     }
   }
 
@@ -64,9 +64,10 @@ $(document).ready(function () {
   /** Displays additional settings for FILTER (real time stream) */
   function display_filter_settings() {
     if (!$('#selection_settings_container').is(':visible')) {
-      $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
+      $("#selection_settings_container").empty().append(filter_settings).hide().slideDown();
     } else {
       $("#selection_settings_container").slideUp();
+      $("#selection_settings_container").empty();
     }
   }
 
@@ -76,7 +77,7 @@ $(document).ready(function () {
    *  Also takes an empty string (htmlString) which is then filled with HTML code and returned
    */
   function create_result(message, htmlString) {
-    let row_style = 'style="table-row"'
+    let row_style = 'style="table-row; border: 1px solid #6C757D;"'
     let counter = 0
     table_id = 'table' + total_results
     btn_id = '#export' + total_results
@@ -84,12 +85,12 @@ $(document).ready(function () {
     htmlString = '<div class="card mb-3">'
     htmlString += '<div class="card-body">'
     htmlString += "<p style=\"text-align:left\">Query: " + message.query + "</p>"
-    htmlString += '<table id="' + table_id + '" style="width: 100%;"><tr><th style="text-align:center">Tweet</th><th style="text-align:center">Emojiset</th></tr>'
+    htmlString += '<table id="' + table_id + '" style="width: 100%;  "><thead><tr><th scope="col" style="text-align:center">Tweet</th><th scope="col" style="text-align:center">Emojiset</th></tr></thead>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
     for (let index in message.result) {
       htmlString += '<tr ' + row_style + '>'
-      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message.result[index])[0] + '</small></td>'
-      htmlString += '<td style="padding:0 15px;"><small class="text-muted d-block">' + (message.result[index])[1] + '</small></td>'
+      htmlString += '<td style="padding: 10px; border: 1px solid #6C757D;"><small class="text-muted d-block">' + (message.result[index])[0] + '</small></td>'
+      htmlString += '<td style="padding: 10px; border: 1px solid #6C757D; text-align:center"><small class="text-muted d-block">' + (message.result[index])[1] + '</small></td>'
       htmlString += '</tr>'
       counter += 1
       if (counter >= 10) {
@@ -257,36 +258,45 @@ $(document).ready(function () {
   $("#twarc-method").change(function () {
     let twarc_method = $("#twarc-method option:selected").val()
     if (twarc_method == 'sample') {
-    
+      $("#keywords").data("emojioneArea").setText('');
       $("#keywords").data("emojioneArea").disable();
-      $('#keywords').prop('disabled',true);
-      
+      $('#keywords').prop('disabled', true);
       $("#tweet_selection_settings").attr("disabled", true);
+
       $("#selection_settings_container").slideUp();
     } else if (twarc_method == 'search') {
-      $(($("#selection_settings_container"))).empty().append(settings).hide().slideDown();
-      $("#keywords").data("emojioneArea").enable();
-      $('#keywords').prop('disabled',false);
-      set_date();
-      $("#near-me").change(function () {
-        if (this.checked) {
-          $("#city").attr("disabled", true);
-        } else {
-          $("#city").attr("disabled", false);
-        }
-      });
+      if ($('#selection_settings_container').is(':visible')) {
+        $("#selection_settings_container").empty().append(settings).hide().slideDown();
+        $("#keywords").data("emojioneArea").enable();
+        $('#keywords').prop('disabled', false);
+        set_date();
+        $("#near-me").change(function () {
+          if (this.checked) {
+            $("#city").attr("disabled", true);
+          } else {
+            $("#city").attr("disabled", false);
+          }
+        });
+      }
       $("#tweet_selection_settings").attr("disabled", false);
     } else if (twarc_method == 'filter') {
-      $(($("#selection_settings_container"))).empty().append(filter_settings).hide().slideDown();
-      $("#keywords").data("emojioneArea").enable();
-      $('#keywords').prop('disabled',false);
+      if ($('#selection_settings_container').is(':visible')) {
+        $("#selection_settings_container").empty().append(filter_settings).hide().slideDown();
+        $("#keywords").data("emojioneArea").enable();
+        $('#keywords').prop('disabled', false);
+      }
       $("#tweet_selection_settings").attr("disabled", false);
     }
   });
 
-  
+
   // Used for properly displaying emoji keyboard
   $("#keywords").emojioneArea({
     pickerPosition: "bottom"
   });
 });
+
+function show_help() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+}

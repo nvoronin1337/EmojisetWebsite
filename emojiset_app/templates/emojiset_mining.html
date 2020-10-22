@@ -71,18 +71,30 @@
             <form id="taskForm" class="form" method="POST">
               <div class="form-group">
                 <label>Discover Emoji Sequences from Tweets</label>
-                <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords"
-                  aria-describedby="keywords_help">
-                <small id="keywords_help" class="form-text text-muted">Multiple can be inputted <span
-                    style="font-weight:bold;">separated by
-                    commas</span>. Example query: (♏️☄️, vote 2020, YouTube, 🙏, Zoom)</small>
+                <div class="popup" onclick="show_help()">
+                  <image id="info" src="/static/images/info.jpg" />
+                  <span class="popuptext" id="myPopup">
+                    <small class="form-text">
+                    <!--(some tweets may not include all words, however the tweet they are replying to will)-->
+                    
+                    Users may use a comma (OR) and a space (AND) to separate keywords<br>
+                    Pull tweets from last week ONLY: Use quotes to search for an exact phrase<br>
+                    <div style="line-height:50%;">
+                      <br>
+                    </div>
+                    Example (last week): vote 2020, "happy hour" -> (vote AND 2020) OR happy hour<br>
+                    Example (real time): 🙏, best car -> 🙏 OR (best AND car)
+                    </small>
+                  </span>
+                </div>
+                <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter Keywords">
                 <div style="line-height:30%;">
                   <br>
                 </div>
-                <input type="number" class="form-control" id="total_tweets" name="total_tweets" min="0" max="100"
-                  step="1" oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 10)"
+                <input type="number" class="form-control" id="total_tweets" name="total_tweets" min="0" max="2000"
+                  step="1" oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 100)"
                   aria-describedby="tweets_amount_help">
-                <small id="tweets_amount_help" class="form-text text-muted">100 Tweets Max</small>
+                <small id="tweets_amount_help" class="form-text text-muted">2000 Tweets Max</small>
 
                 <hr>
                 <!--User chooses between search, filter, and sample (search by default, if filter is used with no keywords, no tweets are found)*-->
@@ -155,13 +167,13 @@
           <div class="row">
             <div class="col">
               <input type="date" class="form-control" id="since-date" name="since-date" min="2010-01-01"
-                max="2020-10-12">
+                max="2025-10-12">
             </div>
             <span>—</span>
 
             <div class="col">
               <input type="date" class="form-control" id="until-date" name="until-date" min="2010-01-01"
-                max="2020-10-12">
+                max="2025-10-12">
             </div>
           </div>
           <div class="row">

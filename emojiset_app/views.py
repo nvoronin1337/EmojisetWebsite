@@ -36,7 +36,7 @@ def run_task():
         discard = True
 
     if not tweet_amount:
-        tweet_amount = 10
+        tweet_amount = 100
     else:
         tweet_amount = int(tweet_amount)
 
