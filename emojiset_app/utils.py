@@ -16,13 +16,14 @@ def split_search_keywords(keywords):
 
 
 def split_filter_keywords(keywords):
-    keywords_list = []
+    keyword_list = []
     keywords = keywords.split(',')
     for key in keywords:
         key = key.strip()
         key = key.strip('"')
-        keywords_list.append(key)
-    return keywords_list
+        keyword_list.append(key)
+    
+    return keyword_list
 
 
 def validate_and_parse_form(form, method):

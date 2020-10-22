@@ -57,22 +57,20 @@ class Tweet_Streamer():
         # ---search function---*
         if self.twarc_method == "search":
             self.text = "full_text"
-            query = self.keywords
             # ---process function in regards to other user-options---*
-            for tweet in self.twarc.search(query, lang=self.lang, result_type=self.result_type):
+            for tweet in self.twarc.search(self.keywords, lang=self.lang, result_type=self.result_type):
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:
                     break
 
         # ---filter function---*
         elif self.twarc_method == "filter":
-            track_query = split_filter_keywords(self.keywords)
             if self.follow:
                 # ---finds user based on their user ID (must be found through user_lookup, and is the only way to track specific users)---*
                 for user in self.twarc.user_lookup(ids=self.follow, id_type="screen_name"):
                     self.user_ids.append(user['id_str']) 
             # ---if either keywords are fine, or the location is provided, or the username is provided, then we can use filter to find some meaningful data---*
-            for tweet in self.twarc.filter(track=track_query, lang=self.lang, follow=",".join(self.user_ids), locations=self.geo):
+            for tweet in self.twarc.filter(track=self.keywords, lang=self.lang, follow=",".join(self.user_ids), locations=self.geo):
                 #self.current_tweets += 1
                 self.process_tweet(tweet)
                 if self.current_tweets >= self.max_tweets:

@@ -52,6 +52,7 @@ def run_task():
     if twarc_method == 'filter':
         if form_data:
             keywords = construct_filter_query(keywords, form_data['additional_settings'])
+            keywords = split_filter_keywords(keywords)
         else:
             keywords = split_filter_keywords(keywords)
 
