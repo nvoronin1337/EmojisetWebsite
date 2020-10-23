@@ -1,7 +1,8 @@
 $(document).ready(function () {
   let total_results = 0
   let table_id = ""
-  let btn_id = ""
+  let btn_download_id = ""
+  let btn_delete_id = ""
 
   // initialli hide the settings container
   $("#selection_settings_container").hide();
@@ -11,10 +12,11 @@ $(document).ready(function () {
   let filter_settings = $('#hidden_filter_selection_settings').html();
 
   // hide the progress bar and the label (discarded tweets)
-  let progress_bar = document.getElementById('progress_bar')
-  let discarded_tweets_lbl = document.getElementById('discarded_tweets')
-  progress_bar.hidden = true
-  discarded_tweets_lbl.hidden = true
+  let progress_bar_div = document.getElementById('progress_bar_div')
+  let discarded_tweets_div = document.getElementById('discarded_tweets')
+  let discarded_tweets_lbl = document.getElementById('discarded_tweets_lbl')
+  progress_bar_div.hidden = true
+  discarded_tweets_div.hidden = true
 
   /** Sets default dates for the date input fields */
   function set_date() {
@@ -80,12 +82,18 @@ $(document).ready(function () {
     let row_style = 'style="table-row; border: 1px solid #6C757D;"'
     let counter = 0
     table_id = 'table' + total_results
-    btn_id = '#export' + total_results
+    btn_download_id = 'export' + total_results
+    btn_delete_id = 'delete' + total_results
+    let html_delete_btn = '<button id="' + btn_delete_id + '" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
 
-    htmlString = '<div class="card mb-3">'
+    htmlString = '<div id="result' + total_results + '" class="card mb-3">'
     htmlString += '<div class="card-body">'
-    htmlString += "<p style=\"text-align:left\">Query: " + message.query + "</p>"
-    htmlString += '<table id="' + table_id + '" style="width: 100%;  "><thead><tr><th scope="col" style="text-align:center">Tweet</th><th scope="col" style="text-align:center">Emojiset</th></tr></thead>'
+    htmlString += html_delete_btn
+    htmlString += '<table id="' + table_id + '" style="width: 100%;  ">'
+    htmlString += '<thead>'
+    htmlString += '<tr><th colspan="2" style="font-weight: normal;"><span class="badge badge-secondary">Query:</span> (' + message.query + ')</th></tr>'
+    htmlString += '<tr><th scope="col" style="text-align:center">Tweet</th><th scope="col" style="text-align:center">Emojiset</th></tr>'
+    htmlString += '</thead>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
     for (let index in message.result) {
       htmlString += '<tr ' + row_style + '>'
@@ -98,9 +106,10 @@ $(document).ready(function () {
       }
     }
     htmlString += '</table></div>'
-    htmlString += '<button id="export' + total_results + '" data-export="export" class="btn btn-primary">Download full results</button>'
+    htmlString += '<button id="' + btn_download_id + '" data-export="export" class="btn btn-primary">Download full results</button>'
     htmlString += '</div>'
     total_results++
+
     return htmlString
   }
 
@@ -141,14 +150,22 @@ $(document).ready(function () {
       $(htmlString).prependTo("#result_container").hide().slideDown();
     }
 
-    $(btn_id).click(function () {
-      //$("#" + table_id).tableToCSV();
-      $("#" + table_id).table2excel({
+    // create download button event listener
+    $("#" + btn_download_id).click(function (e) {
+      e.preventDefault()
+      let id = $(this).attr("id").replace('export', '')
+      $("#table" + id).table2excel({
         filename: "Emojisets.xls"
       });
     });
-  }
 
+    // create delete button event listener
+    $("#" + btn_delete_id).click(function (e) {
+      e.preventDefault()
+      let id = $(this).attr("id").replace('delete', '')
+      $("#result_container").find("#result" + id).remove();
+    });
+  }
 
   /* Used to remove previous alerts from the page */
   function remove_alerts() {
@@ -176,30 +193,30 @@ $(document).ready(function () {
     $.getJSON(status_url, function (data) {
       switch (data.status) {
         case "unknown":
-          progress_bar.hidden = true
-          discarded_tweets_lbl.hidden = true
+          progress_bar_div.hidden = true
+          discarded_tweets_div.hidden = true
           $("#submit").attr("disabled", false);
           flash_alert("Unknown job id", "danger");
           break;
         case "finished":
-          progress_bar.hidden = true
-          discarded_tweets_lbl.hidden = true
+          progress_bar_div.hidden = true
+          discarded_tweets_div.hidden = true
           $("#submit").attr("disabled", false);
           flash_alert(data, "success");
           break;
         case "failed":
-          progress_bar.hidden = true
-          discarded_tweets_lbl.hidden = true
+          progress_bar_div.hidden = true
+          discarded_tweets_div.hidden = true
           $("#submit").attr("disabled", false);
           flash_alert("Job failed: " + data.message, "danger");
           break;
         default:
           //queued/started/deferred
-          $("#progress_bar").val(data.progress)
+          $(".progress-bar").css('width', data.progress + '%').attr('aria-valuenow', data.progress);
           if (data.discarded_tweets != 0) {
-            discarded_tweets_lbl.hidden = false
+            discarded_tweets_div.hidden = false
           }
-          discarded_tweets_lbl.innerText = "Discarded tweets: " + data.discarded_tweets
+          discarded_tweets_lbl.innerText = data.discarded_tweets
           setTimeout(function () {
             check_job_status(status_url);
           }, 150);
@@ -220,7 +237,7 @@ $(document).ready(function () {
   $("#submit").on('click', function (e) {
     e.preventDefault()
     $("#submit").attr("disabled", true);
-    progress_bar.hidden = false;
+    progress_bar_div.hidden = false;
     $.ajax({
       url:  "http://69.43.72.217/_run_task",
       //url: "http://127.0.0.1:5000/_run_task",
@@ -262,7 +279,6 @@ $(document).ready(function () {
       $("#keywords").data("emojioneArea").disable();
       $('#keywords').prop('disabled', true);
       $("#tweet_selection_settings").attr("disabled", true);
-
       $("#selection_settings_container").slideUp();
     } else if (twarc_method == 'search') {
       if ($('#selection_settings_container').is(':visible')) {

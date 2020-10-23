@@ -75,15 +75,15 @@
                   <image id="info" src="/static/images/info.jpg" />
                   <span class="popuptext" id="myPopup">
                     <small class="form-text">
-                    <!--(some tweets may not include all words, however the tweet they are replying to will)-->
-                    
-                    Users may use a comma (OR) and a space (AND) to separate keywords<br>
-                    Pull tweets from last week ONLY: Use quotes to search for an exact phrase<br>
-                    <div style="line-height:50%;">
-                      <br>
-                    </div>
-                    Example (last week): vote 2020, "happy hour" -> (vote AND 2020) OR happy hour<br>
-                    Example (real time): 🙏, best car -> 🙏 OR (best AND car)
+                      <!--(some tweets may not include all words, however the tweet they are replying to will)-->
+
+                      Users may use a comma (OR) and a space (AND) to separate keywords<br>
+                      Pull tweets from last week ONLY: Use quotes to search for an exact phrase<br>
+                      <div style="line-height:50%;">
+                        <br>
+                      </div>
+                      Example (last week): vote 2020, "happy hour" -> (vote AND 2020) OR happy hour<br>
+                      Example (real time): 🙏, best car -> 🙏 OR (best AND car)
                     </small>
                   </span>
                 </div>
@@ -95,7 +95,6 @@
                   step="1" oninput="validity.valid||(value='');" placeholder="Total Tweets (Default is 100)"
                   aria-describedby="tweets_amount_help">
                 <small id="tweets_amount_help" class="form-text text-muted">2000 Tweets Max</small>
-
                 <hr>
                 <!--User chooses between search, filter, and sample (search by default, if filter is used with no keywords, no tweets are found)*-->
                 <select name="twarc-method" id="twarc-method" class="form-control">
@@ -103,7 +102,6 @@
                   <option value="filter">Pull tweets as they happen (slower)</option>
                   <option value="sample">Pull random sample of recent public statuses (doesn't use keywords)</option>
                 </select>
-
                 <input type="checkbox" id="discard_box" name="discard_box" value="discard">
                 <label for="discard_box"><small class="form-text text-muted">Discard tweets
                     without emojis</small></label>
@@ -114,20 +112,27 @@
                     selection settings</button>
                 </div>
                 <br>
-                <div id='selection_settings_container'>
-                </div>
+                <div id='selection_settings_container'></div>
                 <div class="horizontal-container">
-                  <div class="left-element">
-                    <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>
+                  <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>
+                  <div style="width: 2%;"></div>
+                  <div id=progress_bar_div class="progress" style="width: 25%; margin: 10px;">
+                    <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0"
+                      aria-valuemax="100"></div>
                   </div>
-                  <div style="width: 1%;"></div>
-                  <div style="width: max-content;">
-                    <progress id="progress_bar" max="100"></progress>
-                  </div>
-                  <div style="width: 1%;"></div>
-                  <div class="right-element">
-                    <label id="discarded_tweets"></label>
-                  </div>
+                  <div style="width: 2%;"></div>
+                  <div id="discarded_tweets">
+                    <span class="badge badge-secondary">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                        <path fill-rule="evenodd"
+                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                      </svg>
+                    </span>
+                    <label id="discarded_tweets_lbl" ></label>
+                  </div>  
                 </div>
               </div>
             </form>
