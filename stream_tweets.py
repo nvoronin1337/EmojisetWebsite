@@ -17,7 +17,7 @@ class Tweet_Streamer():
         self.consumer_secret = twitter_credentials.CONSUMER_SECRET
         self.access_token = twitter_credentials.ACCESS_TOKEN
         self.access_token_secret = twitter_credentials.ACCESS_TOKEN_SECRET
-        self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, app_auth=True)
+        self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, app_auth=False)
 
         # ---Save paramaeters passed to the constructor
         self.keywords = keywords

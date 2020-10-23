@@ -116,6 +116,8 @@
                 <div class="horizontal-container">
                   <button id="submit" value="submit_keywords" type="submit" class="btn btn-primary">Submit</button>
                   <div style="width: 2%;"></div>
+                  <button id="cancel" value="cancel_job" type="submit" class="btn btn-primary">Cancel</button>
+                  <div style="width: 4%;"></div>
                   <div id=progress_bar_div class="progress" style="width: 25%; margin: 10px;">
                     <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0"
                       aria-valuemax="100"></div>
@@ -133,8 +135,6 @@
                     </span>
                     <label id="discarded_tweets_lbl" ></label>
                   </div>  
-                  <div style="width: 2%;"></div>
-                  <button id="cancel" value="cancel_job" type="submit" class="btn btn-primary">Cancel</button>
                 </div>
               </div>
             </form>
@@ -183,6 +183,9 @@
                 max="2025-10-12">
             </div>
           </div>
+          <div style="line-height:30%;">
+            <br>
+          </div>
           <div class="row">
             <div class="col">
               <input type="number" class="form-control" id="min-likes" name="min-likes" placeholder="Minimum likes">
@@ -207,12 +210,18 @@
             </div>
             <input type="text" class="form-control" id="from-user" name="from-user" placeholder="From user">
           </div>
+          <div style="line-height:30%;">
+            <br>
+          </div>
           <label class="sr-only" for="inlineFormInputGroupUsername">UsernameTo</label>
           <div class="input-group">
             <div class="input-group-prepend">
               <div class="input-group-text">@</div>
             </div>
             <input type="text" class="form-control" id="to-user" name="to-user" placeholder="To user">
+          </div>
+          <div style="line-height:30%;">
+            <br>
           </div>
           <label class="sr-only" for="inlineFormInputGroupUsername">UsernameMentions</label>
           <div class="input-group">
