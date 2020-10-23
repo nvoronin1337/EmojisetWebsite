@@ -17,10 +17,11 @@ bootstrap = Bootstrap(app)
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()
-q = Queue('default', connection=r, default_timeout=1800)
-#q_low = Queue('low', connection=r, default_timeout=120)
-#worker = Worker([q], connection=r, name='foo', )
-#debug(worker.name)
+
+# ---short_task_q is used for streaming small datasets from twitter (tasks timeout after 16 minutes)---*
+small_task_q = Queue('small', connection=r, default_timeout=960)
+# ---long_task_q is used for streaming large datasets from twitter (tasks have no timeout)
+long_task_q = Queue('long', connection=r)
 
 # ---populate EMOJI_SET---*
 EMOJI_SET = set()

@@ -1,6 +1,6 @@
 from emojiset_app import app
 from emojiset_app import r
-from emojiset_app import q
+from emojiset_app import small_task_q
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import debug, construct_search_query, construct_filter_query, validate_and_parse_form, split_search_keywords, split_filter_keywords
 from flask import render_template, request, redirect, url_for, jsonify
@@ -58,9 +58,9 @@ def run_task():
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:
-		job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], result_ttl=10)
+		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], result_ttl=10)
 	else:
-		job = q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
+		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = keywords
@@ -73,7 +73,7 @@ def run_task():
 # ---get job object from the queue by the id and check its status (finished or not)---*
 @app.route("/emojiset-mining/status/<job_key>", methods=['GET'])
 def job_status(job_key):
-	job = q.fetch_job(job_key)
+	job = small_task_q.fetch_job(job_key)
 	if job is None:
 		response = {'status': 'unknown'}
 	else:
@@ -94,7 +94,7 @@ def job_status(job_key):
 # ---get job object from the queue by the id and cancel it
 @app.route("/emojiset-mining/cancel/<job_key>", methods=['GET'])
 def job_cancel(job_key):
-	job = q.fetch_job(job_key)
+	job = small_task_q.fetch_job(job_key)
 	if job is None:
 		response = {'status': 'unknown'}
 	else:
