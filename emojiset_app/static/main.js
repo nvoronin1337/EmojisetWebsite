@@ -221,10 +221,11 @@ $(document).ready(function () {
         default:
           //queued/started/deferred
           $(".progress-bar").css('width', data.progress + '%').attr('aria-valuenow', data.progress);
+          $(".progress-bar small").text(data.progress.toFixed(1) + '%');
           if (data.discarded_tweets != 0) {
             discarded_tweets_div.hidden = false
           }
-          discarded_tweets_lbl.innerText = data.discarded_tweets
+          $('#discarded_tweets_lbl small').text(data.discarded_tweets);
           setTimeout(function () {
             check_job_status(status_url);
           }, 150);

@@ -43,7 +43,6 @@ def run_task():
 	form_data = validate_and_parse_form(request.form, twarc_method)
 	
 	# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
-	
 	if twarc_method == 'search':
 		if form_data:
 			keywords = construct_search_query(keywords, form_data['additional_settings'], form_data['operator'])
@@ -67,7 +66,7 @@ def run_task():
 	job.meta['query'] = keywords
 	job.meta['cancel_flag'] = 0
 	job.save_meta()
-
+	
 	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
 
 
