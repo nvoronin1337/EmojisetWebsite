@@ -15,8 +15,11 @@ $(document).ready(function () {
   let progress_bar_div = document.getElementById('progress_bar_div')
   let discarded_tweets_div = document.getElementById('discarded_tweets')
   let discarded_tweets_lbl = document.getElementById('discarded_tweets_lbl')
+  let cancel_btn = document.getElementById('cancel')
+
   progress_bar_div.hidden = true
   discarded_tweets_div.hidden = true
+  cancel_btn.hidden = true
 
   /** Sets default dates for the date input fields */
   function set_date() {
@@ -193,20 +196,25 @@ $(document).ready(function () {
     $.getJSON(status_url, function (data) {
       switch (data.status) {
         case "unknown":
-          progress_bar_div.hidden = true
-          discarded_tweets_div.hidden = true
+          progress_bar_div.hidden = true;
+          discarded_tweets_div.hidden = true;
+          cancel_btn.hidden = true;
           $("#submit").attr("disabled", false);
           flash_alert("Unknown job id", "danger");
           break;
         case "finished":
-          progress_bar_div.hidden = true
-          discarded_tweets_div.hidden = true
+          progress_bar_div.hidden = true;
+          discarded_tweets_div.hidden = true;
+          cancel_btn.hidden = true;
           $("#submit").attr("disabled", false);
-          flash_alert(data, "success");
+          if(!data.cancel_flag){
+            flash_alert(data, "success");
+          }
           break;
         case "failed":
-          progress_bar_div.hidden = true
-          discarded_tweets_div.hidden = true
+          progress_bar_div.hidden = true;
+          discarded_tweets_div.hidden = true;
+          cancel_btn.hidden = true;
           $("#submit").attr("disabled", false);
           flash_alert("Job failed: " + data.message, "danger");
           break;
@@ -225,6 +233,13 @@ $(document).ready(function () {
   }
 
 
+  function cancel_job(cancel_url){
+    $.getJSON(cancel_url, function(response){
+      
+    });
+  }
+
+
   /**
    * Submit button event listener
    * Sends a POST request an AJAX call to the website/_run_task url (see views.py)
@@ -238,15 +253,24 @@ $(document).ready(function () {
     e.preventDefault()
     $("#submit").attr("disabled", true);
     progress_bar_div.hidden = false;
+    
     $.ajax({
-      url:  "http://69.43.72.217/_run_task",
-      //url: "http://127.0.0.1:5000/_run_task",
+      url:  "http://69.43.72.217/emojiset-mining/_run_task",
+      //url: "http://127.0.0.1:5000/emojiset-mining/_run_task",
       data: $("#taskForm").serialize(),
       method: "POST",
       dataType: "json",
       success: function (data, status, request) {
-        var status_url = request.getResponseHeader('Location');
+        let status_url = request.getResponseHeader('Status');
+        let cancel_url = request.getResponseHeader('Cancel');
         console.log("Status URL: " + status_url)
+        
+        // Add cancel button event listener
+        cancel_btn.hidden = false;
+        $('#cancel').on('click', function(e){
+          e.preventDefault()
+          cancel_job(cancel_url)
+        });
         check_job_status(status_url);
       },
       error: function (jqXHR, textStatus, errorThrown) {

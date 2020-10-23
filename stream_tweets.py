@@ -59,9 +59,13 @@ class Tweet_Streamer():
             self.text = "full_text"
             # ---process function in regards to other user-options---*
             for tweet in self.twarc.search(self.keywords, lang=self.lang, result_type=self.result_type):
-                self.process_tweet(tweet)
-                if self.current_tweets >= self.max_tweets:
+                self.job.refresh()
+                if self.job.meta['cancel_flag']:
                     break
+                else:
+                    self.process_tweet(tweet)
+                    if self.current_tweets >= self.max_tweets:
+                        break
 
         # ---filter function---*
         elif self.twarc_method == "filter":
@@ -71,19 +75,26 @@ class Tweet_Streamer():
                     self.user_ids.append(user['id_str']) 
             # ---if either keywords are fine, or the location is provided, or the username is provided, then we can use filter to find some meaningful data---*
             for tweet in self.twarc.filter(track=self.keywords, lang=self.lang, follow=",".join(self.user_ids), locations=self.geo):
-                #self.current_tweets += 1
-                self.process_tweet(tweet)
-                if self.current_tweets >= self.max_tweets:
+                self.job.refresh()
+                if self.job.meta['cancel_flag']:
                     break
+                else:
+                    self.process_tweet(tweet)
+                    if self.current_tweets >= self.max_tweets:
+                        break
 
         # ---sample function---*    
         elif self.twarc_method == "sample":
             self.text = "text"
             for tweet in self.twarc.sample():
-                if self.text in tweet:
-                    self.process_tweet(tweet)
-                    if self.current_tweets >= self.max_tweets:
-                        break
+                self.job.refresh()
+                if self.job.meta['cancel_flag']:
+                    break
+                else:
+                    if self.text in tweet:
+                        self.process_tweet(tweet)
+                        if self.current_tweets >= self.max_tweets:
+                            break
 
     # ---extract emojiset, update progress bar, discard tweets without emojis, output # of discarded tweets---*
     def process_tweet(self, tweet):
