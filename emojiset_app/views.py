@@ -2,14 +2,14 @@ from emojiset_app import app
 from emojiset_app import r
 from emojiset_app import small_task_q
 from emojiset_app.tasks import stream_task
-from emojiset_app.utils import debug, construct_search_query, construct_filter_query, validate_and_parse_form, split_search_keywords, split_filter_keywords
+from emojiset_app.utils import *
 from flask import render_template, request, redirect, url_for, jsonify
 from time import strftime
 
 
 # --- this function is called when user opens website/emojiset-mining url ---*
 # --- displays the html page located in /templates forder
-@app.route("/emojiset-mining", methods=['GET'])
+@app.route("/emojiset", methods=['GET'])
 def emojiset_mining():
 	return render_template("emojiset_mining.html")
 
@@ -20,8 +20,8 @@ def emojiset_mining():
 # --- this function reads all the values and parses them to ensure they are valid ---*
 # --- after all of the data is read and parsed, creates a new job object which takes the function name, and parameters (check tasks.py) ---*
 # --- returns empty json with one header (Location: website/status/<job_key>) which is later used to check the jobs status by its id (job_key) ---*
-@app.route('/emojiset-mining/_run_task', methods=['POST'])
-def run_task():
+@app.route('/emojiset/_run_small_task', methods=['POST'])
+def run_small_task():
 	# read values that are always present
 	twarc_method = request.form["twarc-method"]
 	tweet_amount = request.form["total_tweets"]
@@ -55,12 +55,18 @@ def run_task():
 		else:
 			keywords = split_filter_keywords(keywords)
 
+	
+
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:
 		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], result_ttl=10)
+		# ---save query (string and json)
+		json_query = query_to_json(keywords, tweet_amount, discard, twarc_method, form_data)
 	else:
 		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
+		json_query = query_to_json(keywords, tweet_amount, discard, twarc_method)
+
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = keywords
@@ -71,7 +77,7 @@ def run_task():
 
 
 # ---get job object from the queue by the id and check its status (finished or not)---*
-@app.route("/emojiset-mining/status/<job_key>", methods=['GET'])
+@app.route("/emojiset/status/<job_key>", methods=['GET'])
 def job_status(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:
@@ -92,7 +98,7 @@ def job_status(job_key):
 
 
 # ---get job object from the queue by the id and cancel it
-@app.route("/emojiset-mining/cancel/<job_key>", methods=['GET'])
+@app.route("/emojiset/cancel/<job_key>", methods=['GET'])
 def job_cancel(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:

@@ -94,7 +94,7 @@ $(document).ready(function () {
     htmlString += html_delete_btn
     htmlString += '<table id="' + table_id + '" style="width: 100%;  ">'
     htmlString += '<thead>'
-    htmlString += '<tr><th colspan="2" style="font-weight: normal;"><span class="badge badge-secondary">Query:</span> (' + message.query + ')</th></tr>'
+    htmlString += '<tr><th colspan="2" style="font-weight: normal;"><span class="badge badge-secondary">Query:</span>  <small>(' + message.query + ')</small></th></tr>'
     htmlString += '<tr><th scope="col" style="text-align:center">Tweet</th><th scope="col" style="text-align:center">Emojiset</th></tr>'
     htmlString += '</thead>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
@@ -157,8 +157,8 @@ $(document).ready(function () {
     $("#" + btn_download_id).click(function (e) {
       e.preventDefault()
       let id = $(this).attr("id").replace('export', '')
-      $("#table" + id).table2excel({
-        filename: "Emojisets.xls"
+      $("#table" + id).table2excel({ 
+        filename: "Emojisets.xls" 
       });
     });
 
@@ -256,8 +256,8 @@ $(document).ready(function () {
     progress_bar_div.hidden = false;
     
     $.ajax({
-      url:  "http://69.43.72.217/emojiset-mining/_run_task",
-      //url: "http://127.0.0.1:5000/emojiset-mining/_run_task",
+      url:  "http://69.43.72.217/emojiset/_run_small_task",
+      //url: "http://127.0.0.1:5000/emojiset/_run_small_task",
       data: $("#taskForm").serialize(),
       method: "POST",
       dataType: "json",

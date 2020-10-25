@@ -1,7 +1,20 @@
+import json
+
 # ---converts error to txt file and immediately outputs---*
-def debug(var, var2=""):
+def debug(var):
     with open('out.txt', 'a+') as f:
-        print(var + ' ' + var2, file=f)
+        print(var, file=f)
+
+
+def query_to_json(keywords, tweet_amount, discard, twarc_method, form_data=None):
+    json_query = {}
+    json_query['keywords'] = keywords
+    json_query['tweet_amount'] = tweet_amount
+    json_query['discard'] = discard
+    json_query['twarc_method'] = twarc_method
+    if form_data:
+        json_query['form_data'] = form_data
+    return json_query
 
 
 def split_search_keywords(keywords):
