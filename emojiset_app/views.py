@@ -4,7 +4,7 @@ from emojiset_app import small_task_q
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
 from flask import render_template, request, redirect, url_for, jsonify, render_template_string
-from flask_user import login_required
+from flask_user import login_required, roles_required
 from time import strftime
 
 
@@ -23,6 +23,25 @@ def home_page():
             <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
         {% endblock %}
         """)
+
+
+# The Admin page requires an 'Admin' role.
+@app.route('/admin')
+@roles_required('Admin')    # Use of @roles_required decorator
+def admin_page():
+    return render_template_string("""
+        {% extends "flask_user_layout.html" %}
+        {% block content %}
+            <h2>{%trans%}Admin Page{%endtrans%}</h2>
+            <p><a href={{ url_for('user.register') }}>{%trans%}Register{%endtrans%}</a></p>
+            <p><a href={{ url_for('user.login') }}>{%trans%}Sign in{%endtrans%}</a></p>
+            <p><a href={{ url_for('home_page') }}>{%trans%}Home Page{%endtrans%}</a> (accessible to anyone)</p>
+            <p><a href={{ url_for('emojiset_mining') }}>Emojiset page</a> (login required)</p>
+            <p><a href={{ url_for('admin_page') }}>{%trans%}Admin Page{%endtrans%}</a> (role_required: admin)</p>
+            <p><a href={{ url_for('user.logout') }}>{%trans%}Sign out{%endtrans%}</a></p>
+        {% endblock %}
+        """)
+
 
 # --- this function is called when user opens website/emojiset-mining url ---*
 # --- displays the html page located in /templates forder
@@ -45,21 +64,18 @@ def run_small_task():
 	twarc_method = request.form["twarc-method"]
 	tweet_amount = request.form["total_tweets"]
 	discard_checked = "discard_box" in request.form
-	
+	form_data = validate_and_parse_form(request.form, twarc_method)
+
 	keywords = ""
 	if 'keywords' in request.form:
 		keywords = request.form["keywords"]    
-	
 	discard = False
 	if discard_checked:
 		discard = True
-
 	if not tweet_amount:
 		tweet_amount = 100
 	else:
 		tweet_amount = int(tweet_amount)
-
-	form_data = validate_and_parse_form(request.form, twarc_method)
 	
 	# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
 	if twarc_method == 'search':
@@ -73,8 +89,6 @@ def run_small_task():
 			keywords = split_filter_keywords(keywords)
 		else:
 			keywords = split_filter_keywords(keywords)
-
-	
 
 	# ---send a job to the task queue---*
 	job = None

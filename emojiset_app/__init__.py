@@ -6,6 +6,7 @@ from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import UserManager
 from flask_mail import Mail
+import datetime
 
 import emoji
 import rq_dashboard
@@ -59,13 +60,25 @@ mail = Mail(app)
 
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
-from emojiset_app.models import User
+from emojiset_app.models import User, Role
 
 # Setup Flask-User and specify the User data-model
 user_manager = UserManager(app, db, User)
 
 # Create all database tables
 db.create_all()
+
+# Create 'admin@example.com' user with 'Admin' and 'Agent' roles
+if not User.query.filter(User.email == 'admin@emojiset.com').first():
+    user = User(
+        email='admin@emojiset.com',
+        email_confirmed_at=datetime.datetime.utcnow(),
+        password=user_manager.hash_password('emojiset_2020'),
+    )
+    user.roles.append(Role(name='Admin'))
+    user.roles.append(Role(name='Agent'))
+    db.session.add(user)
+    db.session.commit()
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()
