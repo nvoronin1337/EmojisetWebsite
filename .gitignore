@@ -3,3 +3,5 @@ website-env/
 !requirements.txt
 *.pyc
 *.log
+*.json
+*.sqlite

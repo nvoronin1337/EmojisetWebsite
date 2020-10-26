@@ -3,13 +3,31 @@ from emojiset_app import r
 from emojiset_app import small_task_q
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify, render_template_string
+from flask_user import login_required
 from time import strftime
 
+
+# The Home page is accessible to anyone
+@app.route('/')
+def home_page():
+    # String-based templates
+    return render_template_string("""
+        {% extends "flask_user_layout.html" %}
+        {% block content %}
+            <h2>Home page</h2>
+            <p><a href={{ url_for('user.register') }}>Register</a></p>
+            <p><a href={{ url_for('user.login') }}>Sign in</a></p>
+            <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
+            <p><a href={{ url_for('emojiset_mining') }}>Emojiset page</a> (login required)</p>
+            <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
+        {% endblock %}
+        """)
 
 # --- this function is called when user opens website/emojiset-mining url ---*
 # --- displays the html page located in /templates forder
 @app.route("/emojiset", methods=['GET'])
+@login_required
 def emojiset_mining():
 	return render_template("emojiset_mining.html")
 
@@ -21,6 +39,7 @@ def emojiset_mining():
 # --- after all of the data is read and parsed, creates a new job object which takes the function name, and parameters (check tasks.py) ---*
 # --- returns empty json with one header (Location: website/status/<job_key>) which is later used to check the jobs status by its id (job_key) ---*
 @app.route('/emojiset/_run_small_task', methods=['POST'])
+@login_required
 def run_small_task():
 	# read values that are always present
 	twarc_method = request.form["twarc-method"]
@@ -62,10 +81,10 @@ def run_small_task():
 	if form_data:
 		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], result_ttl=10)
 		# ---save query (string and json)
-		json_query = query_to_json(keywords, tweet_amount, discard, twarc_method, form_data)
+		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method, form_data)
 	else:
 		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
-		json_query = query_to_json(keywords, tweet_amount, discard, twarc_method)
+		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method)
 
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
@@ -78,6 +97,7 @@ def run_small_task():
 
 # ---get job object from the queue by the id and check its status (finished or not)---*
 @app.route("/emojiset/status/<job_key>", methods=['GET'])
+@login_required
 def job_status(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:
@@ -99,6 +119,7 @@ def job_status(job_key):
 
 # ---get job object from the queue by the id and cancel it
 @app.route("/emojiset/cancel/<job_key>", methods=['GET'])
+@login_required
 def job_cancel(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:
