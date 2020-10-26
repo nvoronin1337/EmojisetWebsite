@@ -151,6 +151,7 @@ class Tweet_Streamer():
                     # ---if not a retweet and not tuncated---*
                     emojiset = self.extract_emoji_sequences(tweet[self.text])
                     self.result[self.current_tweets] = (tweet[self.text], emojiset)
+
             
     # ---function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)---*
     def extract_emoji_sequences_with_brackets(self, text):
