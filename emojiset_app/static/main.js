@@ -254,10 +254,10 @@ $(document).ready(function () {
     e.preventDefault()
     $("#submit").attr("disabled", true);
     progress_bar_div.hidden = false;
+    // ---document.location.href returns the url at which the user is currently at---*
     let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
       url:  run_task_url,
-      //url: "http://127.0.0.1:5000/emojiset/_run_small_task",
       data: $("#taskForm").serialize(),
       method: "POST",
       dataType: "json",
