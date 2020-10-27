@@ -254,7 +254,7 @@ $(document).ready(function () {
     e.preventDefault()
     $("#submit").attr("disabled", true);
     progress_bar_div.hidden = false;
-    let run_task_url = document.location.href + "/emojiset/_run_small_task"
+    let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
       url:  run_task_url,
       //url: "http://127.0.0.1:5000/emojiset/_run_small_task",
