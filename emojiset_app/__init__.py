@@ -1,15 +1,15 @@
 from flask import Flask
-import redis
-from rq import Queue, Worker
 from flask_bootstrap import Bootstrap
 from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
-from flask_user import UserManager
 from flask_mail import Mail
-import datetime
+from flask_admin import Admin
 
 import emoji
+import redis
+from rq import Queue, Worker
 import rq_dashboard
+import datetime
 
 from emojiset_app.utils import debug
 
@@ -60,10 +60,13 @@ mail = Mail(app)
 
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
-from emojiset_app.models import User, Role
 
-# Setup Flask-User and specify the User data-model
-user_manager = UserManager(app, db, User)
+from emojiset_app.models import User, Role, EmojisetModelView
+from emojiset_app.forms import CustomUserManager
+
+# Setup Flask-User
+user_manager = CustomUserManager(app, db, User)
+
 
 # Create all database tables
 db.create_all()
@@ -79,6 +82,11 @@ if not User.query.filter(User.email == 'admin@emojiset.com').first():
     user.roles.append(Role(name='Agent'))
     db.session.add(user)
     db.session.commit()
+
+# set optional bootswatch theme
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+admin = Admin(app, name='microblog', template_mode='bootstrap3')
+admin.add_view(EmojisetModelView(User, db.session))
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()

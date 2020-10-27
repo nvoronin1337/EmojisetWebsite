@@ -11,25 +11,8 @@ from time import strftime
 # The Home page is accessible to anyone
 @app.route('/')
 def home_page():
-	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), logout=url_for('user.logout'))
+	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), profile=url_for('user.edit_user_profile'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), logout=url_for('user.logout'))
 
-
-# The Admin page requires an 'Admin' role.
-@app.route('/admin')
-@roles_required('Admin')    # Use of @roles_required decorator
-def admin_page():
-    return render_template_string("""
-        {% extends "flask_user_layout.html" %}
-        {% block content %}
-            <h2>{%trans%}Admin Page{%endtrans%}</h2>
-            <p><a href={{ url_for('user.register') }}>{%trans%}Register{%endtrans%}</a></p>
-            <p><a href={{ url_for('user.login') }}>{%trans%}Sign in{%endtrans%}</a></p>
-            <p><a href={{ url_for('home_page') }}>{%trans%}Home Page{%endtrans%}</a> (accessible to anyone)</p>
-            <p><a href={{ url_for('emojiset_mining') }}>Emojiset page</a> (login required)</p>
-            <p><a href={{ url_for('admin_page') }}>{%trans%}Admin Page{%endtrans%}</a> (role_required: admin)</p>
-            <p><a href={{ url_for('user.logout') }}>{%trans%}Sign out{%endtrans%}</a></p>
-        {% endblock %}
-        """)
 
 # --- this function is called when user opens website/emojiset-mining url ---*
 # --- displays the html page located in /templates forder

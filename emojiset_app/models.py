@@ -1,4 +1,6 @@
 from flask_user import UserMixin
+from flask_admin.contrib.sqla import ModelView
+from flask_login import current_user
 from emojiset_app import db
 
 
@@ -18,6 +20,8 @@ class User(db.Model, UserMixin):
     # User information
     first_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
     last_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    country = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    description = db.Column(db.String(254, collation='NOCASE'), nullable=False, server_default='')
 
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_roles')
@@ -36,3 +40,15 @@ class UserRoles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+
+
+class EmojisetModelView(ModelView):
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.has_roles('Admin'):
+            return True
+        else:
+            return False
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect(url_for('user.login', next=request.url))
