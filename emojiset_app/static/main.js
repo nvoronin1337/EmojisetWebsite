@@ -256,7 +256,7 @@ $(document).ready(function () {
     progress_bar_div.hidden = false;
     
     $.ajax({
-      url:  "http://www.sogoresearch.com/emojiset/_run_small_task",
+      url:  "http://69.43.72.217/emojiset/_run_small_task",
       //url: "http://127.0.0.1:5000/emojiset/_run_small_task",
       data: $("#taskForm").serialize(),
       method: "POST",
