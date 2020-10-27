@@ -11,18 +11,7 @@ from time import strftime
 # The Home page is accessible to anyone
 @app.route('/')
 def home_page():
-    # String-based templates
-    return render_template_string("""
-        {% extends "flask_user_layout.html" %}
-        {% block content %}
-            <h2>Home page</h2>
-            <p><a href={{ url_for('user.register') }}>Register</a></p>
-            <p><a href={{ url_for('user.login') }}>Sign in</a></p>
-            <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
-            <p><a href={{ url_for('emojiset_mining') }}>Emojiset page</a> (login required)</p>
-            <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
-        {% endblock %}
-        """)
+	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), logout=url_for('user.logout'))
 
 
 # The Admin page requires an 'Admin' role.
@@ -41,7 +30,6 @@ def admin_page():
             <p><a href={{ url_for('user.logout') }}>{%trans%}Sign out{%endtrans%}</a></p>
         {% endblock %}
         """)
-
 
 # --- this function is called when user opens website/emojiset-mining url ---*
 # --- displays the html page located in /templates forder
