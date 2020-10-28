@@ -4,7 +4,7 @@ from emojiset_app import small_task_q
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
 from flask import render_template, request, redirect, url_for, jsonify, render_template_string
-from flask_user import login_required, roles_required
+from flask_user import login_required, roles_required, current_user
 from time import strftime
 
 
@@ -31,6 +31,12 @@ def emojiset_mining():
 @app.route('/emojiset/_run_small_task', methods=['POST'])
 @login_required
 def run_small_task():
+	twitter_keys = {
+		'access_token': current_user.access_token,
+		'access_token_secret': current_user.access_token_secret,
+		'consumer_key': current_user.consumer_key,
+		'consumer_secret': current_user.consumer_secret
+	}
 	# read values that are always present
 	twarc_method = request.form["twarc-method"]
 	tweet_amount = request.form["total_tweets"]
@@ -64,11 +70,11 @@ def run_small_task():
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:
-		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], result_ttl=10)
+		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'])
 		# ---save query (string and json)
 		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method, form_data)
 	else:
-		job = small_task_q.enqueue(stream_task, keywords, tweet_amount, discard, twarc_method, None, None, None, None, result_ttl=10)
+		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, None, None, None, None)
 		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method)
 
 	job.meta['progress'] = 0

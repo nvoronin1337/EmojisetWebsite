@@ -1,0 +1,30 @@
+{% extends 'flask_user/_authorized_base.html' %}
+
+{% block content %}
+{% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+<h1>{%trans%}User profile{%endtrans%}</h1>
+
+<form action="" method="POST" class="form" role="form">
+    {{ form.hidden_tag() }}
+    {{ render_field(form.first_name, tabindex=10) }}	    
+    {{ render_field(form.last_name, tabindex=20) }}
+    {{ render_field(form.country, tabindex=30) }}	 
+    {{ render_field(form.description, tabindex=40) }}
+    {{ render_field(form.access_token, tabindex=50) }}
+    {{ render_field(form.access_token_secret, tabindex=60) }}
+    {{ render_field(form.consumer_key, tabindex=70) }}
+    {{ render_field(form.consumer_secret, tabindex=80) }}    
+    {{ render_submit_field(form.submit, tabindex=90) }}
+</form>
+<br/>
+
+{% if not user_manager.USER_ENABLE_AUTH0 %}
+    {% if user_manager.USER_ENABLE_CHANGE_USERNAME %}
+        <p><a href="{{ url_for('user.change_username') }}">{%trans%}Change username{%endtrans%}</a></p>
+    {% endif %}
+    {% if user_manager.USER_ENABLE_CHANGE_PASSWORD %}
+        <p><a href="{{ url_for('user.change_password') }}">{%trans%}Change password{%endtrans%}</a></p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

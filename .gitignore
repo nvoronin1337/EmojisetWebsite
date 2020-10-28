@@ -4,4 +4,3 @@ website-env/
 *.pyc
 *.log
 *.json
-*.sqlite

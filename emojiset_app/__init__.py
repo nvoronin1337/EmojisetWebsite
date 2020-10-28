@@ -11,7 +11,7 @@ from rq import Queue, Worker
 import rq_dashboard
 import datetime
 
-from emojiset_app.utils import debug
+import twitter_credentials
 
 class ConfigClass(object):
     DEBUG=True
@@ -60,13 +60,11 @@ mail = Mail(app)
 
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
-
 from emojiset_app.models import User, Role, EmojisetModelView
 from emojiset_app.forms import CustomUserManager
 
 # Setup Flask-User
 user_manager = CustomUserManager(app, db, User)
-
 
 # Create all database tables
 db.create_all()
@@ -77,6 +75,10 @@ if not User.query.filter(User.email == 'admin@emojiset.com').first():
         email='admin@emojiset.com',
         email_confirmed_at=datetime.datetime.utcnow(),
         password=user_manager.hash_password('emojiset_2020'),
+        consumer_key=twitter_credentials.CONSUMER_KEY,
+        consumer_secret=twitter_credentials.CONSUMER_SECRET,
+        access_token = twitter_credentials.ACCESS_TOKEN,
+        access_token_secret = twitter_credentials.ACCESS_TOKEN_SECRET
     )
     user.roles.append(Role(name='Admin'))
     user.roles.append(Role(name='Agent'))
@@ -91,7 +93,7 @@ admin.add_view(EmojisetModelView(User, db.session))
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()
 # ---short_task_q is used for streaming small datasets from twitter (tasks timeout after 16 minutes)---*
-small_task_q = Queue('small', connection=r, default_timeout=960)
+small_task_q = Queue('small', connection=r)
 # ---long_task_q is used for streaming large datasets from twitter (tasks have no timeout)
 long_task_q = Queue('long', connection=r)
 

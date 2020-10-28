@@ -4,19 +4,18 @@ import time
 import emoji
 from emojiset_app import EMOJI_SET
 import regex
-import twitter_credentials
 from rq import get_current_job  
 from emojiset_app.utils import debug, split_filter_keywords, split_search_keywords
 
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Tweet_Streamer():
-    def __init__(self, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo):
+    def __init__(self, keys, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo):
         # ---Configuring Twarc API---*
-        self.consumer_key = twitter_credentials.CONSUMER_KEY
-        self.consumer_secret = twitter_credentials.CONSUMER_SECRET
-        self.access_token = twitter_credentials.ACCESS_TOKEN
-        self.access_token_secret = twitter_credentials.ACCESS_TOKEN_SECRET
+        self.consumer_key = keys['consumer_key']
+        self.consumer_secret = keys['consumer_secret']
+        self.access_token = keys['access_token']
+        self.access_token_secret = keys['access_token_secret']
         self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, app_auth=False)
 
         # ---Save paramaeters passed to the constructor

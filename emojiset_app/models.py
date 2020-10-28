@@ -21,7 +21,12 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
     last_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
     country = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
-    description = db.Column(db.String(254, collation='NOCASE'), nullable=False, server_default='')
+    description = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+
+    access_token = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    access_token_secret = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    consumer_key = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    consumer_secret = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
 
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_roles')
