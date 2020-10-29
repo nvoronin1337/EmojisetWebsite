@@ -1,8 +1,10 @@
 from flask_user import UserMixin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
-from emojiset_app import db
-
+from emojiset_app import db, secret_key
+import sqlalchemy as sa
+from sqlalchemy_utils import EncryptedType
+from sqlalchemy_utils.types.encrypted.encrypted_type import Fernet
 
 # Define the User data-model.
 # NB: Make sure to add flask_user UserMixin !!!
@@ -23,10 +25,10 @@ class User(db.Model, UserMixin):
     country = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
     description = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
 
-    access_token = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
-    access_token_secret = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
-    consumer_key = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
-    consumer_secret = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    access_token = db.Column(EncryptedType(db.String, secret_key))
+    access_token_secret = db.Column(EncryptedType(db.String, secret_key))
+    consumer_key = db.Column(EncryptedType(db.Unicode, secret_key))
+    consumer_secret = db.Column(EncryptedType(db.Unicode, secret_key))
 
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_roles')
@@ -46,6 +48,12 @@ class UserRoles(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
 
+
+class SavedQuery(db.Model):
+    __tablename__ = 'saved_queries'
+    id = db.Column(db.Integer(), primary_key=True)
+    query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
 
 class EmojisetModelView(ModelView):
     def is_accessible(self):

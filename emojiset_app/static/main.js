@@ -3,6 +3,10 @@ $(document).ready(function () {
   let table_id = ""
   let btn_download_id = ""
   let btn_delete_id = ""
+  let btn_save_id = ""
+  let query_id = ""
+  let toast_id = ""
+  let hidden_toast_div_id = ""
 
   // initialli hide the settings container
   $("#selection_settings_container").hide();
@@ -14,7 +18,6 @@ $(document).ready(function () {
   // hide the progress bar and the label (discarded tweets)
   let progress_bar_div = document.getElementById('progress_bar_div')
   let discarded_tweets_div = document.getElementById('discarded_tweets')
-  let discarded_tweets_lbl = document.getElementById('discarded_tweets_lbl')
   let cancel_btn = document.getElementById('cancel')
 
   progress_bar_div.hidden = true
@@ -87,14 +90,40 @@ $(document).ready(function () {
     table_id = 'table' + total_results
     btn_download_id = 'export' + total_results
     btn_delete_id = 'delete' + total_results
+    btn_save_id = 'save' + total_results
+    query_id = 'query' + total_results
+    toast_id = 'toast' + total_results
+    hidden_toast_div_id = 'toast_div' + total_results
+    
+    let html_save_btn = '<button id="' + btn_save_id + '" type="button" style="padding: 0; border: none; background: none;"><span class="badge badge-secondary"><i class="fa fa-save"></i> Query</span></button>'
     let html_delete_btn = '<button id="' + btn_delete_id + '" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+    let html_download_btn = '<button id="' + btn_download_id + '" data-export="export" class="btn btn-primary">Download full results</button>'
+    let html_hidden_query = '<div id="' + query_id + '" style="display:none;">' + message.query + '</div>'
 
+    let hidden_toast = '<div id="' + hidden_toast_div_id + '" style="display: none;">'
+    + '<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 100px;">'
+    +  '<div id="' + toast_id + '" class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0;">'
+    +   '<div class="toast-header">'
+    +      '<strong class="mr-auto">Emojiset 🙂</strong>'
+    +      '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'
+    +        '<span aria-hidden="true">&times;</span>'
+    +      '</button>'
+    +    '</div>'
+    +    '<div class="toast-body">'
+    +      'Your query has been saved!'
+    +    '</div>'
+    +   '</div>'
+    +  '</div>'
+    + '</div>'
+
+    
     htmlString = '<div id="result' + total_results + '" class="card mb-3">'
     htmlString += '<div class="card-body">'
     htmlString += html_delete_btn
+    htmlString += hidden_toast
     htmlString += '<table id="' + table_id + '" style="width: 100%;  ">'
     htmlString += '<thead>'
-    htmlString += '<tr><th colspan="2" style="font-weight: normal;"><span class="badge badge-secondary">Query:</span>  <small>(' + message.query + ')</small></th></tr>'
+    htmlString += '<tr><th colspan="2" style="font-weight: normal;">' + html_save_btn + '</th></tr>'
     htmlString += '<tr><th scope="col" style="text-align:center">Tweet</th><th scope="col" style="text-align:center">Emojiset</th></tr>'
     htmlString += '</thead>'
     htmlString += "<colgroup><col span=\"1\" style=\"width: 75%;\"><col span=\"1\" style=\"width: 25%;\"></colgroup>"
@@ -104,12 +133,13 @@ $(document).ready(function () {
       htmlString += '<td style="padding: 10px; border: 1px solid #6C757D; text-align:center"><small class="text-muted d-block">' + (message.result[index])[1] + '</small></td>'
       htmlString += '</tr>'
       counter += 1
-      if (counter >= 10) {
+      if (counter == 10) {
         row_style = 'style="display: none"'
       }
     }
     htmlString += '</table></div>'
-    htmlString += '<button id="' + btn_download_id + '" data-export="export" class="btn btn-primary">Download full results</button>'
+    htmlString += html_download_btn
+    htmlString += html_hidden_query
     htmlString += '</div>'
     total_results++
 
@@ -145,6 +175,7 @@ $(document).ready(function () {
         htmlString += '</div></div>'
       }
       $(htmlString).prependTo("#result_container").hide().slideDown();
+      
     } else if (category == "danger") {
       var htmlString = '<div class="card mb-3">'
       htmlString += '<div class="card-body">'
@@ -152,7 +183,31 @@ $(document).ready(function () {
       htmlString += '</div></div>'
       $(htmlString).prependTo("#result_container").hide().slideDown();
     }
+    
+    $("#" + btn_save_id).click(function (e) {
+      e.preventDefault()
+      let query_id = $(this).attr("id").replace('save', 'query')
+      let hidden_toast_div = $(this).attr("id").replace('save', 'toast_div')
+      let toast_id = $(this).attr("id").replace('save', 'toast')
 
+      let json_query = $('#' + query_id).html()
+      $.ajax({
+        type: "POST",
+        url: document.location.href + '/save_query',
+        data: {
+          'query': json_query
+        },
+        dataType: 'json',
+        success: function (data, status, request) {
+          $('#' + hidden_toast_div).show()
+          $('#' + toast_id).toast('show')
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(textStatus)
+        }
+      });
+    });
+    
     // create download button event listener
     $("#" + btn_download_id).click(function (e) {
       e.preventDefault()
@@ -168,6 +223,12 @@ $(document).ready(function () {
       let id = $(this).attr("id").replace('delete', '')
       $("#result_container").find("#result" + id).remove();
     });
+
+    $('#' + toast_id).on('hidden.bs.toast', function (e) {
+      e.preventDefault()
+      let id = $(this).attr("id").replace('toast', '')
+      $('#toast_div' + id).hide()
+    })
   }
 
   /* Used to remove previous alerts from the page */

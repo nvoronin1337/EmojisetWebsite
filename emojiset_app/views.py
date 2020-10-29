@@ -1,8 +1,10 @@
 from emojiset_app import app
 from emojiset_app import r
 from emojiset_app import small_task_q
+from emojiset_app import db
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
+from emojiset_app.models import SavedQuery
 from flask import render_template, request, redirect, url_for, jsonify, render_template_string
 from flask_user import login_required, roles_required, current_user
 from time import strftime
@@ -11,7 +13,7 @@ from time import strftime
 # The Home page is accessible to anyone
 @app.route('/')
 def home_page():
-	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), profile=url_for('user.edit_user_profile'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), logout=url_for('user.logout'))
+	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), profile=url_for('user.edit_user_profile'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), emojiset_large=url_for('emojiset_mining_large'),logout=url_for('user.logout'))
 
 
 # --- this function is called when user opens website/emojiset-mining url ---*
@@ -21,6 +23,11 @@ def home_page():
 def emojiset_mining():
 	return render_template("emojiset_mining.html")
 
+
+@app.route("/emojiset_big_dataset", methods=['GET'])
+@login_required
+def emojiset_mining_large():
+	return render_template("large_set.html")
 
 # --- this URL can't be directly accessed by user ---*
 # --- this URL is being called using AJAX call when the submit button is clicked ---*
@@ -37,6 +44,7 @@ def run_small_task():
 		'consumer_key': current_user.consumer_key,
 		'consumer_secret': current_user.consumer_secret
 	}
+
 	# read values that are always present
 	twarc_method = request.form["twarc-method"]
 	tweet_amount = request.form["total_tweets"]
@@ -71,16 +79,16 @@ def run_small_task():
 	job = None
 	if form_data:
 		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'])
-		# ---save query (string and json)
-		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method, form_data)
+		json_query = query_to_json(keywords, discard, twarc_method, form_data)
 	else:
 		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, None, None, None, None)
-		#json_query = query_to_json(keywords, tweet_amount, discard, twarc_method)
+		json_query = query_to_json(keywords, discard, twarc_method)
 
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
-	job.meta['query'] = keywords
+	job.meta['query'] = json_query
 	job.meta['cancel_flag'] = 0
+
 	job.save_meta()
 	
 	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
@@ -129,3 +137,17 @@ def job_cancel(job_key):
 		if job.is_failed:
 			response['message'] = job.exc_info.strip().split('\n')[-1]
 	return jsonify(response)
+
+
+@app.route("/emojiset/save_query", methods=["POST"])
+@login_required
+def save_query():
+	query = request.form['query']
+	user_id = current_user.id
+	saved_query = SavedQuery(
+		query = query,
+		user_id=user_id
+	)
+	db.session.add(saved_query)
+	db.session.commit()
+	return jsonify({}, 202)

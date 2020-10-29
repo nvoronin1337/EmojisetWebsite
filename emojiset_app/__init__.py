@@ -11,6 +11,8 @@ from rq import Queue, Worker
 import rq_dashboard
 import datetime
 
+from emojiset_app.utils import load_key
+
 import twitter_credentials
 
 class ConfigClass(object):
@@ -58,14 +60,15 @@ bootstrap = Bootstrap(app)
 babel = Babel(app)
 mail = Mail(app)
 
+secret_key = load_key()
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
-from emojiset_app.models import User, Role, EmojisetModelView
+
+from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery
 from emojiset_app.forms import CustomUserManager
 
 # Setup Flask-User
 user_manager = CustomUserManager(app, db, User)
-
 # Create all database tables
 db.create_all()
 
@@ -87,8 +90,9 @@ if not User.query.filter(User.email == 'admin@emojiset.com').first():
 
 # set optional bootswatch theme
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-admin = Admin(app, name='microblog', template_mode='bootstrap3')
+admin = Admin(app, name='emojiset', template_mode='bootstrap3')
 admin.add_view(EmojisetModelView(User, db.session))
+admin.add_view(EmojisetModelView(SavedQuery, db.session))
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()

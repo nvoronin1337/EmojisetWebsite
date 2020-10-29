@@ -1,18 +1,32 @@
+import json
+
+def load_key():
+    """
+    Loads the key named `secret.key` from the current directory.
+    """
+    return open("secret.key", "rb").read()
+
 # ---converts error to txt file and immediately outputs---*
 def debug(var):
     with open('out.txt', 'a+') as f:
         print(var, file=f)
 
 
-def query_to_json(keywords, tweet_amount, discard, twarc_method, form_data=None):
-    json_query = {}
-    json_query['keywords'] = keywords
-    json_query['tweet_amount'] = tweet_amount
-    json_query['discard'] = int(discard)
-    json_query['twarc_method'] = twarc_method
+def query_to_json(keywords, discard, twarc_method, form_data=None):
     if form_data:
-        json_query['form_data'] = form_data
-        json_query['form_data']['additional_settings']['verified_users_checked'] = int(form_data['additional_settings']['verified_users_checked'])
+        json_data = {
+            'keywords': keywords,
+            'discard': discard,
+            'twarc_method': twarc_method,
+            'form_data': form_data
+        }
+    else:
+        json_data = {
+            'keywords': keywords,
+            'discard': discard,
+            'twarc_method': twarc_method
+        }
+    json_query = json.dumps(json_data)
     return json_query
 
 
