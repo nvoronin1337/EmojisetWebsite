@@ -60,7 +60,7 @@ bootstrap = Bootstrap(app)
 babel = Babel(app)
 mail = Mail(app)
 
-secret_key = load_key()
+secret_key = 'XJWyyVZPOTsFn-2vrzFoXqI_jE6vzkc9u57VQ-APOSM='
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
 
