@@ -21,13 +21,14 @@ def home_page():
 @app.route("/emojiset", methods=['GET'])
 @login_required
 def emojiset_mining():
-	return render_template("emojiset_mining.html")
+	return render_template("emojiset_mining_small.html")
 
 
 @app.route("/emojiset_big_dataset", methods=['GET'])
 @login_required
 def emojiset_mining_large():
 	return render_template("large_set.html")
+
 
 # --- this URL can't be directly accessed by user ---*
 # --- this URL is being called using AJAX call when the submit button is clicked ---*
@@ -46,14 +47,25 @@ def run_small_task():
 	}
 
 	# read values that are always present
-	twarc_method = request.form["twarc-method"]
-	tweet_amount = request.form["total_tweets"]
-	discard_checked = "discard_box" in request.form
-	form_data = validate_and_parse_form(request.form, twarc_method)
-
 	keywords = ""
 	if 'keywords' in request.form:
-		keywords = request.form["keywords"]    
+		twarc_method = 'search'
+		keywords = request.form["keywords"] 
+		tweet_amount = request.form["tweet_amount"]
+		discard_checked = "discard_box" in request.form
+	elif 'keywords_filter' in request.form:
+		twarc_method = 'filter'
+		keywords = request.form["keywords_filter"]
+		tweet_amount = request.form["tweet_amount_filter"]
+		discard_checked = "discard_box_filter" in request.form
+	else:
+		twarc_method = 'sample'
+		keywords = request.form["keywords_sample"]
+		tweet_amount = request.form["tweet_amount_sample"]
+		discard_checked = "discard_box_sample" in request.form
+	
+	form_data = validate_and_parse_form(request.form, twarc_method)
+
 	discard = False
 	if discard_checked:
 		discard = True
@@ -61,8 +73,8 @@ def run_small_task():
 		tweet_amount = 100
 	else:
 		tweet_amount = int(tweet_amount)
-	
-	# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
+
+# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
 	if twarc_method == 'search':
 		if form_data:
 			keywords = construct_search_query(keywords, form_data['additional_settings'], form_data['operator'])
@@ -75,6 +87,7 @@ def run_small_task():
 		else:
 			keywords = split_filter_keywords(keywords)
 
+
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:
@@ -83,7 +96,8 @@ def run_small_task():
 	else:
 		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, None, None, None, None)
 		json_query = query_to_json(keywords, discard, twarc_method)
-
+	
+	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = json_query
@@ -92,6 +106,7 @@ def run_small_task():
 	job.save_meta()
 	
 	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
+	
 
 
 # ---get job object from the queue by the id and check its status (finished or not)---*

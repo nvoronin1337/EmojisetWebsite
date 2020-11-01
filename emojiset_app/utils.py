@@ -69,20 +69,36 @@ def validate_and_parse_form(form, method):
                 languages = None
 
         # ---if both long and lat are provided then we can construct location parameter 
-        long = form.get('long')
-        lat = form.get('lat')
-        if long and lat:
-            # ---ensure the redius is either default or provided by user
+        if 'long' in form:
+            long = form.get('long')
+            lat = form.get('lat')
             radius = form.get('radius')
             if not radius:
                 radius = '10'
 
             # ---location for search---*
+            if 'units' in form:
+                units = 'km'
+            else:
+                units = 'mi'
+        else:
+            long = form.get('long_filter')
+            lat = form.get('lat_filter')
+            radius = form.get('radius_filter')
+            if not radius:
+                radius = '10'
+
+            # ---location for filter---*
+            if 'units_filter' in form:
+                units = 'km'
+            else:
+                units = 'mi'
+        if long and lat:
             if method == 'search':
-                location = long + ',' + lat + ',' + radius + form.get('units')
+                location = long + ',' + lat + ',' + radius + units
             # ---location for filter uses 4 points instead of just long and lat---*
             elif method == 'filter':
-                if form.get('units') == 'mi':
+                if units == 'mi':
                     radius = round(float(radius) * 0.62137, 4)
                 bounding_box = create_bounding_box(long, lat, radius)
                 location = str(bounding_box[0]) + ',' + str(bounding_box[1]) + ',' + str(bounding_box[2]) + ',' + str(bounding_box[3]) 
@@ -98,10 +114,13 @@ def validate_and_parse_form(form, method):
             additional_settings["max_likes"] = form.get("max-likes")
             additional_settings["verified_users_checked"] = "verified" in form
             result_type = form.get("result_type")
-            operator = form.get('operator')
+            if 'operator' in form:
+                operator = 'AND'
+            else:
+                operator = 'OR'
         # ---settings for filter method---*
         elif method == "filter":
-            follow_user = form.get('from-user')
+            follow_user = form.get('from-user_filter')
 
         output['additional_settings'] = additional_settings
         output['languages'] = languages

@@ -8,13 +8,6 @@ $(document).ready(function () {
   let toast_id = ""
   let hidden_toast_div_id = ""
 
-  // initialli hide the settings container
-  $("#selection_settings_container").hide();
-
-  // read hidden settings <div> contents as a string of HTML code
-  let settings = $('#hidden_selection_settings').html();
-  let filter_settings = $('#hidden_filter_selection_settings').html();
-
   // hide the progress bar and the label (discarded tweets)
   let progress_bar_div = document.getElementById('progress_bar_div')
   let discarded_tweets_div = document.getElementById('discarded_tweets')
@@ -23,6 +16,13 @@ $(document).ready(function () {
   progress_bar_div.hidden = true
   discarded_tweets_div.hidden = true
   cancel_btn.hidden = true
+  $("#cancel_filter").hide()
+  $("#cancel_sample").hide()
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
 
   /** Sets default dates for the date input fields */
   function set_date() {
@@ -50,36 +50,6 @@ $(document).ready(function () {
   }
 
 
-  /** Displays additional settings for SEARCH (historical stream)*/
-  function display_search_settings() {
-    if (!$('#selection_settings_container').is(':visible')) {
-      $("#selection_settings_container").empty().append(settings).hide().slideDown();
-      set_date();
-      $("#near-me").change(function () {
-        if (this.checked) {
-          $("#city").attr("disabled", true);
-        } else {
-          $("#city").attr("disabled", false);
-        }
-      });
-    } else {
-      $("#selection_settings_container").slideUp();
-      $("#selection_settings_container").empty();
-    }
-  }
-
-
-  /** Displays additional settings for FILTER (real time stream) */
-  function display_filter_settings() {
-    if (!$('#selection_settings_container').is(':visible')) {
-      $("#selection_settings_container").empty().append(filter_settings).hide().slideDown();
-    } else {
-      $("#selection_settings_container").slideUp();
-      $("#selection_settings_container").empty();
-    }
-  }
-
-
   /** 
    * Takes a job result from check_job_status js function and structures it as a HTML table
    *  Also takes an empty string (htmlString) which is then filled with HTML code and returned
@@ -94,33 +64,34 @@ $(document).ready(function () {
     query_id = 'query' + total_results
     toast_id = 'toast' + total_results
     hidden_toast_div_id = 'toast_div' + total_results
-    
+
     let html_save_btn = '<button id="' + btn_save_id + '" type="button" style="padding: 0; border: none; background: none;"><span class="badge badge-secondary"><i class="fa fa-save"></i> Query</span></button>'
     let html_delete_btn = '<button id="' + btn_delete_id + '" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-    let html_download_btn = '<button id="' + btn_download_id + '" data-export="export" class="btn btn-primary">Download full results</button>'
+    let html_download_btn = '<button id="' + btn_download_id + '" data-export="export" class="btn btn-success">Download full results</button>'
     let html_hidden_query = '<div id="' + query_id + '" style="display:none;">' + message.query + '</div>'
 
-    let hidden_toast = '<div id="' + hidden_toast_div_id + '" style="display: none;">'
-    + '<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 100px;">'
-    +  '<div id="' + toast_id + '" class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0;">'
-    +   '<div class="toast-header">'
-    +      '<strong class="mr-auto">Emojiset 🙂</strong>'
-    +      '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'
-    +        '<span aria-hidden="true">&times;</span>'
-    +      '</button>'
-    +    '</div>'
-    +    '<div class="toast-body">'
-    +      'Your query has been saved!'
-    +    '</div>'
-    +   '</div>'
-    +  '</div>'
-    + '</div>'
+    let hidden_toast = '<div id="' + hidden_toast_div_id + '" style="display: none;">' +
+      '<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 100px;">' +
+      '<div id="' + toast_id + '" class="toast" style="position: absolute; top: 0; right: 0;">' +
+      '<div class="toast-header">' +
+      '<strong class="mr-auto">Emojiset 🙂</strong>' +
+      '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">' +
+      '<span aria-hidden="true">&times;</span>' +
+      '</button>' +
+      '</div>' +
+      '<div class="toast-body">' +
+      'Your query has been saved!' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '</div>'
 
-    
-    htmlString = '<div id="result' + total_results + '" class="card mb-3">'
+
+    htmlString = '<div id="result' + total_results + '" class="card mb-4">'
     htmlString += '<div class="card-body">'
     htmlString += html_delete_btn
     htmlString += hidden_toast
+    htmlString += '<div class="card-body">'
     htmlString += '<table id="' + table_id + '" style="width: 100%;  ">'
     htmlString += '<thead>'
     htmlString += '<tr><th colspan="2" style="font-weight: normal;">' + html_save_btn + '</th></tr>'
@@ -137,12 +108,12 @@ $(document).ready(function () {
         row_style = 'style="display: none"'
       }
     }
-    htmlString += '</table></div>'
+    htmlString += '</table></div></div>'
+    htmlString += '<div class="card-footer">'
     htmlString += html_download_btn
     htmlString += html_hidden_query
-    htmlString += '</div>'
+    htmlString += '</div></div>'
     total_results++
-
     return htmlString
   }
 
@@ -168,22 +139,11 @@ $(document).ready(function () {
       let htmlString = ""
       if (!empty_result) {
         htmlString = create_result(message, htmlString)
-      } else {
-        htmlString = '<div class="card mb-3">'
-        htmlString += '<div class="card-body">'
-        htmlString += 'There are no tweets matching your keywords!'
-        htmlString += '</div></div>'
-      }
+      } else {}
       $(htmlString).prependTo("#result_container").hide().slideDown();
-      
-    } else if (category == "danger") {
-      var htmlString = '<div class="card mb-3">'
-      htmlString += '<div class="card-body">'
-      htmlString += 'Job Failed!'
-      htmlString += '</div></div>'
-      $(htmlString).prependTo("#result_container").hide().slideDown();
-    }
-    
+
+    } else if (category == "danger") {}
+
     $("#" + btn_save_id).click(function (e) {
       e.preventDefault()
       let query_id = $(this).attr("id").replace('save', 'query')
@@ -207,13 +167,13 @@ $(document).ready(function () {
         }
       });
     });
-    
+
     // create download button event listener
     $("#" + btn_download_id).click(function (e) {
       e.preventDefault()
       let id = $(this).attr("id").replace('export', '')
-      $("#table" + id).table2excel({ 
-        filename: "Emojisets.xls" 
+      $("#table" + id).table2excel({
+        filename: "Emojisets.xls"
       });
     });
 
@@ -260,15 +220,22 @@ $(document).ready(function () {
           progress_bar_div.hidden = true;
           discarded_tweets_div.hidden = true;
           cancel_btn.hidden = true;
-          $("#submit").attr("disabled", false);
-          flash_alert("Unknown job id", "danger");
+          $("#cancel_filter").hide()
+          $("#cancel_sample").hide()
+          $("#submit").show()
+          $("#submit_filter").show()
+          $("#submit_sample").show()
           break;
         case "finished":
           progress_bar_div.hidden = true;
           discarded_tweets_div.hidden = true;
           cancel_btn.hidden = true;
-          $("#submit").attr("disabled", false);
-          if(!data.cancel_flag){
+          $("#cancel_filter").hide()
+          $("#cancel_sample").hide()
+          $("#submit").show()
+          $("#submit_filter").show()
+          $("#submit_sample").show()
+          if (!data.cancel_flag) {
             flash_alert(data, "success");
           }
           break;
@@ -276,8 +243,11 @@ $(document).ready(function () {
           progress_bar_div.hidden = true;
           discarded_tweets_div.hidden = true;
           cancel_btn.hidden = true;
-          $("#submit").attr("disabled", false);
-          flash_alert("Job failed: " + data.message, "danger");
+          $("#cancel_filter").hide()
+          $("#cancel_sample").hide()
+          $("#submit").show()
+          $("#submit_filter").show()
+          $("#submit_sample").show()
           break;
         default:
           //queued/started/deferred
@@ -286,7 +256,7 @@ $(document).ready(function () {
           if (data.discarded_tweets != 0) {
             discarded_tweets_div.hidden = false
           }
-          $('#discarded_tweets_lbl small').text(data.discarded_tweets);
+          $('#discarded_tweets_lbl span').text(data.discarded_tweets);
           setTimeout(function () {
             check_job_status(status_url);
           }, 150);
@@ -295,9 +265,9 @@ $(document).ready(function () {
   }
 
 
-  function cancel_job(cancel_url){
-    $.getJSON(cancel_url, function(response){
-      
+  function cancel_job(cancel_url) {
+    $.getJSON(cancel_url, function (response) {
+
     });
   }
 
@@ -313,12 +283,14 @@ $(document).ready(function () {
    */
   $("#submit").on('click', function (e) {
     e.preventDefault()
-    $("#submit").attr("disabled", true);
+    $("#submit").hide()
+    $("#submit_filter").hide()
+    $("#submit_sample").hide()
     progress_bar_div.hidden = false;
     // ---document.location.href returns the url at which the user is currently at---*
     let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
-      url:  run_task_url,
+      url: run_task_url,
       data: $("#taskForm").serialize(),
       method: "POST",
       dataType: "json",
@@ -326,10 +298,10 @@ $(document).ready(function () {
         let status_url = request.getResponseHeader('Status');
         let cancel_url = request.getResponseHeader('Cancel');
         console.log("Status URL: " + status_url)
-        
+
         // Add cancel button event listener
         cancel_btn.hidden = false;
-        $('#cancel').on('click', function(e){
+        $('#cancel').on('click', function (e) {
           e.preventDefault()
           cancel_job(cancel_url)
         });
@@ -342,63 +314,118 @@ $(document).ready(function () {
     return false;
   });
 
-
-  // additional settings button on click event listener
-  $("#tweet_selection_settings").on('click', function (e) {
+  /**
+   * Submit button event listener
+   * Sends a POST request an AJAX call to the website/_run_task url (see views.py)
+   * POST request includes data from the form on the page
+   * Expects to receive back json file
+   * IF the AJAX call was successful -> get Location header from the json
+   *    call check_job_status function with Location as a parameter
+   * IF ERROR log error to the console and return
+   */
+  $("#submit_filter").on('click', function (e) {
     e.preventDefault()
-    let twarc_method = $("#twarc-method option:selected").val();
-    if (twarc_method == "search") {
-      display_search_settings();
-    } else if (twarc_method == "filter") {
-      display_filter_settings();
-    } else {
-      $("#selection_settings_container").slideUp();
-    }
-  });
+    $("#submit").hide()
+    $("#submit_filter").hide()
+    $("#submit_sample").hide()
+    progress_bar_div.hidden = false;
+    // ---document.location.href returns the url at which the user is currently at---*
+    let run_task_url = document.location.href + "/_run_small_task"
+    $.ajax({
+      url: run_task_url,
+      data: $("#taskForm_filter").serialize(),
+      method: "POST",
+      dataType: "json",
+      success: function (data, status, request) {
+        let status_url = request.getResponseHeader('Status');
+        let cancel_url = request.getResponseHeader('Cancel');
+        console.log("Status URL: " + status_url)
 
-
-  // twarc method selection changed event listener
-  $("#twarc-method").change(function () {
-    let twarc_method = $("#twarc-method option:selected").val()
-    if (twarc_method == 'sample') {
-      $("#keywords").data("emojioneArea").setText('');
-      $("#keywords").data("emojioneArea").disable();
-      $('#keywords').prop('disabled', true);
-      $("#tweet_selection_settings").attr("disabled", true);
-      $("#selection_settings_container").slideUp();
-    } else if (twarc_method == 'search') {
-      if ($('#selection_settings_container').is(':visible')) {
-        $("#selection_settings_container").empty().append(settings).hide().slideDown();
-        set_date();
-        $("#near-me").change(function () {
-          if (this.checked) {
-            $("#city").attr("disabled", true);
-          } else {
-            $("#city").attr("disabled", false);
-          }
+        // Add cancel button event listener
+        $("#cancel_filter").show()
+        $('#cancel_filter').on('click', function (e) {
+          e.preventDefault()
+          cancel_job(cancel_url)
         });
+        check_job_status(status_url);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus)
       }
-      $("#keywords").data("emojioneArea").enable();
-      $('#keywords').prop('disabled', false);
-      $("#tweet_selection_settings").attr("disabled", false);
-    } else if (twarc_method == 'filter') {
-      if ($('#selection_settings_container').is(':visible')) {
-        $("#selection_settings_container").empty().append(filter_settings).hide().slideDown();
-      }
-      $("#keywords").data("emojioneArea").enable();
-      $('#keywords').prop('disabled', false);
-      $("#tweet_selection_settings").attr("disabled", false);
-    }
+    });
+
+    return false;
   });
 
+  /**
+   * Submit button event listener
+   * Sends a POST request an AJAX call to the website/_run_task url (see views.py)
+   * POST request includes data from the form on the page
+   * Expects to receive back json file
+   * IF the AJAX call was successful -> get Location header from the json
+   *    call check_job_status function with Location as a parameter
+   * IF ERROR log error to the console and return
+   */
+  $("#submit_sample").on('click', function (e) {
+    e.preventDefault()
+    $("#submit").hide()
+    $("#submit_filter").hide()
+    $("#submit_sample").hide()
+    progress_bar_div.hidden = false;
+    // ---document.location.href returns the url at which the user is currently at---*
+    let run_task_url = document.location.href + "/_run_small_task"
+    $.ajax({
+      url: run_task_url,
+      data: $("#taskForm_sample").serialize(),
+      method: "POST",
+      dataType: "json",
+      success: function (data, status, request) {
+        let status_url = request.getResponseHeader('Status');
+        let cancel_url = request.getResponseHeader('Cancel');
+        console.log("Status URL: " + status_url)
+
+        // Add cancel button event listener
+        $("#cancel_sample").show()
+        $('#cancel_sample').on('click', function (e) {
+          e.preventDefault()
+          cancel_job(cancel_url)
+        });
+        check_job_status(status_url);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus)
+      }
+    });
+
+    return false;
+  });
+
+  $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    $('.form-group input[type="number"]').val('');
+    $('.form-group input[type="datetime-local"]').val('');
+    $('.form-group input[type="text"]').val('');
+    $('.form-group input[type="date"]').val('');
+  });
+  //find a way to set checkboxes to default-->
+  $('a[data-toggle="toggle"]').on('shown.bs.tab', function (e) {
+    $('.form-group input[type="checkbox"]').val(on);
+  });
 
   // Used for properly displaying emoji keyboard
   $("#keywords").emojioneArea({
-    pickerPosition: "bottom"
+    pickerPosition: "bottom",
+    buttonTitle: "Filter by emojis",
+    filtersPosition: "bottom",
   });
-});
 
-function show_help() {
-  var popup = document.getElementById("myPopup");
-  popup.classList.toggle("show");
-}
+  $("#keywords_filter").emojioneArea({
+    pickerPosition: "bottom",
+    inline: true
+  });
+
+  $("#keywords_sample").emojioneArea({
+    pickerPosition: "bottom",
+    inline: true
+  });
+
+});
