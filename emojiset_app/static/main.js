@@ -72,7 +72,7 @@ $(document).ready(function () {
 
     let hidden_toast = '<div id="' + hidden_toast_div_id + '" style="display: none;">' +
       '<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 100px;">' +
-      '<div id="' + toast_id + '" class="toast" style="position: absolute; top: 0; right: 0;">' +
+      '<div id="' + toast_id + '" class="toast" data-delay="3000" style="position: absolute; top: 0; right: 0;">' +
       '<div class="toast-header">' +
       '<strong class="mr-auto">Emojiset 🙂</strong>' +
       '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">' +

@@ -60,7 +60,6 @@ def run_small_task():
 		discard_checked = "discard_box_filter" in request.form
 	else:
 		twarc_method = 'sample'
-		keywords = request.form["keywords_sample"]
 		tweet_amount = request.form["tweet_amount_sample"]
 		discard_checked = "discard_box_sample" in request.form
 	
