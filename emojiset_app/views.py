@@ -86,7 +86,6 @@ def run_small_task():
 		else:
 			keywords = split_filter_keywords(keywords)
 
-
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:

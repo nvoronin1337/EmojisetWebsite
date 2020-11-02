@@ -21,11 +21,11 @@ body {
 }
 
 #header_container {
-    margin-top: 1em;
+    margin-top: 0;
 }
 
 #results_wrapper_container {
-    margin-top: 1em;
+    margin-top: 2em;
 }
 
 #progress_wrapper {

@@ -8,10 +8,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-
 
     <!-- Emoji keyboard css -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
@@ -42,20 +40,14 @@
     <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
     <!-- Link to our JS scripts -->
     <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
-
-
 </head>
 
 <body>
     <!--Navigation bar (Navbar: Home, Team, Research, About*-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
-        <a class="navbar-brand" href="">SOGOResearch</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('home_page') }}"><i class="fa fa-home"></i> Home <span
                             class="sr-only">(current)</span></a>
@@ -75,6 +67,15 @@
                     </div>
                 </li>
             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="">SOGOResearch</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href=""><i class="fa fa-envelope"></i> Contact <span
@@ -91,21 +92,17 @@
                 </li>
             </ul>
         </div>
+        </div>
     </nav>
 
-    <div class="container-fluid" style="background:transparent;">
-
-
-
-
-
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-7 mx-auto">
                 <div class="bg-white rounded-lg shadow-sm p-5">
                     <!-- For demo purpose -->
                     <div id="header_container" class="row mb-4">
                         <div class="col-lg-8 mx-auto text-center">
-                            <h2 class="display-4">Emojiset mining research</h2>
+                            <h2 class="display-4">Emojiset Mining Research</h2>
                             <p class="lead mb-0">Platform for mining tweets and extracting emojisets</p>
                             <p class="lead">Read more at <a href="">Documentation</a></p>
                         </div>
@@ -347,7 +344,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <button id="cancel" name="cancel" type="submit"
                                     class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
                                 </button>
@@ -472,17 +468,29 @@
                         <!-- Sample -->
                         <div id="sample" class="tab-pane fade">
                             <form id="taskForm_sample" role="form">
-                                <div class="form-group">
-                                    <label for="tweet_amount_sample">💯 Tweet amount</label>
-                                    <div class="input-group">
-                                        <input type="number" id="tweet_amount_sample" name="tweet_amount_sample"
-                                            placeholder="100 is default" class="form-control" min="0" max="10000"
-                                            step="1" oninput="validity.valid||(value='');">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text text-muted">
-                                                10000 max
-                                            </span>
+                                <label><span class="hidden-xs">💯 Tweet amount </span></label>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="number" id="tweet_amount_sample" name="tweet_amount_sample"
+                                                    placeholder="100 is default" class="form-control" min="0"
+                                                    max="10000" step="1" oninput="validity.valid||(value='');">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted">
+                                                        10000 max
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="col-sm-0">
+
+                                        <div class="form-group mb-0" style="margin-top:0.08em">
+                                            <input id="discard_box" name="discard_box" type="checkbox" checked
+                                                data-toggle="toggle" data-on="😊" data-off="❌" data-size="small">
+                                        </div>
+
                                     </div>
                                 </div>
                                 <button id="cancel_sample" name="cancel_sample" type="submit"
@@ -496,21 +504,21 @@
                         <!-- End -->
                     </div>
                     <!-- End -->
+                    <div id="results_wrapper_container" class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div id="result_container" style="position: relative;">
+                                    {{utils.flashed_messages(container=False, dismissible=True)}}
+                                    {% block main %} {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="results_wrapper_container" class="container">
-        <div class="row">
-            <div class="col">
-                <div id="result_container" style="position: relative;">
-                    {{utils.flashed_messages(container=False, dismissible=True)}}
-                    {% block main %} {% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
