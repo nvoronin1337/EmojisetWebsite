@@ -1,6 +1,6 @@
 from emojiset_app import app
 from emojiset_app import r
-from emojiset_app import small_task_q
+from emojiset_app import small_task_q, long_task_q
 from emojiset_app import db
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
@@ -8,6 +8,7 @@ from emojiset_app.models import SavedQuery
 from flask import render_template, request, redirect, url_for, jsonify, render_template_string
 from flask_user import login_required, roles_required, current_user
 from time import strftime
+from json import loads
 
 
 # The Home page is accessible to anyone
@@ -45,7 +46,7 @@ def run_small_task():
 		'consumer_key': current_user.consumer_key,
 		'consumer_secret': current_user.consumer_secret
 	}
-
+	user_email = current_user.email
 	# read values that are always present
 	keywords = ""
 	if 'keywords' in request.form:
@@ -81,7 +82,6 @@ def run_small_task():
 			keywords = split_search_keywords(keywords)
 	if twarc_method == 'filter':
 		if form_data:
-			keywords = construct_filter_query(keywords, form_data['additional_settings'])
 			keywords = split_filter_keywords(keywords)
 		else:
 			keywords = split_filter_keywords(keywords)
@@ -95,7 +95,6 @@ def run_small_task():
 		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, None, None, None, None)
 		json_query = query_to_json(keywords, discard, twarc_method)
 	
-	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = json_query
@@ -106,6 +105,41 @@ def run_small_task():
 	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
 	
 
+@app.route('/emojiset/_run_large_task', methods=['POST'])
+@login_required
+def run_large_task():
+	twitter_keys = {
+		'access_token': current_user.access_token,
+		'access_token_secret': current_user.access_token_secret,
+		'consumer_key': current_user.consumer_key,
+		'consumer_secret': current_user.consumer_secret
+	}
+	user_email = current_user.email
+
+	query_id = request.form["query_id"]
+	tweet_amount = int(request.form["tweet_amount"])
+	time_length = request.form["time_length"]
+	query_json = loads(SavedQuery.query.get(query_id).saved_query)
+	
+	twarc_method = query_json["twarc_method"]
+
+	job = None
+	if twarc_method == "search":
+		job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], tweet_amount, query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'])
+	elif twarc_method == "filter":
+		pass
+	else:
+		pass
+
+	job.meta['progress'] = 0
+	job.meta['discarded_tweets'] = 0
+	job.meta['query'] = query_json
+	job.meta['cancel_flag'] = 0
+
+	job.save_meta()
+	
+	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
+
 
 # ---get job object from the queue by the id and check its status (finished or not)---*
 @app.route("/emojiset/status/<job_key>", methods=['GET'])
@@ -113,19 +147,21 @@ def run_small_task():
 def job_status(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:
-		response = {'status': 'unknown'}
-	else:
-		job.refresh()
-		response = {
-			'status': job.get_status(),
-			'progress': job.meta['progress'],
-			'discarded_tweets': job.meta['discarded_tweets'],
-			'result': job.result,
-			'query': job.meta['query'],
-			'cancel_flag': job.meta['cancel_flag']
-		}
-		if job.is_failed:
-			response['message'] = job.exc_info.strip().split('\n')[-1]
+		job = long_task_q.fetch_job(job_key)
+		if job is None:
+			response = {'status': 'unknown'}
+			return jsonify(response)
+	job.refresh()
+	response = {
+		'status': job.get_status(),
+		'progress': job.meta['progress'],
+		'discarded_tweets': job.meta['discarded_tweets'],
+		'result': job.result,
+		'query': job.meta['query'],
+		'cancel_flag': job.meta['cancel_flag']
+	}
+	if job.is_failed:
+		response['message'] = job.exc_info.strip().split('\n')[-1]
 	return jsonify(response)
 
 
@@ -135,20 +171,22 @@ def job_status(job_key):
 def job_cancel(job_key):
 	job = small_task_q.fetch_job(job_key)
 	if job is None:
-		response = {'status': 'unknown'}
-	else:
-		job.refresh()
-		job.meta['cancel_flag'] = 1
-		job.save_meta()
-		response = {
-			'status': 'canceled',
-			'progress': job.meta['progress'],
-			'discarded_tweets': job.meta['discarded_tweets'],
-			'result': job.result,
-			'query': job.meta['query']
-		}
-		if job.is_failed:
-			response['message'] = job.exc_info.strip().split('\n')[-1]
+		job = long_task_q.fetch_job(job_key)
+		if job is None:
+			response = {'status': 'unknown'}
+			return jsonify(response)
+	job.refresh()
+	job.meta['cancel_flag'] = 1
+	job.save_meta()
+	response = {
+		'status': 'canceled',
+		'progress': job.meta['progress'],
+		'discarded_tweets': job.meta['discarded_tweets'],
+		'result': job.result,
+		'query': job.meta['query']
+	}
+	if job.is_failed:
+		response['message'] = job.exc_info.strip().split('\n')[-1]
 	return jsonify(response)
 
 
@@ -157,10 +195,23 @@ def job_cancel(job_key):
 def save_query():
 	query = request.form['query']
 	user_id = current_user.id
+	user_email = current_user.email
 	saved_query = SavedQuery(
-		query = query,
+		user_email = user_email,
+		saved_query = query,
 		user_id=user_id
 	)
 	db.session.add(saved_query)
 	db.session.commit()
 	return jsonify({}, 202)
+
+
+@app.route("/emojiset/load_queries", methods=["GET"])
+@login_required
+def load_queries():
+	user_id = current_user.id
+	saved_queries = SavedQuery.query.filter_by(user_id=current_user.id).all()
+	response = {}
+	for q in saved_queries:
+		response[q.id] = q.saved_query
+	return jsonify(response, 202)

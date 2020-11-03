@@ -23,7 +23,6 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
 
-
   /** Sets default dates for the date input fields */
   function set_date() {
     var now = new Date();
@@ -49,6 +48,7 @@ $(document).ready(function () {
     $('#since-date').val(day_week_ago);
   }
 
+  set_date()
 
   /** 
    * Takes a job result from check_job_status js function and structures it as a HTML table
@@ -286,7 +286,6 @@ $(document).ready(function () {
     $("#submit").hide()
     $("#submit_filter").hide()
     $("#submit_sample").hide()
-    progress_bar_div.hidden = false;
     // ---document.location.href returns the url at which the user is currently at---*
     let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
@@ -305,6 +304,7 @@ $(document).ready(function () {
           e.preventDefault()
           cancel_job(cancel_url)
         });
+        progress_bar_div.hidden = false;
         check_job_status(status_url);
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -328,7 +328,7 @@ $(document).ready(function () {
     $("#submit").hide()
     $("#submit_filter").hide()
     $("#submit_sample").hide()
-    progress_bar_div.hidden = false;
+
     // ---document.location.href returns the url at which the user is currently at---*
     let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
@@ -347,6 +347,7 @@ $(document).ready(function () {
           e.preventDefault()
           cancel_job(cancel_url)
         });
+        progress_bar_div.hidden = false;
         check_job_status(status_url);
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -371,7 +372,7 @@ $(document).ready(function () {
     $("#submit").hide()
     $("#submit_filter").hide()
     $("#submit_sample").hide()
-    progress_bar_div.hidden = false;
+
     // ---document.location.href returns the url at which the user is currently at---*
     let run_task_url = document.location.href + "/_run_small_task"
     $.ajax({
@@ -390,13 +391,13 @@ $(document).ready(function () {
           e.preventDefault()
           cancel_job(cancel_url)
         });
+        progress_bar_div.hidden = false;
         check_job_status(status_url);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus)
       }
     });
-
     return false;
   });
 
@@ -404,7 +405,6 @@ $(document).ready(function () {
     $('.form-group input[type="number"]').val('');
     $('.form-group input[type="datetime-local"]').val('');
     $('.form-group input[type="text"]').val('');
-    $('.form-group input[type="date"]').val('');
   });
   //find a way to set checkboxes to default-->
   $('a[data-toggle="toggle"]').on('shown.bs.tab', function (e) {
@@ -428,4 +428,73 @@ $(document).ready(function () {
     inline: true
   });
 
+  $(function(){
+    $('#query_table').tablesorter(); 
+  });
+
+  $('#collapseOne').on('show.bs.collapse', function () {
+    let load_queries_url = document.location.href + "/load_queries"
+    $.ajax({
+      url: load_queries_url,
+      method: 'GET',
+      dataType: 'json', // added data type
+      success: function (res) {
+        /*
+        let html_saved_queries_list = '<div class="list-group">'
+        
+        for (let query_id in res[0]) {
+          let json_query = JSON.parse(res[0][query_id])
+          html_saved_queries_list += '<button id="select' + query_id + '" type="button"' +
+            'class="list-group-item list-group-item-action clickable_query">' +
+            '<h6 class="list-group-item-heading">' + ' (emoji: ' + json_query["discard"] + ') (method: ' + json_query["twarc_method"] + ') ' + json_query["keywords"] + '</h6>' +
+            '<p class="list-group-item-text">' + JSON.stringify(json_query["form_data"]["additional_settings"]) + '</p>' +
+            '</button>'
+        }
+        html_saved_queries_list += '</div>'
+
+        $("#saved_queries_container").html(html_saved_queries_list)
+        $(".clickable_query").click(function () {
+          let id = this.id.replace("select", '')
+          $('#selected_query').val("Selected " + id);
+        });
+        */
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus)
+      }
+    });
+  })
+
+  $("#submit_long").on('click', function (e) {
+    e.preventDefault()
+    let selected_query_id = $('#selected_query').val().replace("Selected ", "")
+    let tweet_amount = $('#tweet_amount_long').val()
+    let time_length = $('#time-length').val()
+    if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
+      // ---document.location.href returns the url at which the user is currently at---*
+      let run_task_url = document.location.href + "/_run_large_task"
+      $.ajax({
+        url: run_task_url,
+        data: {
+          'query_id': selected_query_id,
+          'tweet_amount': tweet_amount,
+          'time_length': time_length
+        },
+        method: "POST",
+        dataType: "json",
+        success: function (data, status, request) {
+          let status_url = request.getResponseHeader('Status');
+          let cancel_url = request.getResponseHeader('Cancel');
+          //console.log("Status URL: " + status_url)
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(textStatus)
+        }
+      });
+    } else {
+      alert("please select a query")
+    }
+
+    return false;
+  });
 });

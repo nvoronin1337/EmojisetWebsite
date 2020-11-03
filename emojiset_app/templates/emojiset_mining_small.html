@@ -37,7 +37,11 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <!-- Converting table to excel file -->
-    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <script type="text/javascript"
+        src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <!-- Table sorter -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.14/js/jquery.tablesorter.min.js"></script>
     <!-- Link to our JS scripts -->
     <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 </head>
@@ -107,373 +111,112 @@
                             <p class="lead">Read more at <a href="">Documentation</a></p>
                         </div>
                     </div>
-                    <hr>
+
                     <!-- End -->
-                    <!-- Credit card form tabs -->
-                    <ul role="tablist" class="nav bg-light nav-pills rounded-pill nav-fill mb-3">
+                    <ul id="primary-menu" role="tablist" class="nav bg-light nav-pills rounded-pill mb-3"
+                        style="justify-content: center;">
                         <li class="nav-item">
-                            <a data-toggle="pill" href="#historical-search" class="nav-link active rounded-pill">
-                                📜
-                                Historical search
+                            <a data-toggle="pill" href="#small_dataset_mining" class="nav-link active rounded-pill">
+                                🏃‍♀️
+                                Run and save the query
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a data-toggle="pill" href="#realtime-filter" class="nav-link rounded-pill">
-                                📻
-                                Real time filter
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a data-toggle="pill" href="#sample" class="nav-link rounded-pill">
-                                🔀
-                                Random sample
+                            <a data-toggle="pill" href="#large_dataset_mining" class="nav-link rounded-pill">
+                                🕑
+                                Collect large dataset
                             </a>
                         </li>
                     </ul>
-                    <!-- End -->
+                    <hr>
 
-                    <div id="progress_wrapper">
-                        <div class="form-row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <div id=progress_bar_div class="progress">
-                                        <div id="progress_bar" class="progress-bar bg-success" role="progressbar"
-                                            aria-valuenow="" aria-valuemin="0" aria-valuemax="100"><small></small></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-0">
-                                <div class="form-group mb-0">
-                                    <div id="discarded_tweets">
-                                        <h6><span class="badge badge-secondary">
-                                                <label id="discarded_tweets_lbl">🗑️<span
-                                                        class="hidden-xs"></span></label></h6>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 📜 Historical Search form content -->
                     <div class="tab-content">
-                        <!-- credit card info-->
-                        <div id="historical-search" class="tab-pane fade show active">
-                            <form id="taskForm" role="form">
-                                <label for="keywords" data-toggle="tooltip" title="Use comma to separate keywords">🗣️
-                                    Keywords
-                                    <i class="fa fa-question-circle"></i>
-                                </label>
+                        <div id="small_dataset_mining" class="tab-pane fade show active">
+                            <!-- Small dataset mining form tabs -->
+                            <ul id="secondary-menu" role="tablist"
+                                class="nav bg-light nav-pills rounded-pill nav-fill mb-3">
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#historical-search"
+                                        class="nav-link active rounded-pill">
+                                        📜
+                                        Historical search
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#realtime-filter" class="nav-link rounded-pill">
+                                        📻
+                                        Real time filter
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#sample" class="nav-link rounded-pill">
+                                        🔀
+                                        Random sample
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- End -->
+
+                            <div id="progress_wrapper">
                                 <div class="form-row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <input type="text" id="keywords" name="keywords"
-                                                placeholder="🐶, dogs on twitter, -covid19" required
-                                                class="form-control" data-emojiable="true">
+                                            <div id=progress_bar_div class="progress">
+                                                <div id="progress_bar" class="progress-bar bg-success"
+                                                    role="progressbar" aria-valuenow="" aria-valuemin="0"
+                                                    aria-valuemax="100"><small></small>
+                                                </div>
+                                            </div>
                                         </div>
-
                                     </div>
                                     <div class="col-sm-0">
-
-                                        <div class="form-group mb-0" style="margin-top:0.08em">
-                                            <input id="discard_box" name="discard_box" type="checkbox" checked
-                                                data-toggle="toggle" data-on="😊" data-off="❌" data-size="small">
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="tweet_amount"><span class="hidden-xs">💯 Tweet amount</span></label>
-                                    <div class="input-group">
-                                        <input type="number" id="tweet_amount" name="tweet_amount"
-                                            placeholder="100 is default" class="form-control" min="0" max="10000"
-                                            step="1" oninput="validity.valid||(value='');">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text text-muted">
-                                                10000 max
-                                            </span>
+                                        <div class="form-group mb-0">
+                                            <div id="discarded_tweets">
+                                                <h6><span class="badge badge-secondary">
+                                                        <label id="discarded_tweets_lbl">🗑️<span
+                                                                class="hidden-xs"></span></label></h6>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group mb-4">
-                                            <label><span class="hidden-xs">🗓️ Since</span></label>
-                                            <input type="date" class="form-control" id="since-date" name="since-date"
-                                                min="2010-01-01" max="2025-10-12">
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-4">
-                                        <div class="form-group mb-4">
-                                            <label><span class="hidden-xs">🗓️ Until</span></label>
-                                            <input type="date" class="form-control" id="until-date" name="until-date"
-                                                min="2010-01-01" max="2025-10-12">
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-sm-4">
-                                        <div class="form-group mb-4">
-                                            <label><span class="hidden-xs">🌍 Language</span></label>
-                                            <select name="languages" id="languages" class="form-control">
-                                                <option value="all">🗺️ All</option>
-                                                <option value="en">🇬🇧 English</option>
-                                                <option value="es">🇪🇸 Spanish</option>
-                                                <option value="zh">🇨🇳 Chinese</option>
-                                                <option value="ar">🇱🇾 Arabic</option>
-                                                <option value="de">🇩🇪 German</option>
-                                                <option value="ru">🇷🇺 Russian</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Location -->
-                                <input type="checkbox" id="verified" name="verified" value="veri">
-                                <label for="verified"><span class="hidden-xs"><img src="/static/images/verified.png"
-                                            width="15" height="15"> Verified users only </span></label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="sr-only"
-                                                for="inlineFormInputGroupUsername">UsernameFrom</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">@</div>
+                            <!-- 📜 Historical Search form content -->
+                            <div class="tab-content">
+                                <!-- credit card info-->
+                                <div id="historical-search" class="tab-pane fade show active">
+                                    <form id="taskForm" role="form">
+                                        <label for="keywords" data-toggle="tooltip"
+                                            title="Use comma to separate keywords">🗣️
+                                            Keywords
+                                            <i class="fa fa-question-circle"></i>
+                                        </label>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" id="keywords" name="keywords"
+                                                        placeholder="🐶, dogs on twitter, -covid19" required
+                                                        class="form-control" data-emojiable="true">
                                                 </div>
-                                                <input type="text" class="form-control" id="from-user" name="from-user"
-                                                    placeholder="from user">
+
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="sr-only" for="inlineFormInputGroupUsername">UsernameTo</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">@</div>
+                                            <div class="col-sm-0">
+
+                                                <div class="form-group mb-0" style="margin-top:0.08em">
+                                                    <input id="discard_box" name="discard_box" type="checkbox" checked
+                                                        data-toggle="toggle" data-on="😊" data-off="❌"
+                                                        data-size="small">
                                                 </div>
-                                                <input type="text" class="form-control" id="to-user" name="to-user"
-                                                    placeholder="to user">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="sr-only"
-                                                for="inlineFormInputGroupUsername">UsernameMentions</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">@</div>
-                                                </div>
-                                                <input type="text" class="form-control" id="mentioned-user"
-                                                    name="mentioned-user" placeholder="mentioned user">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Location -->
-                                <label><span class="hidden-xs">📍 Location</span></label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="long" name="long"
-                                                    placeholder="longitude">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="lat" name="lat"
-                                                    placeholder="latitude">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="radius" name="radius"
-                                                    placeholder="radius">
-                                                <input type="checkbox" name="units" id="units" checked
-                                                    data-toggle="toggle" data-offstyle="info" data-on="km"
-                                                    data-off="mi">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group mb-4">
-                                            <label><span class="hidden-xs">👍 Likes</span></label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="min-likes"
-                                                    name="min-likes" placeholder="min">
-                                                <input type="number" class="form-control" id="max-likes"
-                                                    name="max-likes" placeholder="max">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-
-                                            <label><span class="hidden-xs">📰 Post type</span></label>
-                                            <select name="result_type" id="results" class="form-control">
-                                                <option value="mixed">All</option>
-                                                <option value="recent">📨🗞️ Most recent</option>
-                                                <option value="popular">🔥🔥🔥 Most popular</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label><span class="hidden-xs">⚙️ Settings</span></label>
-                                            <div class="input-group">
-                                                <input name="operator" id="operator" type="checkbox" checked
-                                                    data-toggle="toggle" data-offstyle="info" data-on="all"
-                                                    data-off="any">
 
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <button id="cancel" name="cancel" type="submit"
-                                    class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
-                                </button>
-                                <button id="submit" name="submit" type="submit"
-                                    class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌 Confirm
-                                </button>
-                            </form>
-                        </div>
-                        <!-- End -->
 
-                        <!-- Real Time Filter  -->
-                        <div id="realtime-filter" class="tab-pane fade">
-                            <form id="taskForm_filter" role="form">
-                                <label for="keywords" data-toggle="tooltip" title="Use comma to separate keywords">🗣️
-                                    Keywords
-                                    <i class="fa fa-question-circle"></i>
-                                </label>
-                                <div class="form-row">
-                                    <div class="col">
                                         <div class="form-group">
-                                            <input type="text" id="keywords_filter" name="keywords_filter"
-                                                placeholder="🐶, dogs on twitter, -covid19" required
-                                                class="form-control" data-emojiable="true">
-                                        </div>
-
-                                    </div>
-                                    <div class="col-sm-0">
-                                        <div class="form-group mb-0" style="margin-top:0.08em">
-                                            <input id="discard_box_filter" name="discard_box_filter" type="checkbox"
-                                                checked data-toggle="toggle" data-on="😊" data-off="❌"
-                                                data-size="small">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="tweet_amount_filter">💯 Tweet amount</label>
-                                    <div class="input-group">
-                                        <input type="number" id="tweet_amount_filter" name="tweet_amount_filter"
-                                            placeholder="100 is default" class="form-control" min="0" max="10000"
-                                            step="1" oninput="validity.valid||(value='');">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text text-muted">
-                                                10000 max
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="sr-only"
-                                                for="inlineFormInputGroupUsername">UsernameFrom</label>
-                                            <label><span class="hidden-xs">👥 Filter by users</span></label>
+                                            <label for="tweet_amount"><span class="hidden-xs">💯 Tweet
+                                                    amount</span></label>
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">@</div>
-                                                </div>
-                                                <input type="text" class="form-control" id="from-user_filter"
-                                                    name="from-user_filter" placeholder="from">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group mb-4">
-                                            <label><span class="hidden-xs">🌍 Language</span></label>
-                                            <select name="languages_filter" id="languages_filter" class="form-control">
-                                                <option value="all">🗺️ All</option>
-                                                <option value="en">🇬🇧 English</option>
-                                                <option value="es">🇪🇸 Spanish</option>
-                                                <option value="zh">🇨🇳 Chinese</option>
-                                                <option value="ar">🇱🇾 Arabic</option>
-                                                <option value="de">🇩🇪 German</option>
-                                                <option value="ru">🇷🇺 Russian</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Location -->
-                                <label><span class="hidden-xs">📍 Location</span></label>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="long_filter"
-                                                    name="long_filter" placeholder="longitude">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="lat_filter"
-                                                    name="lat_filter" placeholder="latitude">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="radius_filter"
-                                                    name="radius_filter" placeholder="radius">
-
-                                                <input type="checkbox" name="units_filter" id="units_filter" checked
-                                                    data-toggle="toggle" data-offstyle="info" data-on="km"
-                                                    data-off="mi">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button id="cancel_filter" name="cancel_filter" type="submit"
-                                    class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
-                                </button>
-                                <button id="submit_filter" name="submit_filter" type="submit"
-                                    class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌 Confirm
-                                </button>
-                            </form>
-                        </div>
-                        <!-- End -->
-
-                        <!-- Sample -->
-                        <div id="sample" class="tab-pane fade">
-                            <form id="taskForm_sample" role="form">
-                                <label><span class="hidden-xs">💯 Tweet amount </span></label>
-                                <div class="form-row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="number" id="tweet_amount_sample" name="tweet_amount_sample"
+                                                <input type="number" id="tweet_amount" name="tweet_amount"
                                                     placeholder="100 is default" class="form-control" min="0"
                                                     max="10000" step="1" oninput="validity.valid||(value='');">
                                                 <div class="input-group-append">
@@ -483,35 +226,581 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-0">
 
-                                        <div class="form-group mb-0" style="margin-top:0.08em">
-                                            <input id="discard_box" name="discard_box" type="checkbox" checked
-                                                data-toggle="toggle" data-on="😊" data-off="❌" data-size="small">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label><span class="hidden-xs">🗓️ Since</span></label>
+                                                    <input type="date" class="form-control" id="since-date"
+                                                        name="since-date" min="2010-01-01" max="2025-10-12">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label><span class="hidden-xs">🗓️ Until</span></label>
+                                                    <input type="date" class="form-control" id="until-date"
+                                                        name="until-date" min="2010-01-01" max="2025-10-12">
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label><span class="hidden-xs">🌍 Language</span></label>
+                                                    <select name="languages" id="languages" class="form-control">
+                                                        <option value="all">🗺️ All</option>
+                                                        <option value="en">🇬🇧 English</option>
+                                                        <option value="es">🇪🇸 Spanish</option>
+                                                        <option value="zh">🇨🇳 Chinese</option>
+                                                        <option value="ar">🇱🇾 Arabic</option>
+                                                        <option value="de">🇩🇪 German</option>
+                                                        <option value="ru">🇷🇺 Russian</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
 
+                                        <!-- Location -->
+                                        <input type="checkbox" id="verified" name="verified" value="veri">
+                                        <label for="verified"><span class="hidden-xs"><img
+                                                    src="/static/images/verified.png" width="15" height="15"> Verified
+                                                users only </span></label>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sr-only"
+                                                        for="inlineFormInputGroupUsername">UsernameFrom</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">@</div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="from-user"
+                                                            name="from-user" placeholder="from user">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sr-only"
+                                                        for="inlineFormInputGroupUsername">UsernameTo</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">@</div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="to-user"
+                                                            name="to-user" placeholder="to user">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sr-only"
+                                                        for="inlineFormInputGroupUsername">UsernameMentions</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">@</div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="mentioned-user"
+                                                            name="mentioned-user" placeholder="mentioned user">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Location -->
+                                        <label><span class="hidden-xs">📍 Location</span></label>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="long" name="long"
+                                                            placeholder="longitude">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="lat" name="lat"
+                                                            placeholder="latitude">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="radius"
+                                                            name="radius" placeholder="radius">
+                                                        <input type="checkbox" name="units" id="units" checked
+                                                            data-toggle="toggle" data-offstyle="info" data-on="km"
+                                                            data-off="mi">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label><span class="hidden-xs">👍 Likes</span></label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="min-likes"
+                                                            name="min-likes" placeholder="min">
+                                                        <input type="number" class="form-control" id="max-likes"
+                                                            name="max-likes" placeholder="max">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+
+                                                    <label><span class="hidden-xs">📰 Post type</span></label>
+                                                    <select name="result_type" id="results" class="form-control">
+                                                        <option value="mixed">All</option>
+                                                        <option value="recent">📨🗞️ Most recent</option>
+                                                        <option value="popular">🔥🔥🔥 Most popular</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label><span class="hidden-xs">⚙️ Settings</span></label>
+                                                    <div class="input-group">
+                                                        <input name="operator" id="operator" type="checkbox" checked
+                                                            data-toggle="toggle" data-offstyle="info" data-on="all"
+                                                            data-off="any">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button id="cancel" name="cancel" type="submit"
+                                            class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
+                                        </button>
+                                        <button id="submit" name="submit" type="submit"
+                                            class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌
+                                            Confirm
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- End -->
+
+                                <!-- Real Time Filter  -->
+                                <div id="realtime-filter" class="tab-pane fade">
+                                    <form id="taskForm_filter" role="form">
+                                        <label for="keywords" data-toggle="tooltip"
+                                            title="Use comma to separate keywords">🗣️
+                                            Keywords
+                                            <i class="fa fa-question-circle"></i>
+                                        </label>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input type="text" id="keywords_filter" name="keywords_filter"
+                                                        placeholder="🐶, dogs on twitter, -covid19" required
+                                                        class="form-control" data-emojiable="true">
+                                                </div>
+
+                                            </div>
+                                            <div class="col-sm-0">
+                                                <div class="form-group mb-0" style="margin-top:0.08em">
+                                                    <input id="discard_box_filter" name="discard_box_filter"
+                                                        type="checkbox" checked data-toggle="toggle" data-on="😊"
+                                                        data-off="❌" data-size="small">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="tweet_amount_filter">💯 Tweet amount</label>
+                                            <div class="input-group">
+                                                <input type="number" id="tweet_amount_filter" name="tweet_amount_filter"
+                                                    placeholder="100 is default" class="form-control" min="0"
+                                                    max="10000" step="1" oninput="validity.valid||(value='');">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted">
+                                                        10000 max
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sr-only"
+                                                        for="inlineFormInputGroupUsername">UsernameFrom</label>
+                                                    <label><span class="hidden-xs">👥 Filter by users</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">@</div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="from-user_filter"
+                                                            name="from-user_filter" placeholder="from">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label><span class="hidden-xs">🌍 Language</span></label>
+                                                    <select name="languages_filter" id="languages_filter"
+                                                        class="form-control">
+                                                        <option value="all">🗺️ All</option>
+                                                        <option value="en">🇬🇧 English</option>
+                                                        <option value="es">🇪🇸 Spanish</option>
+                                                        <option value="zh">🇨🇳 Chinese</option>
+                                                        <option value="ar">🇱🇾 Arabic</option>
+                                                        <option value="de">🇩🇪 German</option>
+                                                        <option value="ru">🇷🇺 Russian</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Location -->
+                                        <label><span class="hidden-xs">📍 Location</span></label>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="long_filter"
+                                                            name="long_filter" placeholder="longitude">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="lat_filter"
+                                                            name="lat_filter" placeholder="latitude">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="radius_filter"
+                                                            name="radius_filter" placeholder="radius">
+
+                                                        <input type="checkbox" name="units_filter" id="units_filter"
+                                                            checked data-toggle="toggle" data-offstyle="info"
+                                                            data-on="km" data-off="mi">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button id="cancel_filter" name="cancel_filter" type="submit"
+                                            class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
+                                        </button>
+                                        <button id="submit_filter" name="submit_filter" type="submit"
+                                            class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌
+                                            Confirm
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- End -->
+
+                                <!-- Sample -->
+                                <div id="sample" class="tab-pane fade">
+                                    <form id="taskForm_sample" role="form">
+                                        <label><span class="hidden-xs">💯 Tweet amount </span></label>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="tweet_amount_sample"
+                                                            name="tweet_amount_sample" placeholder="100 is default"
+                                                            class="form-control" min="0" max="10000" step="1"
+                                                            oninput="validity.valid||(value='');">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted">
+                                                                10000 max
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-0">
+
+                                                <div class="form-group mb-0" style="margin-top:0.08em">
+                                                    <input id="discard_box_sample" name="discard_box_sample"
+                                                        type="checkbox" checked data-toggle="toggle" data-on="😊"
+                                                        data-off="❌" data-size="small">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <button id="cancel_sample" name="cancel_sample" type="submit"
+                                            class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
+                                        </button>
+                                        <button id="submit_sample" name="submit_sample" type="submit"
+                                            class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌
+                                            Confirm
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- End -->
+
+                                <!-- End -->
+                                <div id="results_wrapper_container">
+                                    <div id="result_container" class="container-fluid">
+                                        {{utils.flashed_messages(container=False, dismissible=True)}}
+                                        {% block main %} {% endblock %}
                                     </div>
                                 </div>
-                                <button id="cancel_sample" name="cancel_sample" type="submit"
-                                    class="subscribe btn btn-danger btn-block rounded-pill shadow-sm">✖️ Cancel
-                                </button>
-                                <button id="submit_sample" name="submit_sample" type="submit"
-                                    class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">👌 Confirm
-                                </button>
-                            </form>
+                            </div>
                         </div>
-                        <!-- End -->
-                    </div>
-                    <!-- End -->
-                    <div id="results_wrapper_container" class="container">
-                        <div class="row">
-                            <div class="col">
-                                <div id="result_container" style="position: relative;">
-                                    {{utils.flashed_messages(container=False, dismissible=True)}}
-                                    {% block main %} {% endblock %}
+
+                        <div id="large_dataset_mining" class="tab-pane fade">
+                            <!-- collection settings -->
+                            <ul role="tablist" class="nav bg-light nav-pills rounded-pill nav-fill mb-3">
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#nav-tweet-amount" class="nav-link active rounded-pill">
+                                        🔢
+                                        Number of Tweets
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#nav-memory-size" class="nav-link rounded-pill">
+                                        💾
+                                        Size of Dataset
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a data-toggle="pill" href="#nav-time-range" class="nav-link rounded-pill">
+                                        📅
+                                        Time range
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- End -->
+
+                            <!--STATUS OF COLLECTION HERE-->
+                            <div id="selected_query_wrapper" class="row">
+                                <div class="col">
+                                    <input id="selected_query" class="form-control" type="text"
+                                        placeholder="Please select a query from the list below" readonly>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <a class="accordion-body" collapse data-toggle="collapse"
+                                            data-target="#collapseOne" aria-controls="collapseOne">
+                                            <div class="card-header" id="headingOne">
+                                                ↕️ Saved Queries
+                                            </div>
+                                        </a>
+                                        <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne">
+                                            <!--INSERT QUERIES HERE-->
+                                            <div class="card text-center">
+                                                <div class="card-header">
+                                                    <ul class="nav nav-tabs card-header-tabs nav-fill" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a data-toggle="pill" class="nav-link active" href="#card-search">📜 Historical
+                                                                search</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a data-toggle="pill" class="nav-link" href="#card-filter">📻 Real time
+                                                                filter</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a data-toggle="pill" class="nav-link" href="#card-sample">🔀 Random sample</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-content">
+                                                    <div id="card-search" class="tab-pane fade show active">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">Search</h5>
+                                                            <p class="card-text">With supporting text below as a natural
+                                                                lead-in to additional content.</p>
+                                                            <a href="" class="btn btn-primary">Go somewhere</a>
+                                                        </div>
+                                                    </div>
+                                                    <div id="card-filter" class="tab-pane fade">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">Filter</h5>
+                                                            <p class="card-text">With supporting text below as a natural
+                                                                lead-in to additional content.</p>
+                                                            <a href="" class="btn btn-primary">Go somewhere</a>
+                                                        </div>
+                                                    </div>
+                                                    <div id="card-sample" class="tab-pane fade">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">Sample</h5>
+                                                            <p class="card-text">With supporting text below as a natural
+                                                                lead-in to additional content.</p>
+                                                            <a href="" class="btn btn-primary">Go somewhere</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--
+                                            <div id="saved_queries_container">
+                                                <div class="table-responsive">
+
+
+                                                    <table id="query_table" class="table table-bordered ">
+                                                        <thead>
+                                                            <th colspan="1">Keywords</th>
+                                                            <th colspan="1">Discard Emojis?</th>
+                                                            <th>Time Span</th>
+                                                            <th>Language</th>
+                                                            <th>Verified?</th>
+                                                            <th>From</th>
+                                                            <th>To</th>
+                                                            <th>Mentioned</th>
+                                                            <th>Location</th>
+                                                            <th>Likes (min,max)</th>
+                                                            <th>Post Type</th>
+                                                            <th>AND/OR</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="1">1</td>
+                                                                <td colspan="1">x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="1">2</td>
+                                                                <td colspan="1">x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="1">3</td>
+                                                                <td colspan="1">x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="1">4</td>
+                                                                <td colspan="1">x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="1">5</td>
+                                                                <td colspan="1">x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                                <td>x</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form content -->
+                            <div class="tab-content" style="margin-top: 1em">
+                                <!-- number of tweets -->
+                                <div id="nav-tweet-amount" class="tab-pane fade show active">
+                                    <form id="longTaskFormTA" role="form">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="tweet_amount_long"
+                                                            name="tweet_amount_long"
+                                                            placeholder="💯 Amount of tweets to mine"
+                                                            class="form-control" min="0" max="10000" step="1"
+                                                            oninput="validity.valid||(value='');">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted">
+                                                                unlimited
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- End -->
+
+                                <!-- size of dataset -->
+                                <div id="nav-memory-size" class="tab-pane fade">
+                                    <form id="longTaskFormME" role="form">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="number" min="0" class="form-control w-75" id="set_size"
+                                                    name="set_size" placeholder="Size of dataset">
+                                                <select name="units" id="units" class="form-control">
+                                                    <option value="kb">kb</option>
+                                                    <option value="mb">mb</option>
+                                                    <option value="gb">gb</option>
+                                                    <option value="tb">tb</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- End -->
+
+                                <!-- collect tweets until date -->
+                                <div id="nav-time-range" class="tab-pane fade">
+                                    <form id="longTaskFormDT" role="form">
+                                        <div class="form-group">
+                                            <input type="datetime-local" class="form-control" id="time-length"
+                                                name="time-length" min="2018-06-07T00:00">
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- End -->
+                            </div>
+                            <!-- End tab content -->
+                            <button id="submit_long" type="button"
+                                class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+                                👌 Confirm </button>
                         </div>
                     </div>
                 </div>

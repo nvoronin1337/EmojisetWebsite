@@ -36,3 +36,7 @@ body {
 #progress_bar_div {
     margin-top: 1%;
 }
+
+#selected_query_wrapper {
+    margin-bottom: 1em;
+}

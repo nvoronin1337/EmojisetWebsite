@@ -2,7 +2,7 @@ from twarc import Twarc
 import traceback
 import time
 import emoji
-from emojiset_app import EMOJI_SET
+from emojiset_app import EMOJI_SET, small_task_q, long_task_q
 import regex
 from rq import get_current_job  
 from emojiset_app.utils import debug, split_filter_keywords, split_search_keywords
@@ -10,7 +10,7 @@ from emojiset_app.utils import debug, split_filter_keywords, split_search_keywor
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Tweet_Streamer():
-    def __init__(self, keys, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo):
+    def __init__(self, keys, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo, finish_time=None):
         # ---Configuring Twarc API---*
         self.consumer_key = keys['consumer_key']
         self.consumer_secret = keys['consumer_secret']
@@ -29,6 +29,7 @@ class Tweet_Streamer():
         if self.follow:
             self.follow = self.follow.replace('@', '').replace(' ', "").split(',')
         self.geo = geo
+        self.finish_time = finish_time
 
         self.user_ids = []
         self.job = get_current_job()

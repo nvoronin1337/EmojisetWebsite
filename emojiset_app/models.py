@@ -52,7 +52,8 @@ class UserRoles(db.Model):
 class SavedQuery(db.Model):
     __tablename__ = 'saved_queries'
     id = db.Column(db.Integer(), primary_key=True)
-    query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    user_email = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    saved_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
 
 class EmojisetModelView(ModelView):
