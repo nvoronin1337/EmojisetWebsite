@@ -439,25 +439,66 @@ $(document).ready(function () {
       method: 'GET',
       dataType: 'json', // added data type
       success: function (res) {
-        /*
-        let html_saved_queries_list = '<div class="list-group">'
+        let found_search = false
+        let found_filter = false
+        let found_sample = false
+
+        let html_saved_search_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>Post Type</th></thead><tbody>'
+        let html_saved_filter_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>User</th></thead><tbody>'
+        let html_saved_sample_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th>Discard Emojis?</th></thead><tbody>'
         
         for (let query_id in res[0]) {
           let json_query = JSON.parse(res[0][query_id])
-          html_saved_queries_list += '<button id="select' + query_id + '" type="button"' +
-            'class="list-group-item list-group-item-action clickable_query">' +
-            '<h6 class="list-group-item-heading">' + ' (emoji: ' + json_query["discard"] + ') (method: ' + json_query["twarc_method"] + ') ' + json_query["keywords"] + '</h6>' +
-            '<p class="list-group-item-text">' + JSON.stringify(json_query["form_data"]["additional_settings"]) + '</p>' +
-            '</button>'
-        }
-        html_saved_queries_list += '</div>'
+          let twarc_method = json_query["twarc_method"]
 
-        $("#saved_queries_container").html(html_saved_queries_list)
-        $(".clickable_query").click(function () {
+          if(twarc_method == "search"){
+            found_search = true
+            languages = json_query['form_data']['languages']
+            loc = json_query['form_data']['location']
+            if(!languages){
+              languages = 'all'
+            }
+            if(!loc){
+              loc = 'world'
+            }
+            html_saved_search_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + json_query['form_data']['result_type'] + '</td></tr>'
+          }
+          else if(twarc_method == "filter"){
+            found_filter = true
+            languages = json_query['form_data']['languages']
+            loc = json_query['form_data']['location']
+            follow = json_query['form_data']['follow']
+            if(!languages){
+              languages = 'all'
+            }
+            if(!loc){
+              loc = 'world'
+            }
+            if(!follow){
+              follow = 'all'
+            }
+            html_saved_filter_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + follow + '</td></tr>'
+          }
+          else if(twarc_method == "sample"){
+            found_sample = true
+            html_saved_sample_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td>' + json_query['discard'] + '</td></tr>'
+          }
+        }
+        html_saved_search_queries_table += "</tbody></table></div>"
+        html_saved_filter_queries_table += "</tbody></table></div>"
+        html_saved_sample_queries_table += "</tbody></table></div>"
+
+        if(found_search)
+          $("#saved_search_queries_container").html(html_saved_search_queries_table)
+        if(found_filter)
+          $("#saved_filter_queries_container").html(html_saved_filter_queries_table)
+        if(found_sample)
+        $("#saved_sample_queries_container").html(html_saved_sample_queries_table)
+        
+        $(".clickable-row").click(function () {
           let id = this.id.replace("select", '')
           $('#selected_query').val("Selected " + id);
         });
-        */
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus)
@@ -470,8 +511,8 @@ $(document).ready(function () {
     let selected_query_id = $('#selected_query').val().replace("Selected ", "")
     let tweet_amount = $('#tweet_amount_long').val()
     let time_length = $('#time-length').val()
+    alert("started, there is currently no way for the user to know what is going on")
     if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
-      // ---document.location.href returns the url at which the user is currently at---*
       let run_task_url = document.location.href + "/_run_large_task"
       $.ajax({
         url: run_task_url,
@@ -485,14 +526,13 @@ $(document).ready(function () {
         success: function (data, status, request) {
           let status_url = request.getResponseHeader('Status');
           let cancel_url = request.getResponseHeader('Cancel');
-          //console.log("Status URL: " + status_url)
         },
         error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus)
         }
       });
     } else {
-      alert("please select a query")
+      alert("please select a query and a finish parameter")
     }
 
     return false;

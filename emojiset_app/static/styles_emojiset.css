@@ -40,3 +40,11 @@ body {
 #selected_query_wrapper {
     margin-bottom: 1em;
 }
+
+.queries_table {
+    font-size: small;
+}
+
+.clickable-row {
+    cursor: pointer;
+}

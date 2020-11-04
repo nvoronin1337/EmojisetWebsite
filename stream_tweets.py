@@ -10,7 +10,7 @@ from emojiset_app.utils import debug, split_filter_keywords, split_search_keywor
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Tweet_Streamer():
-    def __init__(self, keys, keywords, max_tweets, discard, twarc_method, lang, result_type, follow, geo, finish_time=None):
+    def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None):
         # ---Configuring Twarc API---*
         self.consumer_key = keys['consumer_key']
         self.consumer_secret = keys['consumer_secret']
@@ -64,7 +64,7 @@ class Tweet_Streamer():
                     break
                 else:
                     self.process_tweet(tweet)
-                    if self.current_tweets >= self.max_tweets:
+                    if self.requested_limit_reached():
                         break
 
         # ---filter function---*
@@ -80,7 +80,7 @@ class Tweet_Streamer():
                     break
                 else:
                     self.process_tweet(tweet)
-                    if self.current_tweets >= self.max_tweets:
+                    if self.requested_limit_reached():
                         break
 
         # ---sample function---*    
@@ -93,7 +93,7 @@ class Tweet_Streamer():
                 else:
                     if self.text in tweet:
                         self.process_tweet(tweet)
-                        if self.current_tweets >= self.max_tweets:
+                        if self.requested_limit_reached():
                             break
 
     # ---extract emojiset, update progress bar, discard tweets without emojis, output # of discarded tweets---*
@@ -102,8 +102,11 @@ class Tweet_Streamer():
             if self.contains_emoji(tweet):
                 self.map_tweet_to_emojiset(tweet)
                 self.current_tweets += 1                                                       # counter of tweets w/ emojis to update progress bar*
-                self.job.refresh()                                                             # refreshes progress bar every 150 milliseconds (established in main.js)*
-                self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100      # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
+                self.job.refresh()     
+                if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
+                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100      # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
+                elif self.finish_time:
+                    self.job.meta['progress'] = (time.time() / self.finish_time) * 100
                 self.job.save_meta()                                                           # saves new update to progress bar*
             else:
                 self.discarded += 1                                                            # counter of tweets w/o emojis*
@@ -192,3 +195,15 @@ class Tweet_Streamer():
         if len(emojiset_str) > 1:                              # removes comma from end of string
             emojiset_str = emojiset_str[:-1]
         return emojiset_str                                    # returns emojiset as a string
+
+    def requested_limit_reached(self):
+        if self.max_tweets:
+            if self.current_tweets >= self.max_tweets:
+                return True
+            else:
+                return False
+        elif self.finish_time:
+            if time.time() >= self.finish_time:
+                return True
+            else:
+                return False

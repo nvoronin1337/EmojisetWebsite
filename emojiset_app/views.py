@@ -9,6 +9,8 @@ from flask import render_template, request, redirect, url_for, jsonify, render_t
 from flask_user import login_required, roles_required, current_user
 from time import strftime
 from json import loads
+import time
+import calendar
 
 
 # The Home page is accessible to anyone
@@ -89,10 +91,10 @@ def run_small_task():
 	# ---send a job to the task queue---*
 	job = None
 	if form_data:
-		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'])
+		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, discard, twarc_method, form_data['languages'], form_data['result_type'], form_data['follow'], form_data['location'], tweet_amount=tweet_amount)
 		json_query = query_to_json(keywords, discard, twarc_method, form_data)
 	else:
-		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, tweet_amount, discard, twarc_method, None, None, None, None)
+		job = small_task_q.enqueue(stream_task, twitter_keys, keywords, discard, twarc_method, None, None, None, None, tweet_amount=tweet_amount)
 		json_query = query_to_json(keywords, discard, twarc_method)
 	
 	job.meta['progress'] = 0
@@ -117,20 +119,20 @@ def run_large_task():
 	user_email = current_user.email
 
 	query_id = request.form["query_id"]
-	tweet_amount = int(request.form["tweet_amount"])
+	tweet_amount = request.form["tweet_amount"]
+	finish_time = None
+	if tweet_amount:
+		tweet_amount = int(tweet_amount)
 	time_length = request.form["time_length"]
+	if time_length:
+		user_time = time.strptime(time_length, "%Y-%m-%dT%H:%M")
+		finish_time = calendar.timegm(time.strptime(time_length, "%Y-%m-%dT%H:%M"))
 	query_json = loads(SavedQuery.query.get(query_id).saved_query)
 	
 	twarc_method = query_json["twarc_method"]
 
-	job = None
-	if twarc_method == "search":
-		job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], tweet_amount, query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'])
-	elif twarc_method == "filter":
-		pass
-	else:
-		pass
-
+	job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time)
+	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = query_json

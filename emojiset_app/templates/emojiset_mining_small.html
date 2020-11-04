@@ -552,6 +552,7 @@
                             </div>
                         </div>
 
+
                         <div id="large_dataset_mining" class="tab-pane fade">
                             <!-- collection settings -->
                             <ul role="tablist" class="nav bg-light nav-pills rounded-pill nav-fill mb-3">
@@ -577,168 +578,96 @@
                             <!-- End -->
 
                             <!--STATUS OF COLLECTION HERE-->
-                            <div id="selected_query_wrapper" class="row">
-                                <div class="col">
-                                    <input id="selected_query" class="form-control" type="text"
-                                        placeholder="Please select a query from the list below" readonly>
-                                </div>
-                            </div>
+
 
                             <div class="row">
                                 <div class="col">
                                     <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Currently runnins task</h5>
+                                            <p class="card-text">With supporting text below as a natural lead-in to
+                                                additional content.</p>
+                                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div id="selected_query_wrapper" class="row">
+                                        <div class="col">
+                                            <input id="selected_query" class="form-control" type="text"
+                                                placeholder="Please select a query from the dropdown table below"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <!--INSERT QUERIES HERE-->
+
+                                    <div class="card">
                                         <a class="accordion-body" collapse data-toggle="collapse"
                                             data-target="#collapseOne" aria-controls="collapseOne">
                                             <div class="card-header" id="headingOne">
+
                                                 ↕️ Saved Queries
+
                                             </div>
                                         </a>
+
                                         <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne">
-                                            <!--INSERT QUERIES HERE-->
-                                            <div class="card text-center">
-                                                <div class="card-header">
-                                                    <ul class="nav nav-tabs card-header-tabs nav-fill" role="tablist">
-                                                        <li class="nav-item">
-                                                            <a data-toggle="pill" class="nav-link active" href="#card-search">📜 Historical
-                                                                search</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a data-toggle="pill" class="nav-link" href="#card-filter">📻 Real time
-                                                                filter</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a data-toggle="pill" class="nav-link" href="#card-sample">🔀 Random sample</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="tab-content">
-                                                    <div id="card-search" class="tab-pane fade show active">
+                                            <ul class="nav nav-tabs nav-fill" role="tablist">
+                                                <li class="nav-item">
+                                                    <a data-toggle="pill" class="nav-link active" href="#card-search">📜
+                                                        Historical
+                                                        search</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a data-toggle="pill" class="nav-link" href="#card-filter">📻 Real
+                                                        time
+                                                        filter</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a data-toggle="pill" class="nav-link" href="#card-sample">🔀 Random
+                                                        sample</a>
+                                                </li>
+                                            </ul>
+
+                                            <div class="tab-content">
+                                                <div id="card-search" class="tab-pane fade show active">
+                                                    <div id="saved_search_queries_container" class="queries_table">
                                                         <div class="card-body">
-                                                            <h5 class="card-title">Search</h5>
-                                                            <p class="card-text">With supporting text below as a natural
-                                                                lead-in to additional content.</p>
-                                                            <a href="" class="btn btn-primary">Go somewhere</a>
-                                                        </div>
-                                                    </div>
-                                                    <div id="card-filter" class="tab-pane fade">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">Filter</h5>
-                                                            <p class="card-text">With supporting text below as a natural
-                                                                lead-in to additional content.</p>
-                                                            <a href="" class="btn btn-primary">Go somewhere</a>
-                                                        </div>
-                                                    </div>
-                                                    <div id="card-sample" class="tab-pane fade">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">Sample</h5>
-                                                            <p class="card-text">With supporting text below as a natural
-                                                                lead-in to additional content.</p>
-                                                            <a href="" class="btn btn-primary">Go somewhere</a>
+                                                            <p class="card-text">You don't have any saved queries yet.
+                                                                Please go to the "run and save your query" page first.
+                                                            </p>
+                                                            <a href="" class="btn btn-primary">Run and save query</a>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!--
-                                            <div id="saved_queries_container">
-                                                <div class="table-responsive">
-
-
-                                                    <table id="query_table" class="table table-bordered ">
-                                                        <thead>
-                                                            <th colspan="1">Keywords</th>
-                                                            <th colspan="1">Discard Emojis?</th>
-                                                            <th>Time Span</th>
-                                                            <th>Language</th>
-                                                            <th>Verified?</th>
-                                                            <th>From</th>
-                                                            <th>To</th>
-                                                            <th>Mentioned</th>
-                                                            <th>Location</th>
-                                                            <th>Likes (min,max)</th>
-                                                            <th>Post Type</th>
-                                                            <th>AND/OR</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="1">1</td>
-                                                                <td colspan="1">x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="1">2</td>
-                                                                <td colspan="1">x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="1">3</td>
-                                                                <td colspan="1">x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="1">4</td>
-                                                                <td colspan="1">x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="1">5</td>
-                                                                <td colspan="1">x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                                <td>x</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-
+                                                <div id="card-filter" class="tab-pane fade">
+                                                    <div id="saved_filter_queries_container" class="queries_table">
+                                                        <div class="card-body">
+                                                            <p class="card-text">You don't have any saved queries yet.
+                                                                Please go to
+                                                                the "run and save your query" page first.</p>
+                                                            <a href="" class="btn btn-primary">Run and save query</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="card-sample" class="tab-pane fade">
+                                                    <div id="saved_sample_queries_container" class="queries_table">
+                                                        <div class="card-body">
+                                                            <p class="card-text">You don't have any saved queries yet.
+                                                                Please go to
+                                                                the "run and save your query" page first.</p>
+                                                            <a href="" class="btn btn-primary">Run and save query</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        -->
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
+
 
                             <!-- Form content -->
                             <div class="tab-content" style="margin-top: 1em">
@@ -796,17 +725,18 @@
                                     </form>
                                 </div>
                                 <!-- End -->
+                                <button id="submit_long" type="button"
+                                    class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+                                    👌 Confirm </button>
                             </div>
                             <!-- End tab content -->
-                            <button id="submit_long" type="button"
-                                class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
-                                👌 Confirm </button>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
 </body>
 

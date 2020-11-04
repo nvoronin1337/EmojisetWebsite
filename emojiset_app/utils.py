@@ -163,7 +163,7 @@ def construct_search_query(keywords, additional_settings, operator):
     if additional_settings['min_likes']:
         min_likes_query = "min_faves:" + additional_settings['min_likes']
         if query:
-            query += " " + min_likes_query
+            query += ' ' + min_likes_query
         else:
             query += min_likes_query
     # ---search tweets that have no more than specified amount of likes: -min_faves:500---*
