@@ -204,6 +204,7 @@ class Tweet_Streamer():
                 return False
         elif self.finish_time:
             if time.time() >= self.finish_time:
+                debug(self.result)
                 return True
             else:
                 return False
