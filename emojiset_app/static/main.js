@@ -513,13 +513,15 @@ $(document).ready(function () {
     let time_length = $('#time-length').val()
     alert("started, there is currently no way for the user to know what is going on")
     if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
+      var offset = new Date().getTimezoneOffset();
       let run_task_url = document.location.href + "/_run_large_task"
       $.ajax({
         url: run_task_url,
         data: {
           'query_id': selected_query_id,
           'tweet_amount': tweet_amount,
-          'time_length': time_length
+          'time_length': time_length,
+          'time_offset': offset
         },
         method: "POST",
         dataType: "json",

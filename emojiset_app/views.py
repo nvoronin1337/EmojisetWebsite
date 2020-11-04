@@ -120,13 +120,14 @@ def run_large_task():
 
 	query_id = request.form["query_id"]
 	tweet_amount = request.form["tweet_amount"]
+	time_length = request.form["time_length"]
+	offset = request.form["time_offset"]
+
 	finish_time = None
 	if tweet_amount:
 		tweet_amount = int(tweet_amount)
-	time_length = request.form["time_length"]
 	if time_length:
-		user_time = time.strptime(time_length, "%Y-%m-%dT%H:%M")
-		finish_time = calendar.timegm(time.strptime(time_length, "%Y-%m-%dT%H:%M"))
+		finish_time = calendar.timegm(time.strptime(time_length, "%Y-%m-%dT%H:%M")) + (int(offset) * 60)
 	query_json = loads(SavedQuery.query.get(query_id).saved_query)
 	
 	twarc_method = query_json["twarc_method"]
