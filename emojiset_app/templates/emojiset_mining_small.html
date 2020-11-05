@@ -578,16 +578,40 @@
                             <!-- End -->
 
                             <!--STATUS OF COLLECTION HERE-->
-
-
                             <div class="row">
                                 <div class="col">
                                     <div class="card">
+                                        <div class="card-header">
+                                            ▶️ Currently Running Task
+                                            <span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
+                                        </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">Currently runnins task</h5>
-                                            <p class="card-text">With supporting text below as a natural lead-in to
-                                                additional content.</p>
-                                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                            <p id="task-query" class="card-text">There are no currently running tasks</p>
+                                            <div id="progress_wrapper">
+                                                <div class="form-row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <div id="task-progress-div" class="progress" hidden>
+                                                                <div id="task-progress" class="progress-bar bg-success"
+                                                                    role="progressbar" aria-valuenow="" aria-valuemin="0"
+                                                                    aria-valuemax="100"><small></small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-0">
+                                                        <div class="form-group mb-0">
+                                                            <div id="task-discarded-div" hidden>
+                                                                <h6><span class="badge badge-secondary">
+                                                                        <label id="task-discarded">🗑️<span
+                                                                                class="hidden-xs"></span></label></h6>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button id="task-cancel" type="button" class="btn btn-danger" style="float: right;" hidden>Cancel task</button>
                                         </div>
                                     </div>
                                     <br>
@@ -600,14 +624,11 @@
                                     </div>
 
                                     <!--INSERT QUERIES HERE-->
-
                                     <div class="card">
                                         <a class="accordion-body" collapse data-toggle="collapse"
                                             data-target="#collapseOne" aria-controls="collapseOne">
                                             <div class="card-header" id="headingOne">
-
                                                 ↕️ Saved Queries
-
                                             </div>
                                         </a>
 
@@ -633,7 +654,8 @@
                                                 <div id="card-search" class="tab-pane fade show active">
                                                     <div id="saved_search_queries_container" class="queries_table">
                                                         <div class="card-body">
-                                                            <p class="card-text">You don't have any saved queries yet.
+                                                            <p class="card-text">You don't have any saved historical
+                                                                search queries yet.
                                                                 Please go to the "run and save your query" page first.
                                                             </p>
                                                             <a href="" class="btn btn-primary">Run and save query</a>
@@ -643,7 +665,8 @@
                                                 <div id="card-filter" class="tab-pane fade">
                                                     <div id="saved_filter_queries_container" class="queries_table">
                                                         <div class="card-body">
-                                                            <p class="card-text">You don't have any saved queries yet.
+                                                            <p class="card-text">You don't have any saved realtime
+                                                                filter queries yet.
                                                                 Please go to
                                                                 the "run and save your query" page first.</p>
                                                             <a href="" class="btn btn-primary">Run and save query</a>
@@ -653,7 +676,8 @@
                                                 <div id="card-sample" class="tab-pane fade">
                                                     <div id="saved_sample_queries_container" class="queries_table">
                                                         <div class="card-body">
-                                                            <p class="card-text">You don't have any saved queries yet.
+                                                            <p class="card-text">You don't have any saved sample queries
+                                                                yet.
                                                                 Please go to
                                                                 the "run and save your query" page first.</p>
                                                             <a href="" class="btn btn-primary">Run and save query</a>
@@ -664,10 +688,7 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
-
 
                             <!-- Form content -->
                             <div class="tab-content" style="margin-top: 1em">
@@ -719,8 +740,14 @@
                                 <div id="nav-time-range" class="tab-pane fade">
                                     <form id="longTaskFormDT" role="form">
                                         <div class="form-group">
-                                            <input type="datetime-local" class="form-control" id="time-length"
-                                                name="time-length" min="2018-06-07T00:00">
+                                            <!-- NOT SHOWING IN FIREFOX -->
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="date-length"
+                                                name="time-length">
+                                                <input type="time" class="form-control" id="time-length"
+                                                name="time-length">
+                                            </div>
+                                            
                                         </div>
                                     </form>
                                 </div>
@@ -730,14 +757,11 @@
                                     👌 Confirm </button>
                             </div>
                             <!-- End tab content -->
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
 </body>
 
 </html>

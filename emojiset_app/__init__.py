@@ -60,11 +60,12 @@ bootstrap = Bootstrap(app)
 babel = Babel(app)
 mail = Mail(app)
 
+# BIG PROBLEM!!! HIDE THE KEY 
 secret_key = 'XJWyyVZPOTsFn-2vrzFoXqI_jE6vzkc9u57VQ-APOSM='
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
 
-from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery
+from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery, RunningTask
 from emojiset_app.forms import CustomUserManager
 
 # Setup Flask-User
@@ -93,6 +94,7 @@ app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 admin = Admin(app, name='emojiset', template_mode='bootstrap3')
 admin.add_view(EmojisetModelView(User, db.session))
 admin.add_view(EmojisetModelView(SavedQuery, db.session))
+admin.add_view(EmojisetModelView(RunningTask, db.session))
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()

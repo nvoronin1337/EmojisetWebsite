@@ -30,7 +30,8 @@ class Tweet_Streamer():
             self.follow = self.follow.replace('@', '').replace(' ', "").split(',')
         self.geo = geo
         self.finish_time = finish_time
-
+        if self.finish_time:
+            self.total_time = self.finish_time - time.time()
         self.user_ids = []
         self.job = get_current_job()
         self.current_tweets = 0
@@ -104,9 +105,9 @@ class Tweet_Streamer():
                 self.current_tweets += 1                                                       # counter of tweets w/ emojis to update progress bar*
                 self.job.refresh()     
                 if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
-                    self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100      # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
+                    self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
                 elif self.finish_time:
-                    self.job.meta['progress'] = (time.time() / self.finish_time) * 100
+                    self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
                 self.job.save_meta()                                                           # saves new update to progress bar*
             else:
                 self.discarded += 1                                                            # counter of tweets w/o emojis*
@@ -117,7 +118,10 @@ class Tweet_Streamer():
             self.map_tweet_to_emojiset(tweet)
             self.current_tweets += 1
             self.job.refresh()
-            self.job.meta['progress'] = (self.current_tweets / self.max_tweets) * 100
+            if self.max_tweets:                                                       
+                self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)   
+            elif self.finish_time:
+                self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
             self.job.save_meta()
 
     # ---checks to see if any emojis are present---*
@@ -204,7 +208,6 @@ class Tweet_Streamer():
                 return False
         elif self.finish_time:
             if time.time() >= self.finish_time:
-                debug(self.result)
                 return True
             else:
                 return False

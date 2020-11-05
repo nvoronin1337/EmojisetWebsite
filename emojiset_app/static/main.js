@@ -19,6 +19,8 @@ $(document).ready(function () {
   $("#cancel_filter").hide()
   $("#cancel_sample").hide()
 
+  check_users_running_task()
+
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
@@ -85,7 +87,6 @@ $(document).ready(function () {
       '</div>' +
       '</div>' +
       '</div>'
-
 
     htmlString = '<div id="result' + total_results + '" class="card mb-4">'
     htmlString += '<div class="card-body">'
@@ -197,7 +198,6 @@ $(document).ready(function () {
       $(this).remove();
     });
   }
-
 
   /**
    * 
@@ -403,7 +403,8 @@ $(document).ready(function () {
 
   $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
     $('.form-group input[type="number"]').val('');
-    $('.form-group input[type="datetime-local"]').val('');
+    $('.form-group input[type="date"]').val('');
+    $('.form-group input[type="time"]').val('');
     $('.form-group input[type="text"]').val('');
   });
   //find a way to set checkboxes to default-->
@@ -428,8 +429,8 @@ $(document).ready(function () {
     inline: true
   });
 
-  $(function(){
-    $('#query_table').tablesorter(); 
+  $(function () {
+    $('#query_table').tablesorter();
   });
 
   $('#collapseOne').on('show.bs.collapse', function () {
@@ -442,44 +443,41 @@ $(document).ready(function () {
         let found_search = false
         let found_filter = false
         let found_sample = false
-
         let html_saved_search_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>Post Type</th></thead><tbody>'
         let html_saved_filter_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>User</th></thead><tbody>'
         let html_saved_sample_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th>Discard Emojis?</th></thead><tbody>'
-        
+
         for (let query_id in res[0]) {
           let json_query = JSON.parse(res[0][query_id])
           let twarc_method = json_query["twarc_method"]
 
-          if(twarc_method == "search"){
+          if (twarc_method == "search") {
             found_search = true
             languages = json_query['form_data']['languages']
             loc = json_query['form_data']['location']
-            if(!languages){
+            if (!languages) {
               languages = 'all'
             }
-            if(!loc){
+            if (!loc) {
               loc = 'world'
             }
             html_saved_search_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + json_query['form_data']['result_type'] + '</td></tr>'
-          }
-          else if(twarc_method == "filter"){
+          } else if (twarc_method == "filter") {
             found_filter = true
             languages = json_query['form_data']['languages']
             loc = json_query['form_data']['location']
             follow = json_query['form_data']['follow']
-            if(!languages){
+            if (!languages) {
               languages = 'all'
             }
-            if(!loc){
+            if (!loc) {
               loc = 'world'
             }
-            if(!follow){
+            if (!follow) {
               follow = 'all'
             }
             html_saved_filter_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + follow + '</td></tr>'
-          }
-          else if(twarc_method == "sample"){
+          } else if (twarc_method == "sample") {
             found_sample = true
             html_saved_sample_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td>' + json_query['discard'] + '</td></tr>'
           }
@@ -488,13 +486,13 @@ $(document).ready(function () {
         html_saved_filter_queries_table += "</tbody></table></div>"
         html_saved_sample_queries_table += "</tbody></table></div>"
 
-        if(found_search)
+        if (found_search)
           $("#saved_search_queries_container").html(html_saved_search_queries_table)
-        if(found_filter)
+        if (found_filter)
           $("#saved_filter_queries_container").html(html_saved_filter_queries_table)
-        if(found_sample)
-        $("#saved_sample_queries_container").html(html_saved_sample_queries_table)
-        
+        if (found_sample)
+          $("#saved_sample_queries_container").html(html_saved_sample_queries_table)
+
         $(".clickable-row").click(function () {
           let id = this.id.replace("select", '')
           $('#selected_query').val("Selected " + id);
@@ -506,12 +504,94 @@ $(document).ready(function () {
     });
   })
 
+  function check_users_running_task() {
+    let load_task_url = document.location.href + "/load_task"
+    $.getJSON(load_task_url, function (data) {
+      if (data[0].status_url != undefined) {
+        $('#task-started').html('Started on: ' + data[0].started_on)
+        $('#task-query').html('Query: ' + data[0].task_query)
+        $('#task-cancel').on('click', function (e) {
+          cancel_job(data[0].cancel_url)
+        });
+        $('#task-cancel').removeAttr('hidden')
+        $('#task-status').removeAttr('hidden')
+        $('#task-progress-div').removeAttr('hidden')
+        $('#submit_long').hide()
+        check_long_job_status(data[0].status_url)
+      }
+    });
+  }
+
+  function check_long_job_status(status_url) {
+    $.getJSON(status_url, function (data) {
+      switch (data.status) {
+        case "failed":
+          $('#task-query').html("There are no currently running tasks")
+          $('#task-started').attr('hidden', '')
+          $('#task-cancel').attr('hidden', '')
+          $('#task-progress-div').attr('hidden', '')
+          $('#task-discarded-div').attr('hidden', '')
+          $('#submit_long').show()
+          $.getJSON(delete_task_url)
+          break
+        case "unknown":
+          $('#task-query').html("There are no currently running tasks")
+          $('#task-started').attr('hidden', '')
+          $('#task-cancel').attr('hidden', '')
+          $('#task-progress-div').attr('hidden', '')
+          $('#task-discarded-div').attr('hidden', '')
+          $('#submit_long').show()
+          $.getJSON(delete_task_url)
+          break
+        case "finished":
+          $('#task-query').html("There are no currently running tasks")
+          $('#task-started').attr('hidden', '')
+          $('#task-cancel').attr('hidden', '')
+          $('#task-progress-div').attr('hidden', '')
+          $('#task-discarded-div').attr('hidden', '')
+          $('#submit_long').show()
+          let delete_task_url = document.location.href + "/delete_task"
+          $.ajax({
+            url: delete_task_url,
+          });
+          break
+        default:
+          if (data.discarded_tweets != 0) {
+            $('#task-discarded-div').removeAttr('hidden')
+            $('#task-discarded span').text(data.discarded_tweets)
+          }
+          $("#task-progress").css('width', data.progress + '%').attr('aria-valuenow', data.progress);
+          $("#task-progress small").text(data.progress.toFixed(1) + '%');
+          setTimeout(function () {
+            check_long_job_status(status_url)
+          }, 150)
+      }
+    });
+  }
+
   $("#submit_long").on('click', function (e) {
     e.preventDefault()
     let selected_query_id = $('#selected_query').val().replace("Selected ", "")
     let tweet_amount = $('#tweet_amount_long').val()
-    let time_length = $('#time-length').val()
-    alert("started, there is currently no way for the user to know what is going on")
+    let date_input = $('#date-length').val()
+    let time_input = $('#time-length').val()
+    let time_length = ""
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
+    if (date_input || time_input) {
+      if (date_input && time_input) {
+        time_length = date_input + "T" + time_input
+      } else if (date_input) {
+        time_length = date_input + "T" + '00:00'
+      } else if (time_input) {
+        time_length = date + "T" + time_input
+      }
+    }
+
     if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
       var offset = new Date().getTimezoneOffset();
       let run_task_url = document.location.href + "/_run_large_task"
@@ -528,6 +608,28 @@ $(document).ready(function () {
         success: function (data, status, request) {
           let status_url = request.getResponseHeader('Status');
           let cancel_url = request.getResponseHeader('Cancel');
+          let query = request.getResponseHeader('Query');
+
+          // Save query to the database
+          let save_task_url = document.location.href + "/save_task"
+          $.ajax({
+            url: save_task_url,
+            data: {
+              'task-query': query,
+              'status-url': status_url,
+              'cancel-url': cancel_url,
+              'started-on': dateTime,
+              'finished-on': time_length
+            },
+            method: "POST",
+            dataType: "json",
+            success: function (data, status, request) {
+              check_users_running_task()
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log(textStatus)
+            }
+          });
         },
         error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus)
@@ -536,7 +638,6 @@ $(document).ready(function () {
     } else {
       alert("please select a query and a finish parameter")
     }
-
     return false;
   });
 });

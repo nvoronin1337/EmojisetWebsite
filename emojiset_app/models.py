@@ -56,6 +56,18 @@ class SavedQuery(db.Model):
     saved_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
 
+
+class RunningTask(db.Model):
+    __tablename__ = 'running_tasks'
+    id = db.Column(db.Integer(), primary_key=True)
+    task_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    status_url = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    cancel_url = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    started_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    finished_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+
+
 class EmojisetModelView(ModelView):
     def is_accessible(self):
         if current_user.is_authenticated and current_user.has_roles('Admin'):

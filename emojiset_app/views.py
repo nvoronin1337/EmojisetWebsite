@@ -4,7 +4,7 @@ from emojiset_app import small_task_q, long_task_q
 from emojiset_app import db
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
-from emojiset_app.models import SavedQuery
+from emojiset_app.models import SavedQuery, RunningTask
 from flask import render_template, request, redirect, url_for, jsonify, render_template_string
 from flask_user import login_required, roles_required, current_user
 from time import strftime
@@ -132,6 +132,7 @@ def run_large_task():
 	
 	twarc_method = query_json["twarc_method"]
 
+	job = None
 	job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time)
 	
 	job.meta['progress'] = 0
@@ -140,8 +141,37 @@ def run_large_task():
 	job.meta['cancel_flag'] = 0
 
 	job.save_meta()
-	
-	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
+
+	query_for_response = ""
+	if(twarc_method == 'search'):
+		query_for_response = query_json["keywords"] + "| Discard tweets without emojis: " + str(query_json['discard'])
+		if not query_json['form_data']['languages']:
+			query_for_response += " | Language: all"
+		else:
+			query_for_response += " | Language: " + query_json['form_data']['languages']
+		if not query_json['form_data']['location']:
+			query_for_response += " | Location: world"
+		else:
+			query_for_response += " | Location: " + query_json['form_data']['location']
+		query_for_response += " | Post type: " + query_json['form_data']['result_type']
+
+	elif(twarc_method == 'filter'):
+		query_for_response = ", ".join(query_json["keywords"]) + " | Discard tweets without emojis: " + str(query_json['discard'])
+		if not query_json['form_data']['languages']:
+			query_for_response += " | Language: all"
+		else:
+			query_for_response += " | Language: " + query_json['form_data']['languages']
+		if not query_json['form_data']['location']:
+			query_for_response += " | Location: world"
+		else:
+			query_for_response += " | Location: " + query_json['form_data']['location']
+		if not query_json['form_data']['follow']:
+			query_for_response += " | User: all"
+		else:
+			query_for_response += " | User: " + query_json['form_data']['follow']
+	elif(twarc_method == 'sample'):
+		query_for_response = "Discard tweets without emojis: " + str(query_json['discard'])
+	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id), 'Query': query_for_response}
 
 
 # ---get job object from the queue by the id and check its status (finished or not)---*
@@ -218,3 +248,44 @@ def load_queries():
 	for q in saved_queries:
 		response[q.id] = q.saved_query
 	return jsonify(response, 202)
+
+
+@app.route("/emojiset/save_task", methods=["POST"])
+@login_required
+def save_task():
+	running_task = RunningTask(
+		task_query = request.form["task-query"],
+		status_url = request.form["status-url"],
+		cancel_url = request.form["cancel-url"],
+		started_on = request.form["started-on"],
+		finished_on = request.form["finished-on"],
+		user_id = current_user.id
+	)
+	db.session.add(running_task)
+	db.session.commit()
+	return jsonify({}, 202)
+
+
+@app.route("/emojiset/load_task", methods=["GET"])
+@login_required
+def load_task():
+	running_task = RunningTask.query.filter_by(user_id=current_user.id).first()
+	if running_task:
+		response = {
+			'task_query': running_task.task_query,
+			'status_url': running_task.status_url,
+			'cancel_url': running_task.cancel_url,
+			'started_on': running_task.started_on,
+			'finished_on': running_task.finished_on
+		}
+	else:
+		response = {}
+	return jsonify(response, 202)	
+
+
+@app.route("/emojiset/delete_task", methods=["GET"])
+@login_required
+def delete_task():
+	RunningTask.query.filter_by(user_id=current_user.id).delete()
+	db.session.commit()
+	return jsonify({}, 202)
