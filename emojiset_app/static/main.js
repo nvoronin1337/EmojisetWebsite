@@ -536,9 +536,9 @@ $(document).ready(function () {
 				case "finished":
 					let get_downloadable_files_link = document.location.href + "/get_downloads"
 					
-					$.getJSON(get_downloadable_files_link, function (data){
+					$.getJSON(get_downloadable_files_link, function (result){
 						$('#task-query').html('There are no currently running tasks')
-						$('#file-list').html(data.file_list)
+						$('#file-list').html(result.file_list)
 					});
 			
 					$('#task-started').attr('hidden', '')

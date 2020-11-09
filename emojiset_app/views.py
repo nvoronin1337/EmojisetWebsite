@@ -325,7 +325,7 @@ def get_file_list():
 	try:
 		subfolder_list = os.listdir(uploads)
 	except FileNotFoundError:
-		return jsonify({str(uploads)}, 404)
+		return jsonify(str(uploads), 404)
 	current_url = request.url_root + "/emojiset/"
 	html_files_list = ""
 	for subfolder in subfolder_list:
@@ -333,7 +333,7 @@ def get_file_list():
 		try:
 			file_list = os.listdir(files)
 		except FileNotFoundError:
-			return jsonify({str(files)}, 404)
+			return jsonify(str(files), 404)
 		html_files_list += "Results from " + str(subfolder)
 		html_files_list += '<ul class="list-group">'
 		file_number = 0
