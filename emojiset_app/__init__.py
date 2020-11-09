@@ -15,7 +15,6 @@ import datetime
 from emojiset_app.utils import load_key, debug
 
 import twitter_credentials
-from flask_crontab import Crontab
 from cleaner import FolderCleaner
 import os
 import time
