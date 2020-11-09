@@ -4,6 +4,7 @@ from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_admin import Admin
+from flask_user import current_user
 
 import emoji
 import redis
@@ -17,6 +18,9 @@ import twitter_credentials
 from flask_crontab import Crontab
 from cleaner import FolderCleaner
 import os
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 class ConfigClass(object):
     DEBUG=True
@@ -43,7 +47,7 @@ class ConfigClass(object):
     USER_EMAIL_SENDER_NAME = USER_APP_NAME
     USER_EMAIL_SENDER_EMAIL = "noreply@emojiset.com"
 
-    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.getcwd() , os.pardir))
+    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.getcwd() , os.pardir)) + '/results'
 
 # ---populate EMOJI_SET---*
 EMOJI_SET = set()
@@ -108,6 +112,21 @@ r = redis.Redis()
 small_task_q = Queue('small', connection=r, default_timeout=2100)
 # ---long_task_q is used for streaming large datasets from twitter (tasks have no timeout)
 long_task_q = Queue('long', connection=r, default_timeout=-1)
+
+def clean_old_results():
+    path = app.config['UPLOAD_FOLDER']
+    days = 1
+    try:
+        cleaner = FolderCleaner(path, days)
+    except (TypeError, ValueError) as e:
+        debug(e, 'cleaner_errors.log')
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=clean_old_results, trigger="interval", hours=1)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
 
 from emojiset_app import views
 from emojiset_app import tasks

@@ -47,6 +47,7 @@ class Tweet_Streamer():
 		self.files = 0
 		self.file_size = file_size
 		self.result_weight = 0
+		self.total_result_weight = 0
 		self.prev_count = 0
 		if email:
 			self.email = email.split('@')[0]
@@ -140,7 +141,7 @@ class Tweet_Streamer():
 			elif self.finish_time:
 				self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
 			self.job.save_meta()
-		if self.result_weight >= int(self.file_size):
+		if self.result_weight >= 0.5:
 			self.result_to_csv()
 
 
@@ -184,7 +185,7 @@ class Tweet_Streamer():
 					tweet_text = tweet[self.text]
 					emojiset = self.extract_emoji_sequences(tweet[self.text])
 					self.result[self.current_tweets] = (tweet_text, emojiset)
-			self.result_weight += (len(tweet_text.encode('utf-8')) + len(emojiset.encode('utf-8')) + len(str(self.current_tweets).encode('utf-8'))) / pow(10,3)
+			self.result_weight += (len(tweet_text.encode('utf-8')) + len(emojiset.encode('utf-8')) + len(str(self.current_tweets).encode('utf-8'))) / pow(10,6)
 			
 			
 	# ---function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)---*
@@ -243,17 +244,20 @@ class Tweet_Streamer():
 
 
 	def result_to_csv(self, clean=True):
-		
-		filename = self.email + '/' + self.current_datetime + '/data_' + str(self.files) + '.csv'
+		filename = 'results/' + self.email + '/' + self.current_datetime + '/data_' + str(self.files) + '.csv'
 		os.makedirs(os.path.dirname(filename), exist_ok=True)
 		csv_columns = ["id", "Tweet", "Emojiset"]
-		with open(filename, 'w') as f:
+		
+		with open(filename, 'a+') as f:
 			writer = csv.DictWriter(f, fieldnames=csv_columns, lineterminator='\n')
 			writer.writeheader()
 			for item in self.result.items():
 				writer.writerow({'id': item[0] + self.prev_count, 'Tweet': item[1][0], 'Emojiset': item[1][1]})
 		self.prev_count = self.current_tweets
+		self.total_result_weight += self.result_weight
+		if self.total_result_weight >= int(self.file_size):
+			self.total_result_weight = 0
+			self.files += 1
 		if clean:
 			self.result = {}
 			self.result_weight = 0
-			self.files += 1
