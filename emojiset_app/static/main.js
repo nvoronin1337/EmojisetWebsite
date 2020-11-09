@@ -533,6 +533,7 @@ $(document).ready(function () {
     $.getJSON(status_url, function (data) {
       switch (data[0].status) {
         case "failed":
+          let delete_task_url = document.location.href + "/delete_task"
           $('#task-query').html("There are no currently running tasks")
           $('#task-started').attr('hidden', '')
           $('#task-cancel').attr('hidden', '')
@@ -542,6 +543,7 @@ $(document).ready(function () {
           $.getJSON(delete_task_url)
           break
         case "unknown":
+          let delete_task_url = document.location.href + "/delete_task"
           $('#task-query').html("There are no currently running tasks")
           $('#task-started').attr('hidden', '')
           $('#task-cancel').attr('hidden', '')
