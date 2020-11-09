@@ -46,7 +46,7 @@ class ConfigClass(object):
     USER_EMAIL_SENDER_NAME = USER_APP_NAME
     USER_EMAIL_SENDER_EMAIL = "noreply@emojiset.com"
 
-    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.getcwd() , os.pardir)) + '/results'
+    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__) , os.pardir)) + '/results'
 
 # ---populate EMOJI_SET---*
 EMOJI_SET = set()
