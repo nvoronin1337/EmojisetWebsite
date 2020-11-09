@@ -530,11 +530,12 @@ $(document).ready(function () {
 	}
 
 	function check_long_job_status(status_url) {
+		let delete_task_url = document.location.href + "/delete_task"
 		$.getJSON(status_url, function (data) { 
 			switch (data[0].status) {
 				case "finished":
 					let get_downloadable_files_link = document.location.href + "/get_downloads"
-					let delete_task_url = document.location.href + "/delete_task"
+					
 					$.getJSON(get_downloadable_files_link, function (data){
 						$('#task-query').html('There are no currently running tasks')
 						$('#file-list').html(data.file_list)
@@ -557,7 +558,6 @@ $(document).ready(function () {
 					
 					break
 				case "failed":
-					delete_task_url = document.location.href + "/delete_task"
 					$('#task-query').html("There are no currently running tasks")
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
@@ -569,7 +569,6 @@ $(document).ready(function () {
 					});
 					break
 				case "unknown":
-					delete_task_url = document.location.href + "/delete_task"
 					$('#task-query').html("There are no currently running tasks")
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
