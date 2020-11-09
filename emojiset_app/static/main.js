@@ -557,7 +557,7 @@ $(document).ready(function () {
 					
 					break
 				case "failed":
-					
+					let delete_task_url = document.location.href + "/delete_task"
 					$('#task-query').html("There are no currently running tasks")
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
@@ -569,6 +569,7 @@ $(document).ready(function () {
 					});
 					break
 				case "unknown":
+					let delete_task_url = document.location.href + "/delete_task"
 					$('#task-query').html("There are no currently running tasks")
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
