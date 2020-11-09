@@ -65,7 +65,23 @@ class RunningTask(db.Model):
     cancel_url = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     started_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     finished_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    chunk = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+
+
+class FinishedTask(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    task_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    started_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    finished_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    chunk = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+
+
+class SavedResultDirectory(db.Model):
+    __tablename__ = 'saved_result_directory'
+    id = db.Column(db.Integer(), primary_key=True)
+    directory = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
 
 
 class EmojisetModelView(ModelView):

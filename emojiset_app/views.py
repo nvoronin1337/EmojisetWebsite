@@ -4,14 +4,14 @@ from emojiset_app import small_task_q, long_task_q
 from emojiset_app import db
 from emojiset_app.tasks import stream_task
 from emojiset_app.utils import *
-from emojiset_app.models import SavedQuery, RunningTask
-from flask import render_template, request, redirect, url_for, jsonify, render_template_string
+from emojiset_app.models import SavedQuery, RunningTask, SavedResultDirectory, FinishedTask
+from flask import render_template, request, redirect, url_for, jsonify, send_from_directory
 from flask_user import login_required, roles_required, current_user
 from time import strftime
 from json import loads
 import time
 import calendar
-
+import os
 
 # The Home page is accessible to anyone
 @app.route('/')
@@ -101,9 +101,7 @@ def run_small_task():
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = json_query
 	job.meta['cancel_flag'] = 0
-
 	job.save_meta()
-	
 	return jsonify({}), 202, {'Status': url_for('job_status', job_key=job.id), 'Cancel': url_for('job_cancel', job_key=job.id)}
 	
 
@@ -118,10 +116,17 @@ def run_large_task():
 	}
 	user_email = current_user.email
 
+	result_directory = SavedResultDirectory(
+		directory = user_email.split('@')[0]
+	)
+	db.session.add(result_directory)
+	db.session.commit()
+
 	query_id = request.form["query_id"]
 	tweet_amount = request.form["tweet_amount"]
 	time_length = request.form["time_length"]
 	offset = request.form["time_offset"]
+	chunk = request.form['chunk']
 
 	finish_time = None
 	if tweet_amount:
@@ -133,7 +138,7 @@ def run_large_task():
 	twarc_method = query_json["twarc_method"]
 
 	job = None
-	job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time)
+	job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, chunk, user_email)
 	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
@@ -183,7 +188,7 @@ def job_status(job_key):
 		job = long_task_q.fetch_job(job_key)
 		if job is None:
 			response = {'status': 'unknown'}
-			return jsonify(response)
+			return jsonify(response, 404)
 	job.refresh()
 	response = {
 		'status': job.get_status(),
@@ -195,7 +200,7 @@ def job_status(job_key):
 	}
 	if job.is_failed:
 		response['message'] = job.exc_info.strip().split('\n')[-1]
-	return jsonify(response)
+	return jsonify(response, 202)
 
 
 # ---get job object from the queue by the id and cancel it
@@ -207,7 +212,7 @@ def job_cancel(job_key):
 		job = long_task_q.fetch_job(job_key)
 		if job is None:
 			response = {'status': 'unknown'}
-			return jsonify(response)
+			return jsonify(response, 404)
 	job.refresh()
 	job.meta['cancel_flag'] = 1
 	job.save_meta()
@@ -220,7 +225,9 @@ def job_cancel(job_key):
 	}
 	if job.is_failed:
 		response['message'] = job.exc_info.strip().split('\n')[-1]
-	return jsonify(response)
+	RunningTask.query.filter_by(user_id=current_user.id).delete()
+	db.session.commit()
+	return jsonify(response, 200)
 
 
 @app.route("/emojiset/save_query", methods=["POST"])
@@ -236,14 +243,14 @@ def save_query():
 	)
 	db.session.add(saved_query)
 	db.session.commit()
-	return jsonify({}, 202)
+	return jsonify({})
 
 
 @app.route("/emojiset/load_queries", methods=["GET"])
 @login_required
 def load_queries():
 	user_id = current_user.id
-	saved_queries = SavedQuery.query.filter_by(user_id=current_user.id).all()
+	saved_queries = SavedQuery.query.filter_by(user_id=current_user.id).group_by(SavedQuery.saved_query).all()
 	response = {}
 	for q in saved_queries:
 		response[q.id] = q.saved_query
@@ -259,11 +266,12 @@ def save_task():
 		cancel_url = request.form["cancel-url"],
 		started_on = request.form["started-on"],
 		finished_on = request.form["finished-on"],
+		chunk = request.form['chunk'],
 		user_id = current_user.id
 	)
 	db.session.add(running_task)
 	db.session.commit()
-	return jsonify({}, 202)
+	return jsonify({})
 
 
 @app.route("/emojiset/load_task", methods=["GET"])
@@ -276,7 +284,8 @@ def load_task():
 			'status_url': running_task.status_url,
 			'cancel_url': running_task.cancel_url,
 			'started_on': running_task.started_on,
-			'finished_on': running_task.finished_on
+			'finished_on': running_task.finished_on,
+			'chunk': running_task.chunk
 		}
 	else:
 		response = {}
@@ -288,4 +297,61 @@ def load_task():
 def delete_task():
 	RunningTask.query.filter_by(user_id=current_user.id).delete()
 	db.session.commit()
-	return jsonify({}, 202)
+	return jsonify({})
+
+
+@app.route("/emojiset/save_finished_task", methods=["GET"])
+@login_required
+def save_finished_task():
+	running_task = RunningTask.query.filter_by(user_id=current_user.id).first()
+	now = time.localtime()
+	current_time = time.strftime("%Y-%m-%d %H:%M:%S", now)
+	finished_task = FinishedTask(
+		task_query = running_task.task_query,
+		started_on = running_task.started_on,
+		finished_on = current_time,
+		chunk = running_task.chunk,
+		user_id = current_user.id
+	)
+	db.session.add(finished_task)
+	db.session.commit()
+	return jsonify({})
+
+
+@app.route("/emojiset/get_downloads", methods=["GET"])
+@login_required
+def get_file_list():
+	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0]
+	try:
+		subfolder_list = os.listdir(uploads)
+	except FileNotFoundError:
+		return jsonify({}, 404)
+	current_url = request.url_root + "/emojiset/"
+	html_files_list = ""
+	for subfolder in subfolder_list:
+		files = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + "/" + subfolder
+		try:
+			file_list = os.listdir(files)
+		except FileNotFoundError:
+			return jsonify({}, 404)
+		html_files_list += "Results from " + str(subfolder)
+		html_files_list += '<ul class="list-group">'
+		file_number = 0
+		for file in file_list:
+			html_files_list += '<li class="list-group-item">' + '<a class="label label-primary" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file_number) + '">Download result #' + str(file_number) + '</a>' + '</li>'
+			file_number += 1
+		html_files_list += '</ul><br>'
+	
+	response = {
+		'file_list': html_files_list
+	}
+	return jsonify(response)
+
+
+@app.route("/emojiset/download/<subfolder>/<file_number>", methods=["GET"])
+@login_required
+def download(subfolder, file_number):
+	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + '/' + str(subfolder)
+	filename = "data_" + str(file_number) + ".csv"
+	attachment_filename = "result_" + str(subfolder) + '_' + str(file_number) + ".csv"
+	return send_from_directory(directory=uploads, filename=filename, as_attachment=True, attachment_filename=attachment_filename)

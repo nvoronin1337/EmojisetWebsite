@@ -1,14 +1,16 @@
 import json
+import os 
 
 def load_key():
     """
     Loads the key named `secret.key` from the current directory.
     """
-    return open("secret.key", "rb").read()
+    return open(os.path.dirname(__file__) + '/secret.key').read()
+
 
 # ---converts error to txt file and immediately outputs---*
-def debug(var):
-    with open('out.txt', 'a+') as f:
+def debug(var, filename='out.txt'):
+    with open(filename, 'a+') as f:
         print(var, file=f)
 
 

@@ -11,9 +11,12 @@ from rq import Queue, Worker
 import rq_dashboard
 import datetime
 
-from emojiset_app.utils import load_key
+from emojiset_app.utils import load_key, debug
 
 import twitter_credentials
+from flask_crontab import Crontab
+from cleaner import FolderCleaner
+import os
 
 class ConfigClass(object):
     DEBUG=True
@@ -40,6 +43,8 @@ class ConfigClass(object):
     USER_EMAIL_SENDER_NAME = USER_APP_NAME
     USER_EMAIL_SENDER_EMAIL = "noreply@emojiset.com"
 
+    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.getcwd() , os.pardir))
+
 # ---populate EMOJI_SET---*
 EMOJI_SET = set()
 def pop_emoji_set():
@@ -61,11 +66,11 @@ babel = Babel(app)
 mail = Mail(app)
 
 # BIG PROBLEM!!! HIDE THE KEY 
-secret_key = 'XJWyyVZPOTsFn-2vrzFoXqI_jE6vzkc9u57VQ-APOSM='
+secret_key = load_key()
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
 
-from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery, RunningTask
+from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery, RunningTask, FinishedTask
 from emojiset_app.forms import CustomUserManager
 
 # Setup Flask-User
@@ -95,13 +100,14 @@ admin = Admin(app, name='emojiset', template_mode='bootstrap3')
 admin.add_view(EmojisetModelView(User, db.session))
 admin.add_view(EmojisetModelView(SavedQuery, db.session))
 admin.add_view(EmojisetModelView(RunningTask, db.session))
+admin.add_view(EmojisetModelView(FinishedTask, db.session))
 
 # ---create a job queue and connect to the Redis server
 r = redis.Redis()
-# ---short_task_q is used for streaming small datasets from twitter (tasks timeout after 16 minutes)---*
-small_task_q = Queue('small', connection=r)
+# ---short_task_q is used for streaming small datasets from twitter (tasks timeout after 35 minutes)---*
+small_task_q = Queue('small', connection=r, default_timeout=2100)
 # ---long_task_q is used for streaming large datasets from twitter (tasks have no timeout)
-long_task_q = Queue('long', connection=r)
+long_task_q = Queue('long', connection=r, default_timeout=-1)
 
 from emojiset_app import views
 from emojiset_app import tasks

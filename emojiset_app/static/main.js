@@ -215,7 +215,7 @@ $(document).ready(function () {
    */
   function check_job_status(status_url) {
     $.getJSON(status_url, function (data) {
-      switch (data.status) {
+      switch (data[0].status) {
         case "unknown":
           progress_bar_div.hidden = true;
           discarded_tweets_div.hidden = true;
@@ -235,8 +235,8 @@ $(document).ready(function () {
           $("#submit").show()
           $("#submit_filter").show()
           $("#submit_sample").show()
-          if (!data.cancel_flag) {
-            flash_alert(data, "success");
+          if (!data[0].cancel_flag) {
+            flash_alert(data[0], "success");
           }
           break;
         case "failed":
@@ -251,12 +251,12 @@ $(document).ready(function () {
           break;
         default:
           //queued/started/deferred
-          $(".progress-bar").css('width', data.progress + '%').attr('aria-valuenow', data.progress);
-          $(".progress-bar small").text(data.progress.toFixed(1) + '%');
-          if (data.discarded_tweets != 0) {
+          $(".progress-bar").css('width', data[0].progress + '%').attr('aria-valuenow', data[0].progress);
+          $(".progress-bar small").text(data[0].progress.toFixed(1) + '%');
+          if (data[0].discarded_tweets != 0) {
             discarded_tweets_div.hidden = false
           }
-          $('#discarded_tweets_lbl span').text(data.discarded_tweets);
+          $('#discarded_tweets_lbl span').text(data[0].discarded_tweets);
           setTimeout(function () {
             check_job_status(status_url);
           }, 150);
@@ -494,6 +494,8 @@ $(document).ready(function () {
           $("#saved_sample_queries_container").html(html_saved_sample_queries_table)
 
         $(".clickable-row").click(function () {
+          $(this).css('background-color', 'LightBlue')
+          $(".clickable-row").not(this).css('background-color', 'transparent')
           let id = this.id.replace("select", '')
           $('#selected_query').val("Selected " + id);
         });
@@ -506,6 +508,7 @@ $(document).ready(function () {
 
   function check_users_running_task() {
     let load_task_url = document.location.href + "/load_task"
+    let get_downloadable_files_link = document.location.href + "/get_downloads"
     $.getJSON(load_task_url, function (data) {
       if (data[0].status_url != undefined) {
         $('#task-started').html('Started on: ' + data[0].started_on)
@@ -520,11 +523,15 @@ $(document).ready(function () {
         check_long_job_status(data[0].status_url)
       }
     });
+    $.getJSON(get_downloadable_files_link, function (data){
+      if(Object.keys(data).length != 0)
+        $('#file-list').html(data.file_list)
+    });
   }
 
   function check_long_job_status(status_url) {
     $.getJSON(status_url, function (data) {
-      switch (data.status) {
+      switch (data[0].status) {
         case "failed":
           $('#task-query').html("There are no currently running tasks")
           $('#task-started').attr('hidden', '')
@@ -544,24 +551,37 @@ $(document).ready(function () {
           $.getJSON(delete_task_url)
           break
         case "finished":
-          $('#task-query').html("There are no currently running tasks")
+          let get_downloadable_files_link = document.location.href + "/get_downloads"
+          
+          $.getJSON(get_downloadable_files_link, function (data){
+            $('#task-query').html('There are no currently running tasks')
+            $('#file-list').html(data.file_list)
+          });
+      
           $('#task-started').attr('hidden', '')
           $('#task-cancel').attr('hidden', '')
           $('#task-progress-div').attr('hidden', '')
           $('#task-discarded-div').attr('hidden', '')
           $('#submit_long').show()
           let delete_task_url = document.location.href + "/delete_task"
+          let save_finished_task = document.location.href + "/save_finished_task"
           $.ajax({
-            url: delete_task_url,
+            url: save_finished_task,
+            success: function () {
+              $.ajax({
+                url: delete_task_url,
+              });
+            }
           });
+          
           break
         default:
-          if (data.discarded_tweets != 0) {
+          if (data[0].discarded_tweets != 0) {
             $('#task-discarded-div').removeAttr('hidden')
-            $('#task-discarded span').text(data.discarded_tweets)
+            $('#task-discarded span').text(data[0].discarded_tweets)
           }
-          $("#task-progress").css('width', data.progress + '%').attr('aria-valuenow', data.progress);
-          $("#task-progress small").text(data.progress.toFixed(1) + '%');
+          $("#task-progress").css('width', data[0].progress + '%').attr('aria-valuenow', data[0].progress);
+          $("#task-progress small").text(data[0].progress.toFixed(1) + '%');
           setTimeout(function () {
             check_long_job_status(status_url)
           }, 150)
@@ -575,21 +595,16 @@ $(document).ready(function () {
     let tweet_amount = $('#tweet_amount_long').val()
     let date_input = $('#date-length').val()
     let time_input = $('#time-length').val()
+    let chunk = $('#chunk').val()
+
     let time_length = ""
 
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date + ' ' + time;
-
-    if (date_input || time_input) {
-      if (date_input && time_input) {
-        time_length = date_input + "T" + time_input
-      } else if (date_input) {
-        time_length = date_input + "T" + '00:00'
-      } else if (time_input) {
-        time_length = date + "T" + time_input
-      }
+    if  (date_input != "" && time_input != "") {
+      time_length = date_input + "T" + time_input
     }
 
     if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
@@ -601,7 +616,8 @@ $(document).ready(function () {
           'query_id': selected_query_id,
           'tweet_amount': tweet_amount,
           'time_length': time_length,
-          'time_offset': offset
+          'time_offset': offset,
+          'chunk': chunk
         },
         method: "POST",
         dataType: "json",
@@ -619,7 +635,8 @@ $(document).ready(function () {
               'status-url': status_url,
               'cancel-url': cancel_url,
               'started-on': dateTime,
-              'finished-on': time_length
+              'finished-on': time_length,
+              'chunk': chunk
             },
             method: "POST",
             dataType: "json",

@@ -586,15 +586,17 @@
                                             <span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
                                         </div>
                                         <div class="card-body">
-                                            <p id="task-query" class="card-text">There are no currently running tasks</p>
+                                            <p id="task-query" class="card-text">There are no currently running tasks
+                                            </p>
                                             <div id="progress_wrapper">
                                                 <div class="form-row">
                                                     <div class="col">
                                                         <div class="form-group">
                                                             <div id="task-progress-div" class="progress" hidden>
                                                                 <div id="task-progress" class="progress-bar bg-success"
-                                                                    role="progressbar" aria-valuenow="" aria-valuemin="0"
-                                                                    aria-valuemax="100"><small></small>
+                                                                    role="progressbar" aria-valuenow=""
+                                                                    aria-valuemin="0" aria-valuemax="100">
+                                                                    <small></small>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -611,7 +613,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button id="task-cancel" type="button" class="btn btn-danger" style="float: right;" hidden>Cancel task</button>
+                                            <button id="task-cancel" type="button" class="btn btn-danger"
+                                                style="float: right;" hidden>Cancel task</button>
                                         </div>
                                     </div>
                                     <br>
@@ -702,7 +705,7 @@
                                                         <input type="number" id="tweet_amount_long"
                                                             name="tweet_amount_long"
                                                             placeholder="💯 Amount of tweets to mine"
-                                                            class="form-control" min="0" max="10000" step="1"
+                                                            class="form-control" min="0" step="1"
                                                             oninput="validity.valid||(value='');">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text text-muted">
@@ -743,18 +746,41 @@
                                             <!-- NOT SHOWING IN FIREFOX -->
                                             <div class="input-group">
                                                 <input type="date" class="form-control" id="date-length"
-                                                name="time-length">
+                                                    name="time-length">
                                                 <input type="time" class="form-control" id="time-length"
-                                                name="time-length">
+                                                    name="time-length">
                                             </div>
-                                            
+
                                         </div>
                                     </form>
                                 </div>
                                 <!-- End -->
+                                <div class="row">
+                                    <div class="col">
+
+                                        <fieldset>
+                                            <label for="chunk">Output file size:</label>
+                                            <input id="chunk" name="chunk" type="range" max="100" min="10" step="10"
+                                                oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+                                                value="50">
+                                            </input>
+                                            <em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+                                        </fieldset>
+                                    </div>
+                                </div>
                                 <button id="submit_long" type="button"
                                     class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
                                     👌 Confirm </button>
+
+                                <div id="results_wrapper_container" class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div id="file-list">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <!-- End tab content -->
                         </div>
