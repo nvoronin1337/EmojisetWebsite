@@ -564,7 +564,9 @@ $(document).ready(function () {
 					$('#task-progress-div').attr('hidden', '')
 					$('#task-discarded-div').attr('hidden', '')
 					$('#submit_long').show()
-					$.getJSON(delete_task_url)
+					$.ajax({
+						url: delete_task_url,
+					});
 					break
 				case "unknown":
 					$('#task-query').html("There are no currently running tasks")
@@ -573,7 +575,9 @@ $(document).ready(function () {
 					$('#task-progress-div').attr('hidden', '')
 					$('#task-discarded-div').attr('hidden', '')
 					$('#submit_long').show()
-					$.getJSON(delete_task_url)
+					$.ajax({
+						url: delete_task_url,
+					});
 					break
 				
 				default:
