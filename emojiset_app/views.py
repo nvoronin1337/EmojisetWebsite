@@ -322,20 +322,18 @@ def save_finished_task():
 @login_required
 def get_file_list():
 	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0]
-	debug(str(uploads))
 	try:
 		subfolder_list = os.listdir(uploads)
 	except FileNotFoundError:
-		return jsonify({}, 404)
+		return jsonify({str(uploads)}, 404)
 	current_url = request.url_root + "/emojiset/"
 	html_files_list = ""
 	for subfolder in subfolder_list:
 		files = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + "/" + subfolder
-		debug(str(files))
 		try:
 			file_list = os.listdir(files)
 		except FileNotFoundError:
-			return jsonify({}, 404)
+			return jsonify({str(files)}, 404)
 		html_files_list += "Results from " + str(subfolder)
 		html_files_list += '<ul class="list-group">'
 		file_number = 0
