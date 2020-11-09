@@ -322,6 +322,7 @@ def save_finished_task():
 @login_required
 def get_file_list():
 	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0]
+	debug(str(uploads))
 	try:
 		subfolder_list = os.listdir(uploads)
 	except FileNotFoundError:
@@ -330,6 +331,7 @@ def get_file_list():
 	html_files_list = ""
 	for subfolder in subfolder_list:
 		files = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + "/" + subfolder
+		debug(str(files))
 		try:
 			file_list = os.listdir(files)
 		except FileNotFoundError:
