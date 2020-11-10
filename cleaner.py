@@ -1,8 +1,5 @@
 import os
 import time
-
-from emojiset_app.utils import debug
- 
  
 class FolderCleaner:
     """
@@ -10,7 +7,6 @@ class FolderCleaner:
     """
     
     def __init__(self, path, days):
-        debug(str(path))
         if not os.path.exists(path):
             raise TypeError("folder does not exist")
         self.path = path

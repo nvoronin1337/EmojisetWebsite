@@ -406,6 +406,7 @@ $(document).ready(function () {
 		$('.form-group input[type="date"]').val('');
 		$('.form-group input[type="time"]').val('');
 		$('.form-group input[type="text"]').val('');
+		$("div.emojionearea-editor").data("emojioneArea").setText('');
 	});
 	//find a way to set checkboxes to default-->
 	$('a[data-toggle="toggle"]').on('shown.bs.tab', function (e) {
@@ -520,6 +521,9 @@ $(document).ready(function () {
 				$('#task-status').removeAttr('hidden')
 				$('#task-progress-div').removeAttr('hidden')
 				$('#submit_long').hide()
+				$('#chunk').val(data[0].chunk)
+				$('#rangeValLabel').text(data[0].chunk + ' GB')
+				$('#chunk').attr('disabled', 'true')
 				check_long_job_status(data[0].status_url)
 			}
 		});
@@ -541,6 +545,7 @@ $(document).ready(function () {
 						$('#file-list').html(result.file_list)
 					});
 			
+					$('#chunk').attr('disabled', 'false')
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
 					$('#task-progress-div').attr('hidden', '')

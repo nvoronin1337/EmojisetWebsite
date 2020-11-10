@@ -334,13 +334,14 @@ def get_file_list():
 			file_list = os.listdir(files)
 		except FileNotFoundError:
 			return jsonify(str(files), 404)
-		html_files_list += "Results from " + str(subfolder)
-		html_files_list += '<ul class="list-group">'
+		
+		html_files_list += '<div class="card"><div class="list-group">'
+		html_files_list += '<a class="list-group-item list-group-item-secondary">' + "Results from " + str(subfolder) + '</a>'
 		file_number = 0
 		for file in file_list:
-			html_files_list += '<li class="list-group-item">' + '<a class="label label-primary" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file_number) + '">Download result #' + str(file_number) + '</a>' + '</li>'
+			html_files_list += '<a class="list-group-item" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file_number) + '">Download result #' + str(file_number) + '</a>'
 			file_number += 1
-		html_files_list += '</ul><br>'
+		html_files_list += '</div></div><br>'
 	
 	response = {
 		'file_list': html_files_list
