@@ -79,6 +79,7 @@ from emojiset_app.forms import CustomUserManager
 # Setup Flask-User
 user_manager = CustomUserManager(app, db, User)
 # Create all database tables
+db.drop_all()
 db.create_all()
 
 # Create 'admin@example.com' user with 'Admin' and 'Agent' roles
