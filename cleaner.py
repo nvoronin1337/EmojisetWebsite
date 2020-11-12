@@ -1,5 +1,8 @@
 import os
 import time
+import shutil
+
+from emojiset_app.utils import debug
  
 class FolderCleaner:
     """
@@ -7,6 +10,7 @@ class FolderCleaner:
     """
     
     def __init__(self, path, days):
+        debug(path)
         if not os.path.exists(path):
             raise TypeError("folder does not exist")
         self.path = path
@@ -22,4 +26,4 @@ class FolderCleaner:
                 full_path = os.path.join(root, directory)
                 stat = os.stat(full_path)
                 if stat.st_mtime <= time_in_secs:
-                    os.rmdir(full_path)
+                    shutil.rmtree(full_path, ignore_errors=True)

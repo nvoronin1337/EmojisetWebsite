@@ -16,7 +16,7 @@ import os
 # The Home page is accessible to anyone
 @app.route('/')
 def home_page():
-	return render_template("index.html", register=url_for('user.register'), login=url_for('user.login'), profile=url_for('user.edit_user_profile'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), emojiset_large=url_for('emojiset_mining_large'),logout=url_for('user.logout'))
+	return render_template("home.html", register=url_for('user.register'), login=url_for('user.login'), profile=url_for('user.edit_user_profile'), home=url_for('home_page'), emojiset=url_for('emojiset_mining'), emojiset_large=url_for('emojiset_mining_large'),logout=url_for('user.logout'))
 
 
 # --- this function is called when user opens website/emojiset-mining url ---*
@@ -334,7 +334,6 @@ def get_file_list():
 			file_list = os.listdir(files)
 		except FileNotFoundError:
 			return jsonify(str(files), 404)
-		
 		html_files_list += '<div class="card"><div class="list-group">'
 		html_files_list += '<a class="list-group-item list-group-item-secondary">' + "Results from " + str(subfolder) + '</a>'
 		file_number = 0
@@ -342,7 +341,6 @@ def get_file_list():
 			html_files_list += '<a class="list-group-item" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file_number) + '">Download result #' + str(file_number) + '</a>'
 			file_number += 1
 		html_files_list += '</div></div><br>'
-	
 	response = {
 		'file_list': html_files_list
 	}

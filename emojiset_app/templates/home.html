@@ -1,0 +1,304 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <title>Home</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" />
+  </head>
+  <body id="myPage">
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<!-- Navbar -->
+<!--Navigation bar (Navbar: Home, Team, Research, About*-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
+
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarNavDropdown">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('home_page') }}"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href=""><i class="fa fa-group"></i> Team</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-search"></i>
+          Research
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
+          <a class="dropdown-item" href="">Epidemiology</a>
+          <a class="dropdown-item" href="">Something else here</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="mx-auto order-0">
+    <a class="navbar-brand mx-auto" href="">SOGOResearch</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href=""><i class="fa fa-envelope"></i> Contact <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle-o"></i> Profile </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarDropdownMenuLink-4">
+          <a class="dropdown-item" href="{{ url_for('user.register') }}">Register</a>
+          <a class="dropdown-item" href="{{ url_for('user.edit_user_profile') }}">My account</a>
+          <a class="dropdown-item" href="{{ url_for('user.logout') }}">Log out</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!--<div class="container-fluid">-->
+
+
+
+
+
+<!-- Image Header -->
+<div class="w3-display-container w3-animate-opacity">
+  <br>
+  <div class="w3-container w3-center">
+    <a href="https://www.linkedin.com/in/salem-othman-0374525b/" target="_blank">
+      <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:20%" class="w3-circle w3-hover-opacity">
+    </a>
+  </div>
+  <br>
+  <div class="w3-container w3-margin-bottom  w3-center" >  
+    <h2>About Salem Othman</h2>
+    <h4>Insert background about professor, include previous projects and https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en</h4>
+    <!--<button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-xlarge w3-theme w3-hover-teal" title="More Information">Salem Othman</button>-->
+  </div>
+</div>
+
+<!-- Modal
+<div id="id01" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container"> 
+      <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>hello</h4>
+      <h5>hey <i class="fa fa-smile-o"></i></h5>
+    </header>
+    <div class="w3-container">
+      <p>hi</p>
+      <p>yo<a class="w3-text-teal" href="/w3css/default.asp"></a></p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p>heya</p>
+    </footer>
+  </div>
+</div>
+-->
+
+<!-- Work Row -->
+<div class="w3-row-padding w3-padding-32 w3-theme-l1" id="work">
+
+  <div class="w3-center">
+  <h2>Our Work</h2>
+  <p>Some information about the work Salem Othman has done alongside his teams.</p>
+  </div>
+  
+  <div class="w3-half">
+  <div class="w3-card w3-white">
+    <div class="w3-container w3-center">
+    <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emoji Set Page" style="width:98%"> 
+    <hr>
+    <h2><b>Emoji Set Mining</b></h2>
+    <h4>In progress (Stable)</h4>
+    <p>The Emoji Set Mining team has created a website that can analyze emoji sets from tweets and infer the meaning behind them. 
+      The code is capable of pulling tweets given various settings, and can either provide a small or large data set, which can be sent to users via email. 
+      A user can test the website using a demo, but must acquire a Twitter developer account and sign up to access all of the features.</p>
+    </div>
+    </div>
+  </div>
+  
+  <div class="w3-half">
+  <div class="w3-card w3-white">
+    <div class="w3-container w3-center">
+    <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page" style="width:70%">
+    <hr>
+    <h2><b>Epidemiology</b></h2>
+    <h4>In progress</h4>
+    <p>The team has implemented a new model named Biased Majority rule model which consists in model that resembles how opinions spread through majorities. 
+     The model contains 3 states: Adopter, Rejector and Undecided and includes a bias parameter that can be modified by the user.</p>
+    </div>
+    </div>
+  </div>
+  </div>
+  
+  </div>
+<!-- Team Container -->
+<div class="w3-container w3-padding-64 w3-center" id="team">
+  <h1><b>Our team</b></h1>
+  <p>Meet the team! (click their portrait to view their personal page)</p>
+  <br>
+  <!--replace "w3-container" with "container" for more compact look-->
+<div class="w3-container">
+  <div class="row">
+    <div class="col">
+      <h2><b>Emojiset Mining</b></h2>
+    </div>
+    <div class="col">
+      <h2><b>Epidemiology</b></h2>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col">
+      <div class="row">
+      <div class="w3-center">
+        <td style="text-align:center;">
+        <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
+        <img src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin" style="width:60%" class="w3-circle w3-hover-opacity">
+        </a>
+        <h3>Nikita Voronin</h3>
+        <p>Emoji Set</p>
+        <h5>Currently Working</h5>
+        </td>
+      </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="w3-center">
+          <a href="https://www.linkedin.com/in/adam-dzwonkowski/" target="_blank">
+          <img src="images/face_pic.png" alt="Caleb Franco" style="width:60%" class="w3-circle w3-hover-opacity">
+          </a>
+          <h3>Caleb Franco</h3>
+          <p>Emoji Set</p>
+          <h5>Worked during first co-op</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+      <div class="w3-center">
+        <a href="https://www.linkedin.com/" target="_blank">
+        <img src="{{ url_for('static', filename='images/adam.jpg') }}" alt="Adam Dzwonkowski" style="width:60%" class="w3-circle w3-hover-opacity">
+        </a>
+        <h3>Adam Dzwonkowski</h3>
+        <p>Emoji Set</p>
+        <h5>Currently Working</h5>
+      </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+      <div class="w3-center">
+        <a href="https://www.linkedin.com/in/sancho-rodr%C3%ADguez-corrales-340891113/" target="_blank">
+        <img src="{{ url_for('static', filename='images/sancho.jpg') }}" alt="Sancho Rodríguez" style="width:60%" class="w3-circle w3-hover-opacity">
+        </a>
+        <h3>Sancho Rodríguez</h3>
+        <p>Epidemiology</p>
+        <h5>Currently Working</h5>
+      </div>
+      </div>
+      <br>
+      <div class="row">
+      <div class="w3-center">
+        <a href="https://www.linkedin.com/" target="_blank">
+        <img src="images/face_pic.png" alt="Martin" style="width:60%" class="w3-circle w3-hover-opacity">
+        </a>
+        <h3>Martin King</h3>
+        <p>Epidemiology</p>
+        <h5>Currently Working</h5>
+      </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+      <div class="w3-center">
+        <a href="https://www.linkedin.com/in/edwin-a-41b966129/" target="_blank">
+        <img src="images/face_pic.png" alt="Edwin" style="width:60%" class="w3-circle w3-hover-opacity">
+        </a>
+        <h3>Edwin Armas</h3>
+        <p>Epidemiology</p>
+        <h5>Currently Working</h5>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Contact Container -->
+<div class="w3-container w3-padding-64 w3-theme-l5" id="contact">
+  <div class="w3-row">
+    <div class="w3-col m5">
+    <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Contact Us</span></div>
+      <h3>Address</h3>
+      <p><i class="fa fa-map-marker w3-text-teal w3-xlarge"></i>  Massachusetts, US</p>
+      <p><i class="fa fa-phone w3-text-teal w3-xlarge"></i>  +00 1515151515</p>
+      <p><i class="fa fa-envelope-o w3-text-teal w3-xlarge"></i>  testemojiset@gmail.com</p>
+    </div>
+    <div class="w3-col m7">
+      <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+      <div class="w3-section">      
+        <label>Name</label>
+        <input class="w3-input" type="text" name="Name" required>
+      </div>
+      <div class="w3-section">      
+        <label>Email</label>
+        <input class="w3-input" type="text" name="Email" required>
+      </div>
+      <div class="w3-section">      
+        <label>Message</label>
+        <input class="w3-input" type="text" name="Message" required>
+      </div>  
+      <input class="w3-check" type="checkbox" name="bug">
+      <label>Is this a bug report?</label>
+      <button type="submit" class="w3-button w3-right w3-theme">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-32 w3-theme-d1 w3-center">
+  <h4>Follow Us</h4>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Facebook"><i class="fa fa-facebook"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i class="fa fa-twitter"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +"><i class="fa fa-google-plus"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +"><i class="fa fa-instagram"></i></a>
+  <a class="w3-button w3-large w3-teal w3-hide-small" href="javascript:void(0)" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+
+  <div style="position:relative;bottom:100px;z-index:1;" class="w3-tooltip w3-right">
+    <span class="w3-text w3-padding w3-teal w3-hide-small">Go To Top</span>   
+    <a class="w3-button w3-theme" href="#myPage"><span class="w3-xlarge">
+    <i class="fa fa-chevron-circle-up"></i></span></a>
+  </div>
+</footer>
+
+<script>
+// Used to toggle the menu on smaller screens when clicking on the menu button
+function openNav() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+</script>
+</body>
+</html>

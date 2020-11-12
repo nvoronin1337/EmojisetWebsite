@@ -24,7 +24,6 @@ class Tweet_Streamer():
 		else:
 			app_auth = False
 		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, app_auth=app_auth)
-
 		# ---Save paramaeters passed to the constructor
 		self.keywords = keywords
 		self.max_tweets = max_tweets

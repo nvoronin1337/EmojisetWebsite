@@ -142,9 +142,7 @@ $(document).ready(function () {
 				htmlString = create_result(message, htmlString)
 			} else {}
 			$(htmlString).prependTo("#result_container").hide().slideDown();
-
 		} else if (category == "danger") {}
-
 		$("#" + btn_save_id).click(function (e) {
 			e.preventDefault()
 			let query_id = $(this).attr("id").replace('save', 'query')
@@ -169,6 +167,7 @@ $(document).ready(function () {
 			});
 		});
 
+
 		// create download button event listener
 		$("#" + btn_download_id).click(function (e) {
 			e.preventDefault()
@@ -192,12 +191,14 @@ $(document).ready(function () {
 		})
 	}
 
+
 	/* Used to remove previous alerts from the page */
 	function remove_alerts() {
 		$(".alert").slideUp("normal", function () {
 			$(this).remove();
 		});
 	}
+
 
 	/**
 	 * 
@@ -297,7 +298,6 @@ $(document).ready(function () {
 				let status_url = request.getResponseHeader('Status');
 				let cancel_url = request.getResponseHeader('Cancel');
 				console.log("Status URL: " + status_url)
-
 				// Add cancel button event listener
 				cancel_btn.hidden = false;
 				$('#cancel').on('click', function (e) {
@@ -354,7 +354,6 @@ $(document).ready(function () {
 				console.log(textStatus)
 			}
 		});
-
 		return false;
 	});
 
@@ -384,7 +383,6 @@ $(document).ready(function () {
 				let status_url = request.getResponseHeader('Status');
 				let cancel_url = request.getResponseHeader('Cancel');
 				console.log("Status URL: " + status_url)
-
 				// Add cancel button event listener
 				$("#cancel_sample").show()
 				$('#cancel_sample').on('click', function (e) {
@@ -406,26 +404,18 @@ $(document).ready(function () {
 		$('.form-group input[type="date"]').val('');
 		$('.form-group input[type="time"]').val('');
 		$('.form-group input[type="text"]').val('');
-		$("div.emojionearea-editor").data("emojioneArea").setText('');
-	});
-	//find a way to set checkboxes to default-->
-	$('a[data-toggle="toggle"]').on('shown.bs.tab', function (e) {
-		$('.form-group input[type="checkbox"]').val(on);
+		search_emojione.data("emojioneArea").setText('');
+		filter_emojione.data("emojioneArea").setText('');
 	});
 
 	// Used for properly displaying emoji keyboard
-	$("#keywords").emojioneArea({
+	let search_emojione = $("#keywords").emojioneArea({
 		pickerPosition: "bottom",
 		buttonTitle: "Filter by emojis",
 		filtersPosition: "bottom",
 	});
 
-	$("#keywords_filter").emojioneArea({
-		pickerPosition: "bottom",
-		inline: true
-	});
-
-	$("#keywords_sample").emojioneArea({
+	let filter_emojione = $("#keywords_filter").emojioneArea({
 		pickerPosition: "bottom",
 		inline: true
 	});
@@ -560,7 +550,6 @@ $(document).ready(function () {
 							});
 						}
 					});
-					
 					break
 				case "failed":
 					$('#task-query').html("There are no currently running tasks")
@@ -584,7 +573,6 @@ $(document).ready(function () {
 						url: delete_task_url,
 					});
 					break
-				
 				default:
 					if (data[0].discarded_tweets != 0) {
 						$('#task-discarded-div').removeAttr('hidden')
