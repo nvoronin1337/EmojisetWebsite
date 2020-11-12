@@ -128,7 +128,6 @@ def run_large_task():
 	offset = request.form["time_offset"]
 	chunk = request.form['chunk']
 	extract_settings_form = request.form['extract_settings_form']
-	debug(extract_settings_form)
 
 	finish_time = None
 	if tweet_amount:
