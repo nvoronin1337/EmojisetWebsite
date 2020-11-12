@@ -48,3 +48,7 @@ body {
 .clickable-row {
     cursor: pointer;
 }
+
+.chunk-col {
+    padding-top: 0.5em;
+}

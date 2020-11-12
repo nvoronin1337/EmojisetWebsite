@@ -660,57 +660,69 @@
 							<!-- Form content -->
 							<div class="tab-content" style="margin-top: 1em">
 								<!-- number of tweets -->
-								<div class="form-row">
-									<div class="col-lg-8">
-										<div id="nav-tweet-amount" class="tab-pane fade show active">
-											<form id="longTaskFormTA" role="form">
-												<div class="form-row">
-													<div class="col">
-														<div class="form-group">
-															<div class="input-group">
-																<input type="number" id="tweet_amount_long"
-																	name="tweet_amount_long"
-																	placeholder="💯 Amount of tweets to mine"
-																	class="form-control" min="0" step="1"
-																	oninput="validity.valid||(value='');">
-																<div class="input-group-append">
-																	<span class="input-group-text text-muted">
-																		unlimited
-																	</span>
-																</div>
-															</div>
+								<div id="nav-tweet-amount" class="tab-pane fade show active">
+									<form id="longTaskFormTA" role="form">
+										<label for="tweet-amount-row">Select number of tweets and size of each individual file with results</label>
+										<div id="tweet-amount-row" class="form-row">
+											<div class="col">
+												<div class="form-group">
+													<div class="input-group">
+														<input type="number" id="tweet_amount_long"
+															name="tweet_amount_long"
+															placeholder="💯 Amount of tweets to mine"
+															class="form-control" min="0" step="1"
+															oninput="validity.valid||(value='');">
+														<div class="input-group-append">
+															<span class="input-group-text text-muted">
+																unlimited
+															</span>
 														</div>
 													</div>
 												</div>
-											</form>
+											</div>
+											<div class="col-sm-3 chunk-col">
+												<fieldset>
+													<input id="chunk" name="chunk" type="range" max="100" min="10"
+														step="10"
+														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+														value="50">
+													</input>
+													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+												</fieldset>
+											</div>
 										</div>
-									</div>
-									<div class="col">
-										<fieldset style="padding-top: 0.5em;">
-											<label for="chunk">Output file size:</label>
-											<input id="chunk" name="chunk" type="range" max="100" min="10" step="10"
-												oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
-												value="50">
-											</input>
-											<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
-										</fieldset>
-									</div>
+									</form>
 								</div>
 								<!-- End -->
 
 								<!-- size of dataset -->
 								<div id="nav-memory-size" class="tab-pane fade">
 									<form id="longTaskFormME" role="form">
-										<div class="form-group">
-											<div class="input-group">
-												<input type="number" min="0" class="form-control w-75" id="set_size"
-													name="set_size" placeholder="Size of dataset">
-												<select name="size_units" id="size_units" class="form-control">
-													<option value="kb">kb</option>
-													<option value="mb">mb</option>
-													<option value="gb">gb</option>
-													<option value="tb">tb</option>
-												</select>
+										<label for="memory-size-row">Select total result size and size of each individual file with results</label>
+										<div id="memory-size-row" class="form-row">
+											<div class="col">
+												<div class="form-group">
+													<div class="input-group">
+														<input type="number" min="0" class="form-control w-75"
+															id="set_size" name="set_size" placeholder="Size of dataset">
+														<select name="size_units" id="size_units" class="form-control">
+															<option value="kb">kb</option>
+															<option value="mb">mb</option>
+															<option value="gb">gb</option>
+															<option value="tb">tb</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 chunk-col">
+												<fieldset>
+													<input id="chunk" name="chunk" type="range" max="100" min="10"
+														step="10"
+														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+														value="50">
+													</input>
+													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+												</fieldset>
 											</div>
 										</div>
 									</form>
@@ -720,81 +732,38 @@
 								<!-- collect tweets until date -->
 								<div id="nav-time-range" class="tab-pane fade">
 									<form id="longTaskFormDT" role="form">
-										<div class="form-group">
-											<!-- NOT SHOWING IN FIREFOX -->
-											<div class="input-group">
-												<input type="date" class="form-control" id="date-length"
-													name="time-length">
-												<input type="time" class="form-control" id="time-length"
-													name="time-length">
+										<label for="time-length-row">Select how long you want to mine for and size of each individual file with results</label>
+										<div id="time-length-row" class="form-row">
+											<div class="col">
+												<div class="form-group">
+													<!-- NOT SHOWING IN FIREFOX -->
+													<div class="input-group">
+														<input type="date" class="form-control" id="date-length"
+															name="time-length">
+														<input type="time" class="form-control" id="time-length"
+															name="time-length">
+													</div>
+
+												</div>
+											</div>
+											<div class="col-sm-3 chunk-col">
+												<fieldset>
+													<input id="chunk" name="chunk" type="range" max="100" min="10"
+														step="10"
+														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+														value="50">
+													</input>
+													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+												</fieldset>
 											</div>
 										</div>
 									</form>
 								</div>
 								<!-- End -->
-
-								<label for="extract_div">Extraction Settings</label>
-								<div id="extract_div" class="card">
-									<form id="extract_settings_form" role="form">
-										<div class="row" style="margin-left: 5rem;">
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="radio_full" type="radio" class="form-check-input"
-														name="extract_radio" value="full_tweet">Full Tweet
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input if="radio_extract" type="radio" class="form-check-input"
-														name="extract_radio" value="extract">Extract Parts
-												</label>
-											</div>
-											<div class="form-check-inline" style="margin-left: 2rem;">
-												<label class="form-check-label">
-													<input id="checkbox_id" name="extract" type="checkbox"
-														class="form-check-input" value="">Tweet Id
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="checkbox_text" name="extract" type="checkbox"
-														class="form-check-input" value="">Text
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="checkbox_emojiset" name="extract" type="checkbox"
-														class="form-check-input" value="">Emojiset
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="checkbox_hashtags" name="extract" type="checkbox"
-														class="form-check-input" value="">Hashtags
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="checkbox_links" name="extract" type="checkbox"
-														class="form-check-input" value="">Links
-												</label>
-											</div>
-											<div class="form-check-inline">
-												<label class="form-check-label">
-													<input id="checkbox_images" name="extract" type="checkbox"
-														class="form-check-input" value="">Images
-												</label>
-											</div>
-										</div>
-									</form>
-								</div>
-
-								<div style="margin-top: 1em;">
-									<button id="submit_long" type="button"
-										class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
-										👌 Confirm
-									</button>
-								</div>
+								<button id="submit_long" type="button"
+									class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+									👌 Confirm
+								</button>
 
 								<br style="height: 100%;" />
 								<div class="card">
