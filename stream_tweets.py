@@ -57,6 +57,10 @@ class Tweet_Streamer():
 		now = time.localtime()
 		self.current_datetime = time.strftime("%Y-%m-%d_%H:%M:%S", now)
 
+		self.extract_id = True
+		self.extract_text = True
+		self.extract_emojiset = True
+
 
 	def stream(self):
 		 # ---stream tweets---*
@@ -159,7 +163,7 @@ class Tweet_Streamer():
 		if self.text in tweet:
 			tweet_text = ""
 			emojiset = ""
-
+			
 			if 'retweeted_status' in tweet:
 				# ---if tweet is a retweet---*
 				if 'extended_tweet' in tweet['retweeted_status']:
@@ -184,6 +188,7 @@ class Tweet_Streamer():
 					tweet_text = tweet[self.text]
 					emojiset = self.extract_emoji_sequences(tweet[self.text])
 					self.result[self.current_tweets] = (tweet_text, emojiset)
+				
 			self.result_weight += (len(tweet_text.encode('utf-8')) + len(emojiset.encode('utf-8')) + len(str(self.current_tweets).encode('utf-8'))) / pow(10,6)
 			
 			

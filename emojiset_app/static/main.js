@@ -25,6 +25,16 @@ $(document).ready(function () {
 		$('[data-toggle="tooltip"]').tooltip()
 	})
 
+	// Disable checkbox
+	$("input[value='full_tweet']").change(function () {
+		$("input[name='extract']").prop('disabled', true);
+	});
+
+	// Enable checkbox
+	$("input[value='extract']").change(function () {
+		$("input[name='extract']").prop('disabled', false);
+	});
+
 	/** Sets default dates for the date input fields */
 	function set_date() {
 		var now = new Date();
@@ -517,24 +527,24 @@ $(document).ready(function () {
 				check_long_job_status(data[0].status_url)
 			}
 		});
-		$.getJSON(get_downloadable_files_link, function (data){
-			if(Object.keys(data).length != 0)
+		$.getJSON(get_downloadable_files_link, function (data) {
+			if (Object.keys(data).length != 0)
 				$('#file-list').html(data.file_list)
 		});
 	}
 
 	function check_long_job_status(status_url) {
 		let delete_task_url = document.location.href + "/delete_task"
-		$.getJSON(status_url, function (data) { 
+		$.getJSON(status_url, function (data) {
 			switch (data[0].status) {
 				case "finished":
 					let get_downloadable_files_link = document.location.href + "/get_downloads"
-					
-					$.getJSON(get_downloadable_files_link, function (result){
+
+					$.getJSON(get_downloadable_files_link, function (result) {
 						$('#task-query').html('There are no currently running tasks')
 						$('#file-list').html(result.file_list)
 					});
-			
+									
 					$('#chunk').attr('disabled', 'false')
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
@@ -601,7 +611,7 @@ $(document).ready(function () {
 		var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 		var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 		var dateTime = date + ' ' + time;
-		if  (date_input != "" && time_input != "") {
+		if (date_input != "" && time_input != "") {
 			time_length = date_input + "T" + time_input
 		}
 
@@ -615,7 +625,8 @@ $(document).ready(function () {
 					'tweet_amount': tweet_amount,
 					'time_length': time_length,
 					'time_offset': offset,
-					'chunk': chunk
+					'chunk': chunk,
+					'extract_settings_form': $('#extract_settings_form').serialize()
 				},
 				method: "POST",
 				dataType: "json",

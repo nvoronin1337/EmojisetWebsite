@@ -57,7 +57,7 @@
 							class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href=""><i class="fa fa-group"></i> Team</a>
+					<a class="nav-link" href="#team"><i class="fa fa-group"></i> Team</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -563,7 +563,7 @@
 									</a>
 								</li>
 								<li class="nav-item">
-									<a data-toggle="pill" href="#nav-memory-size" class="nav-link rounded-pill" >
+									<a data-toggle="pill" href="#nav-memory-size" class="nav-link rounded-pill">
 										💾
 										Size of Dataset
 									</a>
@@ -595,7 +595,7 @@
 										<a class="accordion-body" collapse data-toggle="collapse"
 											data-target="#collapseOne" aria-controls="collapseOne">
 											<div class="card-header" id="headingOne">
-												↕️ Saved Queries
+												↕️ Saved Queries (click to expand)
 											</div>
 										</a>
 
@@ -660,27 +660,41 @@
 							<!-- Form content -->
 							<div class="tab-content" style="margin-top: 1em">
 								<!-- number of tweets -->
-								<div id="nav-tweet-amount" class="tab-pane fade show active">
-									<form id="longTaskFormTA" role="form">
-										<div class="form-row">
-											<div class="col">
-												<div class="form-group">
-													<div class="input-group">
-														<input type="number" id="tweet_amount_long"
-															name="tweet_amount_long"
-															placeholder="💯 Amount of tweets to mine"
-															class="form-control" min="0" step="1"
-															oninput="validity.valid||(value='');">
-														<div class="input-group-append">
-															<span class="input-group-text text-muted">
-																unlimited
-															</span>
+								<div class="form-row">
+									<div class="col-lg-8">
+										<div id="nav-tweet-amount" class="tab-pane fade show active">
+											<form id="longTaskFormTA" role="form">
+												<div class="form-row">
+													<div class="col">
+														<div class="form-group">
+															<div class="input-group">
+																<input type="number" id="tweet_amount_long"
+																	name="tweet_amount_long"
+																	placeholder="💯 Amount of tweets to mine"
+																	class="form-control" min="0" step="1"
+																	oninput="validity.valid||(value='');">
+																<div class="input-group-append">
+																	<span class="input-group-text text-muted">
+																		unlimited
+																	</span>
+																</div>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
+											</form>
 										</div>
-									</form>
+									</div>
+									<div class="col">
+										<fieldset style="padding-top: 0.5em;">
+											<label for="chunk">Output file size:</label>
+											<input id="chunk" name="chunk" type="range" max="100" min="10" step="10"
+												oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+												value="50">
+											</input>
+											<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+										</fieldset>
+									</div>
 								</div>
 								<!-- End -->
 
@@ -714,30 +728,75 @@
 												<input type="time" class="form-control" id="time-length"
 													name="time-length">
 											</div>
-
 										</div>
 									</form>
 								</div>
 								<!-- End -->
-								<div class="row">
-									<div class="col">
 
-										<fieldset>
-											<label for="chunk">Output file size:</label>
-											<input id="chunk" name="chunk" type="range" max="100" min="10" step="10"
-												oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
-												value="50">
-											</input>
-											<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
-										</fieldset>
-									</div>
+								<label for="extract_div">Extraction Settings</label>
+								<div id="extract_div" class="card">
+									<form id="extract_settings_form" role="form">
+										<div class="row" style="margin-left: 5rem;">
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="radio_full" type="radio" class="form-check-input"
+														name="extract_radio" value="full_tweet">Full Tweet
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input if="radio_extract" type="radio" class="form-check-input"
+														name="extract_radio" value="extract">Extract Parts
+												</label>
+											</div>
+											<div class="form-check-inline" style="margin-left: 2rem;">
+												<label class="form-check-label">
+													<input id="checkbox_id" name="extract" type="checkbox"
+														class="form-check-input" value="">Tweet Id
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="checkbox_text" name="extract" type="checkbox"
+														class="form-check-input" value="">Text
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="checkbox_emojiset" name="extract" type="checkbox"
+														class="form-check-input" value="">Emojiset
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="checkbox_hashtags" name="extract" type="checkbox"
+														class="form-check-input" value="">Hashtags
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="checkbox_links" name="extract" type="checkbox"
+														class="form-check-input" value="">Links
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input id="checkbox_images" name="extract" type="checkbox"
+														class="form-check-input" value="">Images
+												</label>
+											</div>
+										</div>
+									</form>
 								</div>
-								<button id="submit_long" type="button"
-									class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
-									👌 Confirm
-								</button>
 
-								<br style="height: 100%;"/>
+								<div style="margin-top: 1em;">
+									<button id="submit_long" type="button"
+										class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+										👌 Confirm
+									</button>
+								</div>
+
+								<br style="height: 100%;" />
 								<div class="card">
 									<div class="card-header">
 										▶️ Currently Running Task
@@ -778,10 +837,10 @@
 
 								<div id="results_wrapper_container" class="row">
 									<div class="col">
-										
-											<div id="file-list">
-											</div>
-										
+
+										<div id="file-list">
+										</div>
+
 									</div>
 								</div>
 
