@@ -522,8 +522,14 @@ $(document).ready(function () {
 				$('#task-progress-div').removeAttr('hidden')
 				$('#submit_long').hide()
 				$('#chunk').val(data[0].chunk)
+				$('#chunkME').val(data[0].chunk)
+				$('#chunkTR').val(data[0].chunk)
 				$('#rangeValLabel').text(data[0].chunk + ' GB')
+				$('#rangeValLabelME').text(data[0].chunk + ' GB')
+				$('#rangeValLabelTR').text(data[0].chunk + ' GB')
 				$('#chunk').attr('disabled', 'true')
+				$('#chunkME').attr('disabled', 'true')
+				$('#chunkTR').attr('disabled', 'true')
 				check_long_job_status(data[0].status_url)
 			}
 		});
@@ -545,7 +551,10 @@ $(document).ready(function () {
 						$('#file-list').html(result.file_list)
 					});
 									
-					$('#chunk').attr('disabled', 'false')
+					$('#chunk').removeAttr("disabled")
+					$('#chunkME').removeAttr("disabled")
+					$('#chunkTR').removeAttr("disabled")
+					
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
 					$('#task-progress-div').attr('hidden', '')
@@ -603,7 +612,7 @@ $(document).ready(function () {
 		let tweet_amount = $('#tweet_amount_long').val()
 		let date_input = $('#date-length').val()
 		let time_input = $('#time-length').val()
-		let chunk = $('#chunk').val()
+		let chunk = ""
 
 		let time_length = ""
 
@@ -613,6 +622,15 @@ $(document).ready(function () {
 		var dateTime = date + ' ' + time;
 		if (date_input != "" && time_input != "") {
 			time_length = date_input + "T" + time_input
+		}
+
+		if (tweet_amount != ""){
+			chunk = $('#chunk').val()
+		}
+		else if(time_length != ""){
+			chunk = $('#chunkTR').val()
+		}else{
+			chunk = $('#chunkME').val()
 		}
 
 		if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
@@ -667,3 +685,13 @@ $(document).ready(function () {
 		return false;
 	});
 });
+
+function GoToTeam(){
+	let url = location.href.replace('emojiset', '') + "#team"
+	location.href = url
+}
+
+function GoToContact(){
+	let url = location.href.replace('emojiset', '') + "#contact"
+	location.href = url
+}

@@ -57,7 +57,7 @@
 							class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#team"><i class="fa fa-group"></i> Team</a>
+					<a class="nav-link" href="#team" onclick="GoToTeam(); return false;"><i class="fa fa-group"></i> Team</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -82,7 +82,7 @@
 		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-					<a class="nav-link" href=""><i class="fa fa-envelope"></i> Contact <span
+					<a class="nav-link" href="#contact" onclick="GoToContact(); return false;"><i class="fa fa-envelope"></i> Contact <span
 							class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item dropdown">
@@ -716,12 +716,12 @@
 											</div>
 											<div class="col-sm-3 chunk-col">
 												<fieldset>
-													<input id="chunk" name="chunk" type="range" max="100" min="10"
+													<input id="chunkME" name="chunk" type="range" max="100" min="10"
 														step="10"
-														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+														oninput="document.getElementById('rangeValLabelME').innerHTML = this.value + ' gb';"
 														value="50">
 													</input>
-													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+													<em id="rangeValLabelME" style="font-style: normal;">50 gb</em>
 												</fieldset>
 											</div>
 										</div>
@@ -748,12 +748,12 @@
 											</div>
 											<div class="col-sm-3 chunk-col">
 												<fieldset>
-													<input id="chunk" name="chunk" type="range" max="100" min="10"
+													<input id="chunkTR" name="chunk" type="range" max="100" min="10"
 														step="10"
-														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
+														oninput="document.getElementById('rangeValLabelTR').innerHTML = this.value + ' gb';"
 														value="50">
 													</input>
-													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
+													<em id="rangeValLabelTR" style="font-style: normal;">50 gb</em>
 												</fieldset>
 											</div>
 										</div>
@@ -768,10 +768,15 @@
 								<br style="height: 100%;" />
 								<div class="card">
 									<div class="card-header">
-										▶️ Currently Running Task
+										<label for="running_task_body" data-toggle="tooltip"
+											title="Data in files will update every 10 MB">▶️ Currently Running Task
+											<i class="fa fa-question-circle"></i>
+										</label>
+										
 										<span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
 									</div>
-									<div class="card-body">
+									<div id="running_task_body" class="card-body">
+										
 										<p id="task-query" class="card-text">There are no currently running tasks
 										</p>
 										<div id="progress_wrapper">
