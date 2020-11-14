@@ -13,7 +13,7 @@ import csv
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Tweet_Streamer():
-	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, file_size=10, email=""):
+	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None):
 		# ---Configuring Twarc API---*
 		self.consumer_key = keys['consumer_key']
 		self.consumer_secret = keys['consumer_secret']
@@ -35,31 +35,15 @@ class Tweet_Streamer():
 		if self.follow:
 			self.follow = self.follow.replace('@', '').replace(' ', "").split(',')
 		self.geo = geo
-		self.finish_time = finish_time
-		if self.finish_time:
-			self.total_time = self.finish_time - time.time()
 		self.user_ids = []
 		self.job = get_current_job()
 		self.current_tweets = 0
 		self.discarded = 0
 		self.text = "text"
-		self.files = 0
-		self.file_size = file_size
-		self.result_weight = 0
-		self.total_result_weight = 0
-		self.prev_count = 0
-		if email:
-			self.email = email.split('@')[0]
-		else:
-			self.email = email
 		# ---dictionaty in the format {index: (tweet, emojiset)}---*
 		self.result = {}
 		now = time.localtime()
 		self.current_datetime = time.strftime("%Y-%m-%d_%H:%M:%S", now)
-
-		self.extract_id = True
-		self.extract_text = True
-		self.extract_emojiset = True
 
 
 	def stream(self):
@@ -127,8 +111,6 @@ class Tweet_Streamer():
 				self.job.refresh()     
 				if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
 					self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
-				elif self.finish_time:
-					self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
 				self.job.save_meta()                                                           # saves new update to progress bar*
 			else:
 				self.discarded += 1                                                            # counter of tweets w/o emojis*
@@ -141,11 +123,7 @@ class Tweet_Streamer():
 			self.job.refresh()
 			if self.max_tweets:                                                       
 				self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)   
-			elif self.finish_time:
-				self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
 			self.job.save_meta()
-		if self.result_weight >= 0.5:
-			self.result_to_csv()
 
 
 	# ---checks to see if any emojis are present---*
@@ -189,29 +167,6 @@ class Tweet_Streamer():
 					emojiset = self.extract_emoji_sequences(tweet[self.text])
 					self.result[self.current_tweets] = (tweet_text, emojiset)
 				
-			self.result_weight += (len(tweet_text.encode('utf-8')) + len(emojiset.encode('utf-8')) + len(str(self.current_tweets).encode('utf-8'))) / pow(10,6)
-			
-			
-	# ---function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)---*
-	def extract_emoji_sequences_with_brackets(self, text):
-		emoji_sequence = []
-		emojiset_str = '['
-		grapheme_clusters = regex.findall(r"\X", text)
-		for cluster in grapheme_clusters:
-			if cluster in EMOJI_SET:
-				emoji_sequence.append(cluster)
-			else:
-				if(len(emoji_sequence) > 0):
-					emojiset_str += "[" + ",".join(emoji_sequence) + "], "
-					emoji_sequence = []
-		if(len(emoji_sequence) > 0):
-			emojiset_str += "[" + ", ".join(emoji_sequence) + "]"
-		else:
-			if(len(emojiset_str) > 1):
-				emojiset_str = emojiset_str[:-2]
-		emojiset_str += ']'
-		return emojiset_str
-
 
 	# ---function returns emojiset list consisting of emoji sequences (a string) ; sequences are separated by any character that isn't an emoji---*
 	def extract_emoji_sequences(self, text):
@@ -240,28 +195,24 @@ class Tweet_Streamer():
 				return True
 			else:
 				return False
-		elif self.finish_time:
-			if time.time() >= self.finish_time:
-				return True
+
+	# ---function returns emojiset list consisting of emoji sequences (a string looking like python list of lists)---*
+	def extract_emoji_sequences_with_brackets(self, text):
+		emoji_sequence = []
+		emojiset_str = '['
+		grapheme_clusters = regex.findall(r"\X", text)
+		for cluster in grapheme_clusters:
+			if cluster in EMOJI_SET:
+				emoji_sequence.append(cluster)
 			else:
-				return False
-
-
-	def result_to_csv(self, clean=True):
-		filename = 'results/' + self.email + '/' + self.current_datetime + '/data_' + str(self.files) + '.csv'
-		os.makedirs(os.path.dirname(filename), exist_ok=True)
-		csv_columns = ["id", "Tweet", "Emojiset"]
-		
-		with open(filename, 'a+') as f:
-			writer = csv.DictWriter(f, fieldnames=csv_columns, lineterminator='\n')
-			writer.writeheader()
-			for item in self.result.items():
-				writer.writerow({'id': item[0] + self.prev_count, 'Tweet': item[1][0], 'Emojiset': item[1][1]})
-		self.prev_count = self.current_tweets
-		self.total_result_weight += self.result_weight
-		if self.total_result_weight >= int(self.file_size):
-			self.total_result_weight = 0
-			self.files += 1
-		if clean:
-			self.result = {}
-			self.result_weight = 0
+				if(len(emoji_sequence) > 0):
+					emojiset_str += "[" + ",".join(emoji_sequence) + "], "
+					emoji_sequence = []
+		if(len(emoji_sequence) > 0):
+			emojiset_str += "[" + ", ".join(emoji_sequence) + "]"
+		else:
+			if(len(emojiset_str) > 1):
+				emojiset_str = emojiset_str[:-2]
+		emojiset_str += ']'
+		return emojiset_str
+    

@@ -2,7 +2,7 @@ from emojiset_app import app
 from emojiset_app import r
 from emojiset_app import small_task_q, long_task_q
 from emojiset_app import db
-from emojiset_app.tasks import stream_task
+from emojiset_app.tasks import stream_task, stream_large
 from emojiset_app.utils import *
 from emojiset_app.models import SavedQuery, RunningTask, SavedResultDirectory, FinishedTask
 from flask import render_template, request, redirect, url_for, jsonify, send_from_directory
@@ -139,7 +139,7 @@ def run_large_task():
 	twarc_method = query_json["twarc_method"]
 
 	job = None
-	job = long_task_q.enqueue(stream_task, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, chunk, user_email)
+	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, chunk, user_email)
 	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
@@ -337,10 +337,8 @@ def get_file_list():
 			return jsonify(str(files), 404)
 		html_files_list += '<div class="card"><div class="list-group">'
 		html_files_list += '<a class="list-group-item list-group-item-secondary">' + "Results from " + str(subfolder) + '</a>'
-		file_number = 0
 		for file in file_list:
-			html_files_list += '<a class="list-group-item" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file_number) + '">Download result #' + str(file_number) + '</a>'
-			file_number += 1
+			html_files_list += '<a class="list-group-item" href="' + current_url + 'download/' + str(subfolder) + '/' + str(file) + '">' + str(file) + '</a>'
 		html_files_list += '</div></div><br>'
 	response = {
 		'file_list': html_files_list
@@ -348,10 +346,8 @@ def get_file_list():
 	return jsonify(response)
 
 
-@app.route("/emojiset/download/<subfolder>/<file_number>", methods=["GET"])
+@app.route("/emojiset/download/<subfolder>/<file_name>", methods=["GET"])
 @login_required
-def download(subfolder, file_number):
+def download(subfolder, file_name):
 	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + '/' + str(subfolder)
-	filename = "data_" + str(file_number) + ".csv"
-	attachment_filename = "result_" + str(subfolder) + '_' + str(file_number) + ".csv"
-	return send_from_directory(directory=uploads, filename=filename, as_attachment=True, attachment_filename=attachment_filename)
+	return send_from_directory(directory=uploads, filename=file_name, as_attachment=True)

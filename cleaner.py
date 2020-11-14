@@ -10,7 +10,6 @@ class FolderCleaner:
     """
     
     def __init__(self, path, days):
-        debug(path)
         if not os.path.exists(path):
             raise TypeError("folder does not exist")
         self.path = path
