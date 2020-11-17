@@ -315,7 +315,7 @@ class Large_Streamer():
 			# ---if tweet is a retweet---*
 			if 'extended_tweet' in status['retweeted_status']:
 				# ---if tweet was found using filter API---*
-				text = "RT " + screen_name + ': ' + status['retweeted_status']['extended_tweet'][text_param_name]
+				text = "RT " + screen_name + ': ' + status['retweeted_status']['extended_tweet']['full_text']
 			else:
 				# ---if tweet was found using search API---*
 				text = "RT " + screen_name + ': ' + status['retweeted_status'][text_param_name]
@@ -323,7 +323,7 @@ class Large_Streamer():
 			# ---if not a retweet---*
 			if 'extended_tweet' in status:
 				# ---if not retweet but still truncated---*
-				text = status['extended_tweet']['text_param_name']
+				text = status['extended_tweet']['full_text']
 			else:
 				# ---if not a retweet and not tuncated---*
 				text = status[text_param_name]
