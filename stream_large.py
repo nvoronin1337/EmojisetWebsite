@@ -5,7 +5,6 @@ import emoji
 from emojiset_app import EMOJI_SET, small_task_q, long_task_q
 import regex
 from rq import get_current_job  
-from emojiset_app.utils import debug, split_filter_keywords, split_search_keywords
 
 from collections import Counter
 from itertools import combinations
@@ -16,6 +15,7 @@ import shutil
 import io
 import re
 import json
+import csv
 
 # Helper functions for saving json, csv and formatted txt files
 def save_json(variable, filename):
@@ -119,7 +119,7 @@ def get_image_urls(status):
 ## Tweet Streamer class
 #  Uses Twarc API to stream self.tweets from twitter
 class Large_Streamer():
-	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, file_size=10, email=""):
+	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[]):
 		# ---Configuring Twarc API---*
 		self.consumer_key = keys['consumer_key']
 		self.consumer_secret = keys['consumer_secret']
@@ -149,11 +149,6 @@ class Large_Streamer():
 		self.current_tweets = 0
 		self.discarded = 0
 		self.text = "text"
-		self.files = 0
-		self.file_size = file_size
-		self.result_weight = 0
-		self.total_result_weight = 0
-		self.prev_count = 0
 		if email:
 			self.email = email.split('@')[0]
 		else:
@@ -163,6 +158,9 @@ class Large_Streamer():
 		now = time.localtime()
 		self.current_datetime = time.strftime("%Y-%m-%d_%H:%M:%S", now)
 
+		self.extract_primary = extract_primary
+		self.extract_secondary = extract_secondary
+		
 		self.influencer_frequency_dist = Counter()
 		self.mentioned_frequency_dist = Counter()
 		self.hashtag_frequency_dist = Counter()
@@ -172,6 +170,15 @@ class Large_Streamer():
 		self.hashtag_hashtag_graph = {}
 		self.all_image_urls = []
 		self.tweets = {}
+		
+		self.tweet_id = ""
+		self.tweet_username = ""
+		self.tweets_text = ""
+		self.emojisets = ""
+		self.tweet_status_urls = ""
+		self.hashtags = ""
+		self.urls = ""
+		self.image_urls = ""
 		self.tweet_count = 0
 
 		self.save_dir = 'results/' + self.email + '/' + self.current_datetime
@@ -240,7 +247,7 @@ class Large_Streamer():
 	def process_tweet(self, tweet):
 		if self.discard:                                                                       
 			if self.contains_emoji(tweet):
-				self.parse_search(tweet)
+				self.parse_tweet(tweet)
 				self.current_tweets += 1                                                       # counter of self.tweets w/ emojis to update progress bar*
 				self.job.refresh()     
 				if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
@@ -254,7 +261,7 @@ class Large_Streamer():
 				self.job.meta['discarded_self.tweets'] = self.discarded                             
 				self.job.save_meta()                                                           # saves new update to # of discarded self.tweets message*
 		else:   
-			self.parse_search(tweet)
+			self.parse_tweet(tweet)
 			self.current_tweets += 1
 			self.job.refresh()
 			if self.max_tweets:                                                       
@@ -274,17 +281,20 @@ class Large_Streamer():
 		return False
 
 
-	def parse_search(self, status):
+	def parse_tweet(self, status):
 		sys.stdout.write("\r")
 		sys.stdout.flush()
 		sys.stdout.write("Collected " + str(self.tweet_count) + " self.tweets.")
 		sys.stdout.flush()
 		self.tweet_count += 1
+
+		self.tweets[self.tweet_count] = status
 		
-		screen_name = None
+		screen_name = ""
 		if "user" in status:
 			if "screen_name" in status["user"]:
 				screen_name = status["user"]["screen_name"]
+		self.tweet_username = screen_name
 
 		retweeted = retweeted_user(status)
 		if retweeted != None:
@@ -293,15 +303,35 @@ class Large_Streamer():
 			self.influencer_frequency_dist[screen_name] += 1
 
 	# Tweet text can be in either "text" or "full_text" field...
-		text = None
+		text_param_name = None
 		if "full_text" in status:
-			text = status["full_text"]
+			text_param_name = "full_text"
 		elif "text" in status:
-			text = status["text"]
+			text_param_name = "text"
 
-		id_str = None
+		text = ""
+			
+		if screen_name and 'retweeted_status' in status:
+			# ---if tweet is a retweet---*
+			if 'extended_tweet' in status['retweeted_status']:
+				# ---if tweet was found using filter API---*
+				text = "RT " + screen_name + ': ' + status['retweeted_status']['extended_tweet'][text_param_name]
+			else:
+				# ---if tweet was found using search API---*
+				text = "RT " + screen_name + ': ' + status['retweeted_status'][text_param_name]
+		else:
+			# ---if not a retweet---*
+			if 'extended_tweet' in status:
+				# ---if not retweet but still truncated---*
+				text = status['extended_tweet']['text_param_name']
+			else:
+				# ---if not a retweet and not tuncated---*
+				text = status[text_param_name]
+
+		id_str = ""
 		if "id_str" in status:
 			id_str = status["id_str"]
+		self.tweet_id = id_str
 
 	# Assemble the URL to the tweet we received...
 		tweet_url = None
@@ -309,8 +339,12 @@ class Large_Streamer():
 			tweet_url = "https://twitter.com/" + screen_name + "/status/" + id_str
 
 	# ...and capture it
-		if tweet_url != None and text != None:
-			self.tweets[tweet_url] = text
+		if tweet_url != None:
+				self.tweet_status_urls = tweet_url
+
+		if text != None:
+			self.tweets_text = text
+			self.emojisets = self.extract_emoji_sequences(text)
 
 	# Record mapping graph between users
 		interactions = get_interactions(status)
@@ -327,6 +361,7 @@ class Large_Streamer():
 	# Record mapping graph between users and hashtags
 		hashtags = get_hashtags(status)
 		if hashtags != None:
+			self.hashtags = ','.join(hashtags)
 			if len(hashtags) > 1:
 				hashtag_interactions = []
 	# This code creates pairs of hashtags in situations where multiple
@@ -351,65 +386,66 @@ class Large_Streamer():
 						self.user_hashtag_graph[screen_name][hashtag] = 1
 					else:
 						self.user_hashtag_graph[screen_name][hashtag] += 1
+		else:
+			self.hashtags = ""
 
 		urls = get_urls(status)
 		if urls != None:
+			self.urls = ','.join(urls)
 			for url in urls:
 				self.url_frequency_dist[url] += 1
+		else:
+			self.urls = ""
 
 		image_urls = get_image_urls(status)
 		if image_urls != None:
+			self.image_urls = ','.join(image_urls)
 			for url in image_urls:
 				if url not in self.all_image_urls:
 					self.all_image_urls.append(url)
+		else:
+			self.image_urls = ""
 
 	# Iterate through image URLs, fetching each image if we haven't already
-		print("Fetching images.")
-		pictures_dir = os.path.join(self.save_dir, "images")
-		if not os.path.exists(pictures_dir):
-			print("Creating directory: " + pictures_dir)
-			os.makedirs(pictures_dir)
-		for url in self.all_image_urls:
-			m = re.search("^http:\/\/pbs\.twimg\.com\/media\/(.+)$", url)
-			if m != None:
-				filename = m.group(1)
-				print("Getting picture from: " + url)
-				save_path = os.path.join(pictures_dir, filename)
-				if not os.path.exists(save_path):
-					response = requests.get(url, stream=True)
-					with open(save_path, 'wb') as out_file:
-						shutil.copyfileobj(response.raw, out_file)
-					del response
+		if self.extract_secondary[1] == 'true':
+			print("Fetching images.")
+			pictures_dir = os.path.join(self.save_dir, "images")
+			if not os.path.exists(pictures_dir):
+				print("Creating directory: " + pictures_dir)
+				os.makedirs(pictures_dir)
+			for url in self.all_image_urls:
+				m = re.search("^http:\/\/pbs\.twimg\.com\/media\/(.+)$", url)
+				if m != None:
+					filename = m.group(1)
+					print("Getting picture from: " + url)
+					save_path = os.path.join(pictures_dir, filename)
+					if not os.path.exists(save_path):
+						response = requests.get(url, stream=True)
+						with open(save_path, 'wb') as out_file:
+							shutil.copyfileobj(response.raw, out_file)
+						del response
 
 	# Output a bunch of files containing the data we just gathered
 		print("Saving data.")
-		json_outputs = {"tweets.json": self.tweets,
-						"urls.json": self.url_frequency_dist,
-						"hashtags.json": self.hashtag_frequency_dist,
-						"influencers.json": self.influencer_frequency_dist,
-						"mentioned.json": self.mentioned_frequency_dist,
-						"user_user_graph.json": self.user_user_graph,
-						"user_hashtag_graph.json": self.user_hashtag_graph,
-						"hashtag_hashtag_graph.json": self.hashtag_hashtag_graph}
+		outputs = self.construct_secondary_outputs()
+		json_outputs = outputs[0]
 		for name, dataset in json_outputs.items():
 			filename = os.path.join(self.save_dir, name)
 			save_json(dataset, filename)
 
 	# These files are created in a format that can be easily imported into Gephi
-		csv_outputs = {"user_user_graph.csv": self.user_user_graph,
-						"user_hashtag_graph.csv": self.user_hashtag_graph,
-						"hashtag_hashtag_graph.csv": self.hashtag_hashtag_graph}
+		csv_outputs = outputs[1]
+
 		for name, dataset in csv_outputs.items():
 			filename = os.path.join(self.save_dir, name)
 			save_csv(dataset, filename)
 
-		text_outputs = {"hashtags.txt": self.hashtag_frequency_dist,
-						"influencers.txt": self.influencer_frequency_dist,
-						"mentioned.txt": self.mentioned_frequency_dist,
-						"urls.txt": self.url_frequency_dist}
+		text_outputs = outputs[2]
 		for name, dataset in text_outputs.items():
 			filename = os.path.join(self.save_dir, name)
 			save_text(dataset, filename)
+		
+		self.flush_results()
 
 
 	# ---function returns emojiset list consisting of emoji sequences (a string) ; sequences are separated by any character that isn't an emoji---*
@@ -444,3 +480,76 @@ class Large_Streamer():
 				return True
 			else:
 				return False
+
+
+	def result_to_csv(self, filename, colnames, values):
+		csv_columns = []
+		for colname in colnames:
+			csv_columns.append(colname)
+		
+		with open(filename, 'a+') as f:
+			writer = csv.DictWriter(f, fieldnames=csv_columns, lineterminator='\n')
+			if self.tweet_count == 1:
+				writer.writeheader()
+
+			row = {}
+			col_index = 0
+			for value in values:
+				row[colnames[col_index]] = value
+				col_index += 1
+			writer.writerow(row)
+
+
+	def flush_results(self):
+		col_names = []
+		values = []
+		if self.extract_primary[0] == 'true':
+			col_names.append('source')
+			values.append(self.tweet_status_urls)
+		if self.extract_primary[1] == 'true':
+			col_names.append('tweet_id')
+			values.append(self.tweet_id)
+		if self.extract_primary[2] == 'true':
+			col_names.append('username')
+			values.append(self.tweet_username)
+		if self.extract_primary[3] == 'true':
+			col_names.append('text')
+			values.append(self.tweets_text)
+		if self.extract_primary[4] == 'true':
+			col_names.append('emojiset')
+			values.append(self.emojisets)
+		if self.extract_primary[5] == 'true':
+			col_names.append('hashtags')
+			values.append(self.hashtags)
+		if self.extract_primary[6] == 'true':
+			col_names.append('urls')
+			values.append(self.urls)
+		if self.extract_primary[7] == 'true':
+			col_names.append('image_urls')
+			values.append(self.image_urls)
+
+		filename = os.path.join(self.save_dir, "extracted_data.csv")
+		self.result_to_csv(filename, col_names, values)
+
+
+	def construct_secondary_outputs(self):
+		csv_outputs = {}
+		json_outputs = {}
+		txt_outputs = {}
+		
+		if self.extract_secondary[0] == 'true':
+			json_outputs['full_tweets.json'] = self.tweets
+		if self.extract_secondary[2] == 'true':
+			csv_outputs["hashtag_hashtag_graph.csv"] = self.hashtag_hashtag_graph 
+			json_outputs['hashtag_hashtag_graph.json'] = self.hashtag_hashtag_graph
+		if self.extract_secondary[3] == 'true':
+			csv_outputs["user_hashtag_graph.json"] = self.user_hashtag_graph
+			json_outputs["user_hashtag_graph.json"] = self.user_hashtag_graph
+		if self.extract_secondary[4] == 'true':
+			json_outputs["mentioned.json"] = self.mentioned_frequency_dist
+			txt_outputs['mentioned.txt'] = self.mentioned_frequency_dist
+		if self.extract_secondary[5] == 'true':
+			csv_outputs["user_user_graph.csv"] = self.user_user_graph
+			json_outputs["user_user_graph.json"] = self.user_user_graph
+		
+		return [json_outputs, csv_outputs, txt_outputs]

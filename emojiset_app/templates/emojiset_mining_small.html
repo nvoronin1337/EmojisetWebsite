@@ -57,7 +57,8 @@
 							class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#team" onclick="GoToTeam(); return false;"><i class="fa fa-group"></i> Team</a>
+					<a class="nav-link" href="#team" onclick="GoToTeam(); return false;"><i class="fa fa-group"></i>
+						Team</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -82,8 +83,8 @@
 		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-					<a class="nav-link" href="#contact" onclick="GoToContact(); return false;"><i class="fa fa-envelope"></i> Contact <span
-							class="sr-only">(current)</span></a>
+					<a class="nav-link" href="#contact" onclick="GoToContact(); return false;"><i
+							class="fa fa-envelope"></i> Contact <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown"
@@ -581,15 +582,6 @@
 							<div class="row">
 								<div class="col">
 
-									<br>
-									<div id="selected_query_wrapper" class="row">
-										<div class="col">
-											<input id="selected_query" class="form-control" type="text"
-												placeholder="Please select a query from the dropdown table below"
-												readonly>
-										</div>
-									</div>
-
 									<!--INSERT QUERIES HERE-->
 									<div class="card">
 										<a class="accordion-body" collapse data-toggle="collapse"
@@ -662,34 +654,23 @@
 								<!-- number of tweets -->
 								<div id="nav-tweet-amount" class="tab-pane fade show active">
 									<form id="longTaskFormTA" role="form">
-										<label for="tweet-amount-row">Select number of tweets and size of each individual file with results</label>
-										<div id="tweet-amount-row" class="form-row">
-											<div class="col">
-												<div class="form-group">
-													<div class="input-group">
-														<input type="number" id="tweet_amount_long"
-															name="tweet_amount_long"
-															placeholder="💯 Amount of tweets to mine"
-															class="form-control" min="0" step="1"
-															oninput="validity.valid||(value='');">
-														<div class="input-group-append">
-															<span class="input-group-text text-muted">
-																unlimited
-															</span>
-														</div>
+										<label for="tweet-amount-row">Select number of tweets and size of each
+											individual file with results</label>
+										<div id="tweet-amount-row" >
+
+											<div class="form-group">
+												<div class="input-group">
+													<input type="number" id="tweet_amount_long" name="tweet_amount_long"
+														placeholder="💯 Amount of tweets to mine" class="form-control"
+														min="0" step="1" oninput="validity.valid||(value='');">
+													<div class="input-group-append">
+														<span class="input-group-text text-muted">
+															unlimited
+														</span>
 													</div>
 												</div>
 											</div>
-											<div class="col-sm-3 chunk-col">
-												<fieldset>
-													<input id="chunk" name="chunk" type="range" max="100" min="10"
-														step="10"
-														oninput="document.getElementById('rangeValLabel').innerHTML = this.value + ' gb';"
-														value="50">
-													</input>
-													<em id="rangeValLabel" style="font-style: normal;">50 gb</em>
-												</fieldset>
-											</div>
+
 										</div>
 									</form>
 								</div>
@@ -698,133 +679,255 @@
 								<!-- size of dataset -->
 								<div id="nav-memory-size" class="tab-pane fade">
 									<form id="longTaskFormME" role="form">
-										<label for="memory-size-row">Select total result size and size of each individual file with results</label>
-										<div id="memory-size-row" class="form-row">
-											<div class="col">
-												<div class="form-group">
-													<div class="input-group">
-														<input type="number" min="0" class="form-control w-75"
-															id="set_size" name="set_size" placeholder="Size of dataset">
-														<select name="size_units" id="size_units" class="form-control">
-															<option value="kb">kb</option>
-															<option value="mb">mb</option>
-															<option value="gb">gb</option>
-															<option value="tb">tb</option>
-														</select>
-													</div>
+										<label for="memory-size-row">Select total result size and size of each
+											individual file with results</label>
+										<div id="memory-size-row" >
+
+											<div class="form-group">
+												<div class="input-group">
+													<input type="number" min="0" class="form-control w-75" id="set_size"
+														name="set_size" placeholder="Size of dataset">
+													<select name="size_units" id="size_units" class="form-control">
+														<option value="kb">kb</option>
+														<option value="mb">mb</option>
+														<option value="gb">gb</option>
+														<option value="tb">tb</option>
+													</select>
 												</div>
 											</div>
-											<div class="col-sm-3 chunk-col">
-												<fieldset>
-													<input id="chunkME" name="chunk" type="range" max="100" min="10"
-														step="10"
-														oninput="document.getElementById('rangeValLabelME').innerHTML = this.value + ' gb';"
-														value="50">
-													</input>
-													<em id="rangeValLabelME" style="font-style: normal;">50 gb</em>
-												</fieldset>
-											</div>
 										</div>
-									</form>
-								</div>
-								<!-- End -->
 
-								<!-- collect tweets until date -->
-								<div id="nav-time-range" class="tab-pane fade">
-									<form id="longTaskFormDT" role="form">
-										<label for="time-length-row">Select how long you want to mine for and size of each individual file with results</label>
-										<div id="time-length-row" class="form-row">
-											<div class="col">
-												<div class="form-group">
-													<!-- NOT SHOWING IN FIREFOX -->
-													<div class="input-group">
-														<input type="date" class="form-control" id="date-length"
-															name="time-length">
-														<input type="time" class="form-control" id="time-length"
-															name="time-length">
-													</div>
+								
+								</form>
+							</div>
+							<!-- End -->
 
-												</div>
+							<!-- collect tweets until date -->
+							<div id="nav-time-range" class="tab-pane fade">
+								<form id="longTaskFormDT" role="form">
+									<label for="time-length-row">Select how long you want to mine for and size of
+										each individual file with results</label>
+									<div id="time-length-row">
+
+										<div class="form-group">
+											<!-- NOT SHOWING IN FIREFOX -->
+											<div class="input-group">
+												<input type="date" class="form-control" id="date-length"
+													name="time-length">
+												<input type="time" class="form-control" id="time-length"
+													name="time-length">
 											</div>
-											<div class="col-sm-3 chunk-col">
-												<fieldset>
-													<input id="chunkTR" name="chunk" type="range" max="100" min="10"
-														step="10"
-														oninput="document.getElementById('rangeValLabelTR').innerHTML = this.value + ' gb';"
-														value="50">
-													</input>
-													<em id="rangeValLabelTR" style="font-style: normal;">50 gb</em>
-												</fieldset>
-											</div>
+
 										</div>
-									</form>
-								</div>
-								<!-- End -->
-								<button id="submit_long" type="button"
-									class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
-									👌 Confirm
-								</button>
 
-								<br style="height: 100%;" />
-								<div class="card">
-									<div class="card-header">
-										<label for="running_task_body" data-toggle="tooltip"
-											title="Data in files will update every 10 MB">▶️ Currently Running Task
-											<i class="fa fa-question-circle"></i>
-										</label>
-										
-										<span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
 									</div>
-									<div id="running_task_body" class="card-body">
-										
-										<p id="task-query" class="card-text">There are no currently running tasks
-										</p>
-										<div id="progress_wrapper">
+								</form>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="card" id="card_extract_primary">
+										<div class="card-header">
+											Main output file (csv)
+										</div>
+										<div class="card-body" id="extract_primary">
+											<p class="card-text">Selected options will be included into tweets.csv
+											</p>
 											<div class="form-row">
 												<div class="col">
-													<div class="form-group">
-														<div id="task-progress-div" class="progress" hidden>
-															<div id="task-progress" class="progress-bar bg-success"
-																role="progressbar" aria-valuenow="" aria-valuemin="0"
-																aria-valuemax="100">
-																<small></small>
-															</div>
-														</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox"
+															value="tweet_url" id="ch_tweet_url">
+														<label class="form-check-label" for="ch_tweet_url">
+															Tweet Url
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="id"
+															id="ch_id">
+														<label class="form-check-label" for="ch_id">
+															Tweet Id
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="username"
+															id="ch_username">
+														<label class="form-check-label" for="ch_username">
+															Username
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="text"
+															id="ch_text">
+														<label class="form-check-label" for="ch_text">
+															Tweet text
+														</label>
 													</div>
 												</div>
-												<div class="col-sm-0">
-													<div class="form-group mb-0">
-														<div id="task-discarded-div" hidden>
-															<h6><span class="badge badge-secondary">
-																	<label id="task-discarded">🗑️<span
-																			class="hidden-xs"></span></label></h6>
-															</span>
-														</div>
+												<div class="col">
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="emojiset"
+															id="ch_emojiset">
+														<label class="form-check-label" for="ch_emojiset">
+															Emojiset
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="hashtag"
+															id="ch_hashtag">
+														<label class="form-check-label" for="ch_hashtag">
+															Hashtags
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox" value="url"
+															id="ch_url">
+														<label class="form-check-label" for="ch_url">
+															URLs
+														</label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="checkbox"
+															value="image_url" id="ch_image_url">
+														<label class="form-check-label" for="ch_image_url">
+															Image URLs
+														</label>
 													</div>
 												</div>
 											</div>
 										</div>
-										<button id="task-cancel" type="button" class="btn btn-danger"
-											style="float: right;" hidden>Cancel task</button>
 									</div>
 								</div>
-
-								<div id="results_wrapper_container" class="row">
-									<div class="col">
-
-										<div id="file-list">
+								<div class="col-sm-6">
+									<div class="card" id="card_extract_secondary">
+										<div class="card-header">
+											Additional files (json, csv, txt, image)
 										</div>
-
+										<div class="card-body" id="extract_secondary">
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="full_tweet"
+													id="ch_full_tweet">
+												<label class="form-check-label" for="ch_full_tweet">
+													Full tweet data
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="images"
+													id="ch_images">
+												<label class="form-check-label" for="ch_images">
+													Images
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="hashtag_hashtag"
+													id="ch_hashtag_hashtag">
+												<label class="form-check-label" for="ch_hashtag_hashtag">
+													Hashtags that are used together
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="user_hashtag"
+													id="ch_user_hashtag">
+												<label class="form-check-label" for="ch_user_hashtag">
+													Users and hashtags they use
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="mentioned"
+													id="ch_mentioned">
+												<label class="form-check-label" for="ch_mentioned">
+													Mentioned users
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="user_user"
+													id="ch_user_user">
+												<label class="form-check-label" for="ch_user_user">
+													Users and other users they have mentioned
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="influencers"
+													id="ch_influencers">
+												<label class="form-check-label" for="ch_influencers">
+													List of users who posted or retweeted
+												</label>
+											</div>
+										</div>
 									</div>
 								</div>
-
 							</div>
-							<!-- End tab content -->
+							<!-- End -->
+							<button id="submit_long" type="button"
+								class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+								👌 Confirm
+							</button>
+
+							<br style="height: 100%;" />
+							<div class="card">
+								<div class="card-header">
+									<label for="running_task_body" data-toggle="tooltip"
+										title="Data in files will update every 10 MB">▶️ Currently Running Task
+										<i class="fa fa-question-circle"></i>
+									</label>
+
+									<span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
+								</div>
+								<div id="running_task_body" class="card-body">
+
+									<p id="task-query" class="card-text">There are no currently running tasks
+									</p>
+									<div id="progress_wrapper">
+										<div class="form-row">
+											<div class="col">
+												<div class="form-group">
+													<div id="task-progress-div" class="progress" hidden>
+														<div id="task-progress" class="progress-bar bg-success"
+															role="progressbar" aria-valuenow="" aria-valuemin="0"
+															aria-valuemax="100">
+															<small></small>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-0">
+												<div class="form-group mb-0">
+													<div id="task-discarded-div" hidden>
+														<h6><span class="badge badge-secondary">
+																<label id="task-discarded">🗑️<span
+																		class="hidden-xs"></span></label></h6>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<button id="task-cancel" type="button" class="btn btn-danger" style="float: right;"
+										hidden>Cancel task</button>
+								</div>
+							</div>
+
+							<div id="results_wrapper_container" class="row">
+								<div class="col">
+
+									<div id="file-list">
+									</div>
+
+								</div>
+							</div>
+							<div id="selected_query_wrapper" class="row" style="visibility: hidden;">
+								<div class="col">
+									<input id="selected_query" class="form-control" type="text" 
+										placeholder="Please select a query from the dropdown table below"
+										readonly>
+								</div>
+							</div>
 						</div>
+						<!-- End tab content -->
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 </body>
 
 </html>

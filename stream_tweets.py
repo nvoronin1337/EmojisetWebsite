@@ -5,7 +5,7 @@ import emoji
 from emojiset_app import EMOJI_SET, small_task_q, long_task_q
 import regex
 from rq import get_current_job  
-from emojiset_app.utils import debug, split_filter_keywords, split_search_keywords
+from emojiset_app.utils import split_filter_keywords, split_search_keywords
 import os
 import csv
 

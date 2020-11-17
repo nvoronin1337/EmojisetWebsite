@@ -126,8 +126,8 @@ def run_large_task():
 	tweet_amount = request.form["tweet_amount"]
 	time_length = request.form["time_length"]
 	offset = request.form["time_offset"]
-	chunk = request.form['chunk']
-	extract_settings_form = request.form['extract_settings_form']
+	extract_primary = request.form.getlist('extract_primary[]')
+	extract_secondary = request.form.getlist('extract_secondary[]')
 
 	finish_time = None
 	if tweet_amount:
@@ -139,7 +139,7 @@ def run_large_task():
 	twarc_method = query_json["twarc_method"]
 
 	job = None
-	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, chunk, user_email)
+	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, user_email, extract_primary, extract_secondary)
 	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
@@ -267,7 +267,6 @@ def save_task():
 		cancel_url = request.form["cancel-url"],
 		started_on = request.form["started-on"],
 		finished_on = request.form["finished-on"],
-		chunk = request.form['chunk'],
 		user_id = current_user.id
 	)
 	db.session.add(running_task)
@@ -286,7 +285,6 @@ def load_task():
 			'cancel_url': running_task.cancel_url,
 			'started_on': running_task.started_on,
 			'finished_on': running_task.finished_on,
-			'chunk': running_task.chunk
 		}
 	else:
 		response = {}
@@ -311,7 +309,6 @@ def save_finished_task():
 		task_query = running_task.task_query,
 		started_on = running_task.started_on,
 		finished_on = current_time,
-		chunk = running_task.chunk,
 		user_id = current_user.id
 	)
 	db.session.add(finished_task)

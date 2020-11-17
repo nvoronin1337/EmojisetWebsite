@@ -52,3 +52,7 @@ body {
 .chunk-col {
     padding-top: 0.5em;
 }
+
+#submit_long{
+    margin-top: 1em;
+}

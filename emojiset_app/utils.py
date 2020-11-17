@@ -1,12 +1,34 @@
 import json
-import os 
+import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+def send_message(user_email):
+    MAIL_USERNAME = 'testemojiset@gmail.com'
+    MAIL_PASSWORD = 'Em0jiset!'
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.ehlo()
+    s.starttls()
+    s.ehlo()
+    s.login(MAIL_USERNAME, MAIL_PASSWORD)
+    toEmail = user_email
+    fromEmail = MAIL_USERNAME
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = 'Finished Collecting Tweets'
+    msg['From'] = fromEmail
+    body = 'We have finished collecting tweets for you! To download your results please log in to your account and go to the collect large dataset page.'
+
+    content = MIMEText(body, 'plain')
+    msg.attach(content)
+    s.sendmail(fromEmail, toEmail, msg.as_string())
 
 def load_key():
     """
     Loads the key named `secret.key` from the current directory.
     """
     return open(os.path.dirname(__file__) + '/secret.key').read()
-
 
 # ---converts error to txt file and immediately outputs---*
 def debug(var, filename='out.txt'):

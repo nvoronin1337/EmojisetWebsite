@@ -521,15 +521,7 @@ $(document).ready(function () {
 				$('#task-status').removeAttr('hidden')
 				$('#task-progress-div').removeAttr('hidden')
 				$('#submit_long').hide()
-				$('#chunk').val(data[0].chunk)
-				$('#chunkME').val(data[0].chunk)
-				$('#chunkTR').val(data[0].chunk)
-				$('#rangeValLabel').text(data[0].chunk + ' GB')
-				$('#rangeValLabelME').text(data[0].chunk + ' GB')
-				$('#rangeValLabelTR').text(data[0].chunk + ' GB')
-				$('#chunk').attr('disabled', 'true')
-				$('#chunkME').attr('disabled', 'true')
-				$('#chunkTR').attr('disabled', 'true')
+
 				check_long_job_status(data[0].status_url)
 			}
 		});
@@ -550,11 +542,7 @@ $(document).ready(function () {
 						$('#task-query').html('There are no currently running tasks')
 						$('#file-list').html(result.file_list)
 					});
-									
-					$('#chunk').removeAttr("disabled")
-					$('#chunkME').removeAttr("disabled")
-					$('#chunkTR').removeAttr("disabled")
-					
+
 					$('#task-started').attr('hidden', '')
 					$('#task-cancel').attr('hidden', '')
 					$('#task-progress-div').attr('hidden', '')
@@ -612,7 +600,6 @@ $(document).ready(function () {
 		let tweet_amount = $('#tweet_amount_long').val()
 		let date_input = $('#date-length').val()
 		let time_input = $('#time-length').val()
-		let chunk = ""
 
 		let time_length = ""
 
@@ -624,14 +611,15 @@ $(document).ready(function () {
 			time_length = date_input + "T" + time_input
 		}
 
-		if (tweet_amount != ""){
-			chunk = $('#chunk').val()
-		}
-		else if(time_length != ""){
-			chunk = $('#chunkTR').val()
-		}else{
-			chunk = $('#chunkME').val()
-		}
+		var checked_primary = [];
+		$("input[type='checkbox']", "#extract_primary").each(function () {
+			checked_primary.push($(this).is(":checked"));
+		});
+		
+		var checked_secondary = [];
+		$("input[type='checkbox']", "#extract_secondary").each(function () {
+			checked_secondary.push($(this).is(":checked"));
+		});
 
 		if (selected_query_id != "" && (tweet_amount != "" || time_length != "")) {
 			var offset = new Date().getTimezoneOffset();
@@ -643,8 +631,8 @@ $(document).ready(function () {
 					'tweet_amount': tweet_amount,
 					'time_length': time_length,
 					'time_offset': offset,
-					'chunk': chunk,
-					'extract_settings_form': $('#extract_settings_form').serialize()
+					'extract_primary': checked_primary,
+					'extract_secondary': checked_secondary
 				},
 				method: "POST",
 				dataType: "json",
@@ -663,7 +651,6 @@ $(document).ready(function () {
 							'cancel-url': cancel_url,
 							'started-on': dateTime,
 							'finished-on': time_length,
-							'chunk': chunk
 						},
 						method: "POST",
 						dataType: "json",
@@ -686,12 +673,12 @@ $(document).ready(function () {
 	});
 });
 
-function GoToTeam(){
+function GoToTeam() {
 	let url = location.href.replace('emojiset', '') + "#team"
 	location.href = url
 }
 
-function GoToContact(){
+function GoToContact() {
 	let url = location.href.replace('emojiset', '') + "#contact"
 	location.href = url
 }
