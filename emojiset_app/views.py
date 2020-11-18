@@ -326,6 +326,7 @@ def get_file_list():
 		return jsonify(str(uploads), 404)
 	current_url = request.url_root + "/emojiset/"
 	html_files_list = ""
+
 	for subfolder in subfolder_list:
 		files = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + "/" + subfolder
 		try:
