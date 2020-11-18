@@ -5,4 +5,19 @@
   width: 13%;
 }
 
+#box1, #box2 {
+  height: 75rem;
+  width: 100%;
+}
+#about
+{
+  /* center the div */
+  right: 0;
+  left: 0;
+  margin-right: auto;
+  margin-left: auto;
+  /* give it dimensions */
+  min-height: 10em;
+  width: 40%;
+}
 

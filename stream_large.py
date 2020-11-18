@@ -179,6 +179,7 @@ class Large_Streamer():
 		self.hashtags = ""
 		self.urls = ""
 		self.image_urls = ""
+		self.timestamp = ""
 		self.tweet_count = 0
 
 		self.save_dir = 'results/' + self.email + '/' + self.current_datetime
@@ -290,6 +291,11 @@ class Large_Streamer():
 
 		self.tweets[self.tweet_count] = status
 		
+		if "created_at" in status:
+			self.timestamp = status['created_at']
+		else:
+			self.timestamp = ""
+
 		screen_name = ""
 		if "user" in status:
 			if "screen_name" in status["user"]:
@@ -504,27 +510,30 @@ class Large_Streamer():
 		col_names = []
 		values = []
 		if self.extract_primary[0] == 'true':
+			col_names.append('created at')
+			values.append(self.timestamp)
+		if self.extract_primary[1] == 'true':
 			col_names.append('source')
 			values.append(self.tweet_status_urls)
-		if self.extract_primary[1] == 'true':
+		if self.extract_primary[2] == 'true':
 			col_names.append('tweet_id')
 			values.append(self.tweet_id)
-		if self.extract_primary[2] == 'true':
+		if self.extract_primary[3] == 'true':
 			col_names.append('username')
 			values.append(self.tweet_username)
-		if self.extract_primary[3] == 'true':
+		if self.extract_primary[4] == 'true':
 			col_names.append('text')
 			values.append(self.tweets_text)
-		if self.extract_primary[4] == 'true':
+		if self.extract_primary[5] == 'true':
 			col_names.append('emojiset')
 			values.append(self.emojisets)
-		if self.extract_primary[5] == 'true':
+		if self.extract_primary[6] == 'true':
 			col_names.append('hashtags')
 			values.append(self.hashtags)
-		if self.extract_primary[6] == 'true':
+		if self.extract_primary[7] == 'true':
 			col_names.append('urls')
 			values.append(self.urls)
-		if self.extract_primary[7] == 'true':
+		if self.extract_primary[8] == 'true':
 			col_names.append('image_urls')
 			values.append(self.image_urls)
 
