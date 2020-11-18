@@ -19,6 +19,14 @@
   margin-left: auto;
   /* give it dimensions */
   min-height: 10em;
-  width: 40%;
+  width: 50%;
+}
+
+#interests
+{
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+  width: 30%;
 }
 
