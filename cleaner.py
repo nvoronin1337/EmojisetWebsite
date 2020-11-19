@@ -1,8 +1,6 @@
 import os
 import time
 import shutil
-
-from emojiset_app.utils import debug
  
 class FolderCleaner:
     """
@@ -25,7 +23,7 @@ class FolderCleaner:
                 full_path = os.path.join(root, directory)
                 stat = os.stat(full_path)
                 if stat.st_mtime <= time_in_secs:
-                    if os.osfile(full_path):
+                    if os.isfile(full_path):
                         os.remove(full_path)
                     elif os.isdir(full_path):
                         shutil.rmtree(full_path, ignore_errors=True)
