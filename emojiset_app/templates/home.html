@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" /> 
-  <!-- <link rel="stylesheet" href="home_css.css" /> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" />
+  <!--<link rel="stylesheet" href="home_css.css" />-->
   <!-- JQuery -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <!-- Link to our JS scripts -->
@@ -92,50 +92,60 @@
 
 
 
-
-
   <!-- Image Header -->
   <div class="w3-display-container w3-animate-opacity">
     <br>
-    <div class="w3-container w3-center">
-      <a href="https://wit.edu/directory/salem-othman" target="_blank">
-        <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:20%"
-          class="w3-circle w3-hover-opacity">
-      </a>
-    </div>
-    <br>
     <div id="about">
-      <form class="w3-container w3-card-4 w3-padding-16 w3-white w3-margin-bottom w3-center">
-        <h2><b>About Salem Othman</b></h2>
-        <div class="w3-section w3-justify">
-          <h4>
-            I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
-            Technology.
-            I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya in
-            2001.
-            After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s degree in
-            November 2006  
-            from
-            Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State University.
-          </h4>
+      <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
+        <div class="row">
+          <div class="col">
+            <div class="w3-section w3-justify">
+              <a href="https://wit.edu/directory/salem-othman" target="_blank">
+                <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+            </div>
+          </div>
+          <div class="col-7">
+            <h2><b>Biography of Salem Othman</b></h2>
+            <div class="w3-section w3-justify">
+              <h4>
+                I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
+                Technology.
+                I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya
+                in
+                2001.
+                After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s
+                degree in
+                November 2006
+                from
+                Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State
+                University.
+              </h4>
+              <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
+                <h4>🎓 Othman's Google Scholar page 🎓</h4>
+              </a>
+            </div>
+          </div>
+          <div class="col">
+            <h2><b>Research Interests</b></h2>
+            <div class="w3-section w3-justify">
+              <h4>
+                <ul>
+                  <li>Social Sensing</li>
+                  <li>Social Network Analysis</li>
+                  <li>Big Data Analytics</li>
+                  <li>Machine learning</li>
+                  <li>Natural language processing</li>
+                  <li>Emojiset Mining</li>
+                  <li>Epidemiology</li>
+                </ul>
+              </h4>
+              
+            </div>
+          </div>
+
         </div>
-        <div class="w3-section">
-          <h2><b>Research Interests</b></h2>
-        </div>
-        <div id="interests" class="w3-justify">
-          <ul>
-            <li>Social Sensing</li>
-            <li>Social Network Analysis</li>
-            <li>Big Data Analytics</li>
-            <li>Machine learning</li>
-            <li>Natural language processing</li>
-            <li>Emojiset Mining</li>
-            <li>Epidemiology</li>
-          </ul>
-        </div>
-        <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
-          <h4>Othman's Google Scholar page</h4>
-        </a>
       </form>
     </div>
   </div>
