@@ -14,6 +14,7 @@ def stream_task(keys, keywords, discard, twarc_method, languages, result_type, f
 def stream_large(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount=None, finish_time=None, email="", extract_primary=[], extract_secondary=[]):
     streamer = Large_Streamer(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount, finish_time, email, extract_primary, extract_secondary)
     streamer.stream()
+    streamer.flush_results(ignore_amount=True)
     filename =  os.path.join(streamer.save_dir, 'task_info.txt')
     with open(filename, 'w', encoding="utf-8") as f:
         started_at = 'Started at: ' + streamer.current_datetime

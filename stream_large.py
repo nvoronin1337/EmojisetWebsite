@@ -17,6 +17,8 @@ import re
 import json
 import csv
 
+from emojiset_app.utils import debug
+
 # Helper functions for saving json, csv and formatted txt files
 def save_json(variable, filename):
   with io.open(filename, "w", encoding="utf-8") as f:
@@ -117,7 +119,7 @@ def get_image_urls(status):
 
 
 ## Tweet Streamer class
-#  Uses Twarc API to stream self.tweets from twitter
+#  Uses Twarc API to stream tweets from twitter
 class Large_Streamer():
 	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[]):
 		# ---Configuring Twarc API---*
@@ -182,6 +184,8 @@ class Large_Streamer():
 		self.timestamp = ""
 		self.tweet_count = 0
 
+		self.temporary_rows = []
+
 		self.save_dir = 'results/' + self.email + '/' + self.current_datetime
 		if not os.path.exists(self.save_dir):
 			print("Creating directory: " + self.save_dir)
@@ -189,9 +193,10 @@ class Large_Streamer():
 
 
 	def stream(self):
-		 # ---stream self.tweets---*
+		 # ---stream tweets---*
 		try:
-			self.get_tweet_stream()
+			if 'true' in self.extract_primary or 'true' in self.extract_secondary:
+				self.get_tweet_stream()
 		# ---error handling---*
 		except KeyboardInterrupt:
 			print("Keyboard interrupt...")
@@ -244,23 +249,23 @@ class Large_Streamer():
 							break
 
 
-	# ---extract emojiset, update progress bar, discard self.tweets without emojis, output # of discarded self.tweets---*
+	# ---extract emojiset, update progress bar, discard tweets without emojis, output # of discarded tweets---*
 	def process_tweet(self, tweet):
 		if self.discard:                                                                       
 			if self.contains_emoji(tweet):
 				self.parse_tweet(tweet)
-				self.current_tweets += 1                                                       # counter of self.tweets w/ emojis to update progress bar*
+				self.current_tweets += 1                                                       # counter of tweets w/ emojis to update progress bar*
 				self.job.refresh()     
 				if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
-					self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (self.tweets with emojis / # of specified self.tweets) as a percentage*
+					self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
 				elif self.finish_time:
 					self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
 				self.job.save_meta()                                                           # saves new update to progress bar*
 			else:
-				self.discarded += 1                                                            # counter of self.tweets w/o emojis*
-				self.job.refresh()                                                             # refreshes # of discarded self.tweets every 150 milliseconds (established in main.js)*
-				self.job.meta['discarded_self.tweets'] = self.discarded                             
-				self.job.save_meta()                                                           # saves new update to # of discarded self.tweets message*
+				self.discarded += 1                                                            # counter of tweets w/o emojis*
+				self.job.refresh()                                                             # refreshes # of discarded tweets every 150 milliseconds (established in main.js)*
+				self.job.meta['discarded_tweets'] = self.discarded                             
+				self.job.save_meta()                                                           # saves new update to # of discarded tweets message*
 		else:   
 			self.parse_tweet(tweet)
 			self.current_tweets += 1
@@ -285,8 +290,7 @@ class Large_Streamer():
 	def parse_tweet(self, status):
 		sys.stdout.write("\r")
 		sys.stdout.flush()
-		sys.stdout.write("Collected " + str(self.tweet_count) + " self.tweets.")
-		sys.stdout.flush()
+		
 		self.tweet_count += 1
 
 		self.tweets[self.tweet_count] = status
@@ -432,7 +436,7 @@ class Large_Streamer():
 						del response
 
 	# Output a bunch of files containing the data we just gathered
-		print("Saving data.")
+		
 		outputs = self.construct_secondary_outputs()
 		json_outputs = outputs[0]
 		for name, dataset in json_outputs.items():
@@ -488,7 +492,7 @@ class Large_Streamer():
 				return False
 
 
-	def result_to_csv(self, filename, colnames, values):
+	def result_to_csv(self, filename, colnames, data):
 		csv_columns = []
 		for colname in colnames:
 			csv_columns.append(colname)
@@ -498,15 +502,16 @@ class Large_Streamer():
 			if self.tweet_count == 1:
 				writer.writeheader()
 
-			row = {}
-			col_index = 0
-			for value in values:
-				row[colnames[col_index]] = value
-				col_index += 1
-			writer.writerow(row)
+			for row in data:
+				csv_row = {}
+				col_index = 0
+				for value in row:
+					csv_row[colnames[col_index]] = value
+					col_index += 1
+				writer.writerow(csv_row)
 
 
-	def flush_results(self):
+	def flush_results(self, ignore_amount=False):
 		col_names = []
 		values = []
 		if self.extract_primary[0] == 'true':
@@ -537,8 +542,15 @@ class Large_Streamer():
 			col_names.append('image_urls')
 			values.append(self.image_urls)
 
-		filename = os.path.join(self.save_dir, "extracted_data.csv")
-		self.result_to_csv(filename, col_names, values)
+		self.temporary_rows.append(values)
+
+		if len(col_names) > 0 and (len(self.temporary_rows) >= 150 or ignore_amount):
+			sys.stdout.write("Collected " + str(self.tweet_count) + " tweets. ")
+			sys.stdout.flush()
+			print("Saving data.")
+			filename = os.path.join(self.save_dir, "extracted_data.csv")
+			self.result_to_csv(filename, col_names, self.temporary_rows)
+			self.temporary_rows = []
 
 
 	def construct_secondary_outputs(self):
