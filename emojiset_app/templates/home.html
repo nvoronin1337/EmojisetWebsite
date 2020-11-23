@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" /> 
   <!--<link rel="stylesheet" href="home_css.css" />-->
   <!-- JQuery -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
@@ -70,7 +70,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id="navbarNavDropdown">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" href="#contact"><i class="fa fa-envelope"></i> Contact <span
@@ -90,65 +90,63 @@
   </nav>
   <!--<div class="container-fluid">-->
 
-
-
-  <!-- Image Header -->
-  <div class="w3-display-container w3-animate-opacity">
-    <br>
-    <div id="about">
-      <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
-        <div class="row">
-          <div class="col">
-            <div class="w3-section w3-justify">
-              <a href="https://wit.edu/directory/salem-othman" target="_blank">
-                <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
-                  class="w3-circle w3-hover-opacity">
-              </a>
-            </div>
+ <!-- Image Header -->
+ <div class="w3-display-container w3-animate-opacity">
+  <br>
+  <div id="about">
+    <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
+      <div class="row">
+        <div class="col">
+          <div class="w3-section w3-justify">
+            <a href="https://wit.edu/directory/salem-othman" target="_blank">
+              <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
+                class="w3-circle w3-hover-opacity">
+            </a>
           </div>
-          <div class="col-7">
-            <h2><b>Biography of Salem Othman</b></h2>
-            <div class="w3-section w3-justify">
-              <h4>
-                I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
-                Technology.
-                I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya
-                in
-                2001.
-                After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s
-                degree in
-                November 2006
-                from
-                Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State
-                University.
-              </h4>
-              <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
-                <h4>🎓 Othman's Google Scholar page 🎓</h4>
-              </a>
-            </div>
-          </div>
-          <div class="col">
-            <h2><b>Research Interests</b></h2>
-            <div class="w3-section w3-justify">
-              <h4>
-                <ul>
-                  <li>Social Sensing</li>
-                  <li>Social Network Analysis</li>
-                  <li>Big Data Analytics</li>
-                  <li>Machine learning</li>
-                  <li>Natural language processing</li>
-                  <li>Emojiset Mining</li>
-                  <li>Epidemiology</li>
-                </ul>
-              </h4>
-              
-            </div>
-          </div>
-
         </div>
-      </form>
-    </div>
+        <div class="col-7">
+          <h2><b>Biography of Salem Othman</b></h2>
+          <div class="w3-section w3-justify">
+            <h4>
+              I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
+              Technology.
+              I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya
+              in
+              2001.
+              After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s
+              degree in
+              November 2006
+              from
+              Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State
+              University.
+            </h4>
+            <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
+              <h4>🎓 Othman's Google Scholar page 🎓</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col">
+          <h2><b>Research Interests</b></h2>
+          <div class="w3-section w3-justify">
+            <h4>
+              <ul>
+                <li>Social Sensing</li>
+                <li>Social Network Analysis</li>
+                <li>Big Data Analytics</li>
+                <li>Machine learning</li>
+                <li>Natural language processing</li>
+                <li>Emojiset Mining</li>
+                <li>Epidemiology</li>
+              </ul>
+            </h4>
+            
+          </div>
+        </div>
+
+      </div>
+    </form>
   </div>
+</div>
 
 
 
@@ -170,7 +168,6 @@
             <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emojiset Page" style="width:98%">
           </a>
           <hr>
-
 
           <p>
             The Emojiset Mining team has created a website that can analyze emojisets from tweets and infer the
@@ -204,7 +201,7 @@
 
   </div>
   <!-- Team Container -->
-  <div class="w3-container w3-padding-64 w3-center" id="team">
+  <div class="w3-container w3-padding-64 w3-center">
     <div data-spy="scroll" data-target="#navbar-scroll" data-offset="0">
       <h1><b>Our team</b></h1>
     </div>
@@ -215,113 +212,125 @@
     <br>
     <div class="row">
       <!--Starts first row for the first 4 people-->
-      <div class="col">
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
+               <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Nikita Voronin</b></h4>
+              <p>Emojiset Mining</p>
+              <h5>Currently Working</h5>
+              <br>
+            </div>
+          </div>
 
-        <div class="w3-center">
-          <td style="text-align:center;">
-            <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
-              <img src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin" style="width:60%"
-                class="w3-circle w3-hover-opacity">
-            </a>
-            <h3>Nikita Voronin</h3>
-            <p>Emojiset Mining</p>
-            <h5>Currently Working</h5>
-          </td>
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}" alt="Caleb Franco"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Caleb Franco</b></h4>
+              <p>Emojiset Mining</p>
+              <h5>Worked during first co-op</h5>
+              <br>
+            </div>
+          </div>
         </div>
       </div>
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/in/adam-dzwonkowski/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/adam.jpg') }}" alt="Adam Dzwonkowski"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Adam Dzwonkowski</b></h4>
+              <p>Emojiset Mining</p>
+              <h5>Currently Working</h5>
+              <br>
+            </div>
+          </div>
 
-      <br>
-      <div class="col">
-        <div class="w3-center">
-          <a href="https://www.linkedin.com" target="_blank">
-            <img src="images/face_pic.png" alt="Caleb Franco" style="width:60%" class="w3-circle w3-hover-opacity">
-          </a>
-          <h3>Caleb Franco</h3>
-          <p>Emojiset Mining</p>
-          <h5>Worked during first co-op</h5>
-        </div>
-      </div>
-
-
-      <div class="col">
-        <div class="w3-center">
-          <a href="https://www.linkedin.com/in/adam-dzwonkowski/" target="_blank">
-            <img src="{{ url_for('static', filename='images/adam.jpg') }}" alt="Adam Dzwonkowski" style="width:60%"
-              class="w3-circle w3-hover-opacity">
-          </a>
-          <h3>Adam Dzwonkowski</h3>
-          <p>Emojiset Mining</p>
-          <h5>Currently Working</h5>
-        </div>
-      </div>
-
-      <div class="col">
-
-        <div class="w3-center">
-          <a href="https://www.linkedin.com/in/sancho-rodr%C3%ADguez-corrales-340891113/" target="_blank">
-            <img src="{{ url_for('static', filename='images/sancho.jpg') }}" alt="Sancho Rodríguez" style="width:60%"
-              class="w3-circle w3-hover-opacity">
-          </a>
-          <h3>Sancho Rodríguez</h3>
-          <p>Epidemiology</p>
-          <h5>Currently Working</h5>
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/in/sancho-rodr%C3%ADguez-corrales-340891113/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/sancho.jpg') }}" alt="Sancho Rodríguez"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Sancho Rodríguez</b></h4>
+              <p>Epidemiology</p>
+              <h5>Currently Working</h5>
+              <br>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <!--Finishes first row-->
-
     <br>
     <div class="row">
       <!-- Starts second row for the last 4 people-->
-      <div class="col">
-        <div class="w3-center">
-          <a href="https://www.linkedin.com/" target="_blank">
-            <img src="images/face_pic.png" alt="Martin King" style="width:60%" class="w3-circle w3-hover-opacity">
-          </a>
-          <h3>Martin King</h3>
-          <p>Epidemiology</p>
-          <h5>Currently Working</h5>
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}" alt="Martin King"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Martin King</b></h4>
+              <p>Epidemiology</p>
+              <h5>Currently Working</h5>
+              <br>
+            </div>
+          </div>
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/in/edwin-a-41b966129/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}" alt="Edwin Armas"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Edwin Armas</b></h4>
+              <p>Epidemiology</p>
+              <h5>Currently Working</h5>
+              <br>
+            </div>
+          </div>
         </div>
       </div>
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+                <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Endi Caushi</b></h4>
+                <p>Emojiset Mining</p>
+                <h5>Previously Worked</h5>
+                <br>
+            </div>
+          </div>
 
-      <div class="col">
-        <div class="w3-center">
-          <a href="https://www.linkedin.com/in/edwin-a-41b966129/" target="_blank">
-            <img src="images/face_pic.png" alt="Edwin Armas" style="width:60%" class="w3-circle w3-hover-opacity">
-          </a>
-          <h3>Edwin Armas</h3>
-          <p>Epidemiology</p>
-          <h5>Currently Working</h5>
+          <div class="col">
+            <div class="w3-center">
+                <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/phil.png') }}" alt="Phillip Roesch"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Phillip Roesch</b></h4>
+                <p>Emojiset Mining</p>
+                <h5>Previously Worked</h5>
+                <br>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="col">
-        <div class="w3-center">
-          <td style="text-align:center;">
-            <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
-              <img src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi" style="width:60%"
-                class="w3-circle w3-hover-opacity">
-            </a>
-            <h3>Endi Caushi</h3>
-            <p>Emojiset Mining</p>
-            <h5>Previously Worked</h5>
-          </td>
-        </div>
-      </div>
-      <br />
-      <div class="col">
-        <div class="w3-center">
-          <td style="text-align:center;">
-            <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
-              <img src="" alt="Phillip Roesch" style="width:60%" class="w3-circle w3-hover-opacity">
-            </a>
-            <h3>Phillip Roesch</h3>
-            <p>Emojiset Mining</p>
-            <h5>Previously Worked</h5>
-          </td>
-        </div>
-      </div>
-
     </div>
     <!--Finishes second row-->
   </div>
@@ -364,15 +373,7 @@
   <!-- Footer -->
   <footer class="w3-container w3-padding-32 w3-theme-d1 w3-center">
     <h4>Follow Us</h4>
-    <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Facebook"><i class="fa fa-facebook"></i></a>
     <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i class="fa fa-twitter"></i></a>
-    <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +">
-      <i class="fa fa-google-plus"></i>
-    </a>
-    <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +"><i class="fa fa-instagram"></i></a>
-    <a class="w3-button w3-large w3-teal w3-hide-small" href="javascript:void(0)" title="Linkedin">
-      <i class="fa fa-linkedin"></i>
-    </a>
     <p></p>
 
     <div style="position:relative;bottom:100px;z-index:1;" class="w3-tooltip w3-right">

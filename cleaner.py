@@ -23,7 +23,7 @@ class FolderCleaner:
                 full_path = os.path.join(root, directory)
                 stat = os.stat(full_path)
                 if stat.st_mtime <= time_in_secs:
-                    if not os.isdir(full_path):
+                    if not os.path.isdir(full_path):
                         os.remove(full_path)
-                    elif os.isdir(full_path):
+                    elif os.path.isdir(full_path):
                         shutil.rmtree(full_path, ignore_errors=True)

@@ -5,7 +5,6 @@ import emoji
 from emojiset_app import EMOJI_SET, small_task_q, long_task_q
 import regex
 from rq import get_current_job  
-
 from collections import Counter
 from itertools import combinations
 import requests
@@ -544,7 +543,7 @@ class Large_Streamer():
 
 		self.temporary_rows.append(values)
 
-		if len(col_names) > 0 and (len(self.temporary_rows) >= 150 or ignore_amount):
+		if len(col_names) > 0 and (len(self.temporary_rows) >= 75 or ignore_amount):
 			sys.stdout.write("Collected " + str(self.tweet_count) + " tweets. ")
 			sys.stdout.flush()
 			print("Saving data.")
