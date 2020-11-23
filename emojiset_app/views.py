@@ -12,6 +12,7 @@ from json import loads
 import time
 import calendar
 import os
+import emoji
 
 # The Home page is accessible to anyone
 @app.route('/')
@@ -150,7 +151,7 @@ def run_large_task():
 
 	query_for_response = ""
 	if(twarc_method == 'search'):
-		query_for_response = query_json["keywords"] + "| Discard tweets without emojis: " + str(query_json['discard'])
+		query_for_response = str(query_json["keywords"]).encode('utf-8') + "| Discard tweets without emojis: " + str(query_json['discard'])
 		if not query_json['form_data']['languages']:
 			query_for_response += " | Language: all"
 		else:
@@ -162,7 +163,11 @@ def run_large_task():
 		query_for_response += " | Post type: " + query_json['form_data']['result_type']
 
 	elif(twarc_method == 'filter'):
-		query_for_response = ", ".join(query_json["keywords"]) + " | Discard tweets without emojis: " + str(query_json['discard'])
+		query = []
+		for keyword in query_json["keywords"]:
+			keyword = emoji.demojize(keyword)
+			query.append(keyword)
+		query_for_response = ", ".join(query) + " | Discard tweets without emojis: " + str(query_json['discard'])
 		if not query_json['form_data']['languages']:
 			query_for_response += " | Language: all"
 		else:

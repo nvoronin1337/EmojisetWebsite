@@ -1,3 +1,7 @@
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
 .center {
   display: block;
   margin-left: auto;
@@ -6,8 +10,9 @@
 }
 
 #box1, #box2 {
-  height: 60rem;
-  width: 100%;
+    line-height: unset;
+    min-height: 60rem;
+    width: 100%;
 }
 
 #face {
@@ -16,16 +21,20 @@
   height: auto ;
 }
 
-#about
-{
-  /* center the div */
-  right: 0;
-  left: 0;
-  margin-right: auto;
-  margin-left: auto;
-  /* give it dimensions */
-  min-height: 10em;
-  width: 90%;
+#salem {
+    text-align: center;
+}
+
+#about {
+    /* center the div */
+    right: 0;
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    /* give it dimensions */
+    min-height: 10em;
+    width: 90%;
+ 
 }
 
 #p

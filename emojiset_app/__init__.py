@@ -114,14 +114,14 @@ long_task_q = Queue('long', connection=r, default_timeout=-1)
 
 def clean_old_results():
     path = app.config['UPLOAD_FOLDER']
-    days = 1
+    days = 7
     try:
         cleaner = FolderCleaner(path, days)
     except (TypeError, ValueError) as e:
         debug(e, 'cleaner_errors.log')
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=clean_old_results, trigger="interval", hours=1)
+scheduler.add_job(func=clean_old_results, trigger="interval", minutes=1)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app

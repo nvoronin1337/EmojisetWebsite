@@ -1,6 +1,7 @@
 from twarc import Twarc
 import traceback
 import time
+from time import gmtime, strftime
 import emoji
 from emojiset_app import EMOJI_SET, small_task_q, long_task_q
 import regex
@@ -15,7 +16,7 @@ import io
 import re
 import json
 import csv
-
+import emoji
 from emojiset_app.utils import debug
 
 # Helper functions for saving json, csv and formatted txt files
@@ -157,6 +158,7 @@ class Large_Streamer():
 		# ---dictionaty in the format {index: (tweet, emojiset)}---*
 		self.result = {}
 		now = time.localtime()
+		self.started_at = strftime("%a, %d %b %Y %X", gmtime())
 		self.current_datetime = time.strftime("%Y-%m-%d_%H:%M:%S", now)
 
 		self.extract_primary = extract_primary
@@ -293,7 +295,7 @@ class Large_Streamer():
 		self.tweet_count += 1
 
 		self.tweets[self.tweet_count] = status
-		
+
 		if "created_at" in status:
 			self.timestamp = status['created_at']
 		else:
@@ -455,7 +457,7 @@ class Large_Streamer():
 			save_text(dataset, filename)
 		
 		self.flush_results()
-
+		
 
 	# ---function returns emojiset list consisting of emoji sequences (a string) ; sequences are separated by any character that isn't an emoji---*
 	def extract_emoji_sequences(self, text):

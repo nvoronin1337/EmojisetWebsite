@@ -5,7 +5,7 @@
   <title>Home</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <!-- Bootstrap CSS -->
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -15,16 +15,12 @@
   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" /> 
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
   <!--<link rel="stylesheet" href="home_css.css" />-->
   <!-- JQuery -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <!-- Link to our JS scripts -->
   <script type="text/javascript" src="{{ url_for('static', filename='home.js') }}"></script>
-
-</head>
-
-<body id="myPage">
-
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -37,6 +33,9 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
 
+</head>
+
+<body id="myPage">
   <!-- Navbar -->
   <!--Navigation bar (Navbar: Home, Team, Research, About*-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
@@ -58,7 +57,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
             <a class="dropdown-item" href="">Epidemiology</a>
-            <a class="dropdown-item" href="">Something else here</a>
+            <a class="dropdown-item" href="">Other projects</a>
           </div>
         </li>
       </ul>
@@ -88,25 +87,29 @@
       </ul>
     </div>
   </nav>
-  <!--<div class="container-fluid">-->
 
- <!-- Image Header -->
- <div class="w3-display-container w3-animate-opacity">
-  <br>
-  <div id="about">
-    <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
-      <div class="row">
-        <div class="col">
-          <div class="w3-section w3-justify">
-            <a href="https://wit.edu/directory/salem-othman" target="_blank">
-              <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
-                class="w3-circle w3-hover-opacity">
-            </a>
+  <!-- Image Header -->
+  <div class="w3-container w3-animate-opacity">
+    <br>
+    <div id="about">
+      <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
+        <div class="row">
+          <div class="col">
+            <div class="w3-section w3-justify">
+              <div id="salem">
+                <a href="https://wit.edu/directory/salem-othman" target="_blank">
+
+                  <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+
+                <h4><b>Salem Othman</b></h4>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="col-7">
-          <h2><b>Biography of Salem Othman</b></h2>
-          <div class="w3-section w3-justify">
+          <div class="col-7">
+            <h2><b>Biography</b></h2>
+
             <h4>
               I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
               Technology.
@@ -121,48 +124,48 @@
               University.
             </h4>
             <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
-              <h4>🎓 Othman's Google Scholar page 🎓</h4>
+              <h4>🎓 My Google Scholar 🎓</h4>
             </a>
-          </div>
-        </div>
-        <div class="col">
-          <h2><b>Research Interests</b></h2>
-          <div class="w3-section w3-justify">
-            <h4>
-              <ul>
-                <li>Social Sensing</li>
-                <li>Social Network Analysis</li>
-                <li>Big Data Analytics</li>
-                <li>Machine learning</li>
-                <li>Natural language processing</li>
-                <li>Emojiset Mining</li>
-                <li>Epidemiology</li>
-              </ul>
-            </h4>
-            
-          </div>
-        </div>
 
-      </div>
-    </form>
+          </div>
+          <div class="col">
+            <h2><b>Research Interests</b></h2>
+            <div class="w3-section w3-justify">
+              <h4>
+                <ul>
+                  <li>Social Sensing</li>
+                  <li>Social Network Analysis</li>
+                  <li>Big Data Analytics</li>
+                  <li>Machine learning</li>
+                  <li>Natural language processing</li>
+                  <li>Emojiset Mining</li>
+                  <li>Epidemiology</li>
+                </ul>
+              </h4>
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
 
 
   <!-- Work Row -->
-  <div class="w3-row-padding w3-padding-32 w3-theme-l1" id="work">
+  <div class="w3-row-padding w3-theme-l1" id="work">
 
     <div class="w3-center">
-      <h2>Current Projects</h2>
-      <p>Some information about the work Salem Othman has done alongside his teams.</p>
+      <h2><b>Current Projects</b></h2>
+      <p></p>
     </div>
 
     <div class="w3-half">
       <div class="w3-card w3-white">
         <div id="box1" class="w3-container w3-center">
           <h2><b>Emojiset Mining</b></h2>
-          <h4>In progress (Stable)</h4>
+          <!--<h4>In progress (Stable)</h4>-->
           <a href="javascript: void(0)" onclick="GoToEmojiset(); return false;">
 
             <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emojiset Page" style="width:98%">
@@ -185,7 +188,8 @@
       <div class="w3-card w3-white">
         <div id="box2" class="w3-container w3-center">
           <h2><b>Epidemiology</b></h2>
-          <h4>In progress</h4>
+          <!--<h4>In progress</h4>-->
+
           <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page" style="width:70%">
           <hr>
           <p>
@@ -201,7 +205,7 @@
 
   </div>
   <!-- Team Container -->
-  <div class="w3-container w3-padding-64 w3-center">
+  <div class="w3-container w3-padding-64 w3-center w3-theme-l1" id="team">
     <div data-spy="scroll" data-target="#navbar-scroll" data-offset="0">
       <h1><b>Our team</b></h1>
     </div>
@@ -212,17 +216,17 @@
     <br>
     <div class="row">
       <!--Starts first row for the first 4 people-->
+
       <div class="w3-half w3-container">
         <div class="row">
           <div class="col">
             <div class="w3-center">
               <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
-               <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin"
+                <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin"
                   class="w3-circle w3-hover-opacity">
               </a>
               <h4><b>Nikita Voronin</b></h4>
               <p>Emojiset Mining</p>
-              <h5>Currently Working</h5>
               <br>
             </div>
           </div>
@@ -235,7 +239,6 @@
               </a>
               <h4><b>Caleb Franco</b></h4>
               <p>Emojiset Mining</p>
-              <h5>Worked during first co-op</h5>
               <br>
             </div>
           </div>
@@ -251,7 +254,6 @@
               </a>
               <h4><b>Adam Dzwonkowski</b></h4>
               <p>Emojiset Mining</p>
-              <h5>Currently Working</h5>
               <br>
             </div>
           </div>
@@ -264,7 +266,6 @@
               </a>
               <h4><b>Sancho Rodríguez</b></h4>
               <p>Epidemiology</p>
-              <h5>Currently Working</h5>
               <br>
             </div>
           </div>
@@ -284,7 +285,6 @@
               </a>
               <h4><b>Martin King</b></h4>
               <p>Epidemiology</p>
-              <h5>Currently Working</h5>
               <br>
             </div>
           </div>
@@ -296,7 +296,6 @@
               </a>
               <h4><b>Edwin Armas</b></h4>
               <p>Epidemiology</p>
-              <h5>Currently Working</h5>
               <br>
             </div>
           </div>
@@ -306,27 +305,25 @@
         <div class="row">
           <div class="col">
             <div class="w3-center">
-                <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
-                  <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi"
-                    class="w3-circle w3-hover-opacity">
-                </a>
-                <h4><b>Endi Caushi</b></h4>
-                <p>Emojiset Mining</p>
-                <h5>Previously Worked</h5>
-                <br>
+              <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Endi Caushi</b></h4>
+              <p>Emojiset Mining</p>
+              <br>
             </div>
           </div>
 
           <div class="col">
             <div class="w3-center">
-                <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
-                  <img id="face" src="{{ url_for('static', filename='images/phil.png') }}" alt="Phillip Roesch"
-                    class="w3-circle w3-hover-opacity">
-                </a>
-                <h4><b>Phillip Roesch</b></h4>
-                <p>Emojiset Mining</p>
-                <h5>Previously Worked</h5>
-                <br>
+              <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/phil.png') }}" alt="Phillip Roesch"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Phillip Roesch</b></h4>
+              <p>Emojiset Mining</p>
+              <br>
             </div>
           </div>
         </div>
@@ -336,7 +333,7 @@
   </div>
 
   <!-- Contact Container -->
-  <div class="w3-container w3-padding-64 w3-theme-l5" id="contact">
+  <div class="w3-container w3-padding-64" id="contact">
     <div data-spy="scroll" data-target="#navbar-scroll" data-offset="0">
       <div class="w3-row">
         <div class="w3-col m5">
@@ -371,7 +368,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="w3-container w3-padding-32 w3-theme-d1 w3-center">
+  <footer class="w3-container w3-padding-32 w3-center w3-theme-l1">
     <h4>Follow Us</h4>
     <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i class="fa fa-twitter"></i></a>
     <p></p>

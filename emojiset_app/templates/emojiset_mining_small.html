@@ -656,7 +656,7 @@
 									<form id="longTaskFormTA" role="form">
 										<label for="tweet-amount-row">Select number of tweets and size of each
 											individual file with results</label>
-										<div id="tweet-amount-row" >
+										<div id="tweet-amount-row">
 
 											<div class="form-group">
 												<div class="input-group">
@@ -681,7 +681,7 @@
 									<form id="longTaskFormME" role="form">
 										<label for="memory-size-row">Select total result size and size of each
 											individual file with results</label>
-										<div id="memory-size-row" >
+										<div id="memory-size-row">
 
 											<div class="form-group">
 												<div class="input-group">
@@ -697,242 +697,246 @@
 											</div>
 										</div>
 
-								
-								</form>
-							</div>
-							<!-- End -->
 
-							<!-- collect tweets until date -->
-							<div id="nav-time-range" class="tab-pane fade">
-								<form id="longTaskFormDT" role="form">
-									<label for="time-length-row">Select how long you want to mine for and size of
-										each individual file with results</label>
-									<div id="time-length-row">
+									</form>
+								</div>
+								<!-- End -->
 
-										<div class="form-group">
-											<!-- NOT SHOWING IN FIREFOX -->
-											<div class="input-group">
-												<input type="date" class="form-control" id="date-length"
-													name="time-length">
-												<input type="time" class="form-control" id="time-length"
-													name="time-length">
-											</div>
-
-										</div>
-
-									</div>
-								</form>
-							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="card" id="card_extract_primary">
-										<div class="card-header">
-											Main output file (csv)
-										</div>
-										<div class="card-body" id="extract_primary">
-											<p class="card-text">Selected options will be included into tweets.csv
-											</p>
-											<div class="form-row">
-												<div class="col">
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox"
-															value="timestamp" id="ch_timestamp">
-														<label class="form-check-label" for="ch_timestamp">
-															Created at
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox"
-															value="tweet_url" id="ch_tweet_url">
-														<label class="form-check-label" for="ch_tweet_url">
-															Tweet Url
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="id"
-															id="ch_id">
-														<label class="form-check-label" for="ch_id">
-															Tweet Id
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="username"
-															id="ch_username">
-														<label class="form-check-label" for="ch_username">
-															Username
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="text"
-															id="ch_text">
-														<label class="form-check-label" for="ch_text">
-															Tweet text
-														</label>
-													</div>
-												</div>
-												<div class="col">
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="emojiset"
-															id="ch_emojiset">
-														<label class="form-check-label" for="ch_emojiset">
-															Emojiset
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="hashtag"
-															id="ch_hashtag">
-														<label class="form-check-label" for="ch_hashtag">
-															Hashtags
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="url"
-															id="ch_url">
-														<label class="form-check-label" for="ch_url">
-															URLs
-														</label>
-													</div>
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox"
-															value="image_url" id="ch_image_url">
-														<label class="form-check-label" for="ch_image_url">
-															Image URLs
-														</label>
-													</div>
+								<!-- collect tweets until date -->
+								<div id="nav-time-range" class="tab-pane fade">
+									<form id="longTaskFormDT" role="form">
+										<label for="time-length-row">Select how long you want to mine for and size of
+											each individual file with results</label>
+										<div id="time-length-row">
+											<div class="form-group">
+												<!-- NOT SHOWING IN FIREFOX -->
+												<div class="input-group">
+													<input type="date" class="form-control" id="date-length"
+														name="time-length">
+													<input type="time" class="form-control" id="time-length"
+														name="time-length">
 												</div>
 											</div>
 										</div>
-									</div>
+									</form>
 								</div>
-								<div class="col-sm-6">
-									<div class="card" id="card_extract_secondary">
-										<div class="card-header">
-											Additional files (json, csv, txt, image)
-										</div>
-										<div class="card-body" id="extract_secondary">
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="full_tweet"
-													id="ch_full_tweet">
-												<label class="form-check-label" for="ch_full_tweet">
-													Full tweet data
-												</label>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="card" id="card_extract_primary">
+											<div class="card-header">
+												Main output file (csv)
 											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="images"
-													id="ch_images">
-												<label class="form-check-label" for="ch_images">
-													Images
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="hashtag_hashtag"
-													id="ch_hashtag_hashtag">
-												<label class="form-check-label" for="ch_hashtag_hashtag">
-													Hashtags that are used together
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="user_hashtag"
-													id="ch_user_hashtag">
-												<label class="form-check-label" for="ch_user_hashtag">
-													Users and hashtags they use
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="mentioned"
-													id="ch_mentioned">
-												<label class="form-check-label" for="ch_mentioned">
-													Mentioned users
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="user_user"
-													id="ch_user_user">
-												<label class="form-check-label" for="ch_user_user">
-													Users and other users they have mentioned
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="influencers"
-													id="ch_influencers">
-												<label class="form-check-label" for="ch_influencers">
-													List of users who posted or retweeted
-												</label>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- End -->
-							<button id="submit_long" type="button"
-								class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
-								👌 Confirm
-							</button>
-
-							<br style="height: 100%;" />
-							<div class="card">
-								<div class="card-header">
-									<label for="running_task_body" data-toggle="tooltip"
-										title="Data in files will update every 10 MB">▶️ Currently Running Task
-										<i class="fa fa-question-circle"></i>
-									</label>
-
-									<span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
-								</div>
-								<div id="running_task_body" class="card-body">
-
-									<p id="task-query" class="card-text">There are no currently running tasks
-									</p>
-									<div id="progress_wrapper">
-										<div class="form-row">
-											<div class="col">
-												<div class="form-group">
-													<div id="task-progress-div" class="progress" hidden>
-														<div id="task-progress" class="progress-bar bg-success"
-															role="progressbar" aria-valuenow="" aria-valuemin="0"
-															aria-valuemax="100">
-															<small></small>
+											<div class="card-body" id="extract_primary">
+												<div class="row" style="margin-bottom: 1em;">
+													<div class="col">
+														<label for="filename_input">Coming soon</label>
+														<div class="input-group">
+															<input class="form-control form-control-sm" type="text"
+													placeholder="file name" id="filename_input" disabled>
+														</div>
+													</div>
+												</div>
+												
+												<div class="form-row">
+													<div class="col">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="timestamp" id="ch_timestamp">
+															<label class="form-check-label" for="ch_timestamp">
+																Created at
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="tweet_url" id="ch_tweet_url">
+															<label class="form-check-label" for="ch_tweet_url">
+																Tweet Url
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="id"
+																id="ch_id">
+															<label class="form-check-label" for="ch_id">
+																Tweet Id
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="username" id="ch_username">
+															<label class="form-check-label" for="ch_username">
+																Username
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="text"
+																id="ch_text">
+															<label class="form-check-label" for="ch_text">
+																Tweet text
+															</label>
+														</div>
+													</div>
+													<div class="col">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="emojiset" id="ch_emojiset">
+															<label class="form-check-label" for="ch_emojiset">
+																Emojiset
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="hashtag" id="ch_hashtag">
+															<label class="form-check-label" for="ch_hashtag">
+																Hashtags
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="url"
+																id="ch_url">
+															<label class="form-check-label" for="ch_url">
+																URLs
+															</label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox"
+																value="image_url" id="ch_image_url">
+															<label class="form-check-label" for="ch_image_url">
+																Image URLs
+															</label>
 														</div>
 													</div>
 												</div>
 											</div>
-											<div class="col-sm-0">
-												<div class="form-group mb-0">
-													<div id="task-discarded-div" hidden>
-														<h6><span class="badge badge-secondary">
-																<label id="task-discarded">🗑️<span
-																		class="hidden-xs"></span></label></h6>
-														</span>
-													</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="card" id="card_extract_secondary">
+											<div class="card-header">
+												Additional files (json, csv, txt, image)
+											</div>
+											<div class="card-body" id="extract_secondary">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="full_tweet"
+														id="ch_full_tweet">
+													<label class="form-check-label" for="ch_full_tweet">
+														Full tweet data
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="images"
+														id="ch_images">
+													<label class="form-check-label" for="ch_images">
+														Images
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox"
+														value="hashtag_hashtag" id="ch_hashtag_hashtag">
+													<label class="form-check-label" for="ch_hashtag_hashtag">
+														Hashtags that are used together
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="user_hashtag"
+														id="ch_user_hashtag">
+													<label class="form-check-label" for="ch_user_hashtag">
+														Users and hashtags they use
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="mentioned"
+														id="ch_mentioned">
+													<label class="form-check-label" for="ch_mentioned">
+														Mentioned users
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="user_user"
+														id="ch_user_user">
+													<label class="form-check-label" for="ch_user_user">
+														Users and other users they have mentioned
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="influencers"
+														id="ch_influencers">
+													<label class="form-check-label" for="ch_influencers">
+														List of users who posted or retweeted
+													</label>
 												</div>
 											</div>
 										</div>
 									</div>
-									<button id="task-cancel" type="button" class="btn btn-danger" style="float: right;"
-										hidden>Cancel task</button>
 								</div>
-							</div>
+								<!-- End -->
+								<button id="submit_long" type="button"
+									class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+									👌 Confirm
+								</button>
 
-							<div id="results_wrapper_container" class="row">
-								<div class="col">
-									<div id="file-list">
+								<br style="height: 100%;" />
+								<div class="card">
+									<div class="card-header">
+										<label for="running_task_body" data-toggle="tooltip"
+											title="Data in files will update every 10 MB">▶️ Currently Running Task
+											<i class="fa fa-question-circle"></i>
+										</label>
+
+										<span id="task-started" class="card-subtitle mb-2 text-muted" hidden></span>
+									</div>
+									<div id="running_task_body" class="card-body">
+
+										<p id="task-query" class="card-text">There are no currently running tasks
+										</p>
+										<div id="progress_wrapper">
+											<div class="form-row">
+												<div class="col">
+													<div class="form-group">
+														<div id="task-progress-div" class="progress" hidden>
+															<div id="task-progress" class="progress-bar bg-success"
+																role="progressbar" aria-valuenow="" aria-valuemin="0"
+																aria-valuemax="100">
+																<small></small>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-sm-0">
+													<div class="form-group mb-0">
+														<div id="task-discarded-div" hidden>
+															<h6><span class="badge badge-secondary">
+																	<label id="task-discarded">🗑️<span
+																			class="hidden-xs"></span></label></h6>
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<button id="task-cancel" type="button" class="btn btn-danger"
+											style="float: right;" hidden>Cancel task</button>
+									</div>
+								</div>
+
+								<div id="results_wrapper_container" class="row">
+									<div class="col">
+										<div id="file-list">
+										</div>
+									</div>
+								</div>
+								<div id="selected_query_wrapper" class="row" style="visibility: hidden;">
+									<div class="col">
+										<input id="selected_query" class="form-control" type="text"
+											placeholder="Please select a query from the dropdown table below" readonly>
 									</div>
 								</div>
 							</div>
-							<div id="selected_query_wrapper" class="row" style="visibility: hidden;">
-								<div class="col">
-									<input id="selected_query" class="form-control" type="text" 
-										placeholder="Please select a query from the dropdown table below"
-										readonly>
-								</div>
-							</div>
+							<!-- End tab content -->
 						</div>
-						<!-- End tab content -->
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </body>
 
 </html>

@@ -18,7 +18,7 @@ def send_message(user_email):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = 'Finished Collecting Tweets'
     msg['From'] = fromEmail
-    body = 'We have finished collecting tweets for you! To download your results please log in to your account and go to the collect large dataset page.'
+    body = 'We have finished collecting tweets for you! To download your results please log in to your account and go to the collect large dataset page. Please note that you have 7 days to download your results since they will be deleted after that.'
 
     content = MIMEText(body, 'plain')
     msg.attach(content)
