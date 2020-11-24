@@ -121,7 +121,7 @@ def get_image_urls(status):
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Large_Streamer():
-	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[]):
+	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0):
 		# ---Configuring Twarc API---*
 		self.consumer_key = keys['consumer_key']
 		self.consumer_secret = keys['consumer_secret']
@@ -131,7 +131,7 @@ class Large_Streamer():
 			app_auth = True
 		else:
 			app_auth = False
-		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=1, app_auth=app_auth)
+		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=5, app_auth=app_auth, connection_errors=3)
 		# ---Save paramaeters passed to the constructor
 		self.keywords = keywords
 		self.max_tweets = max_tweets

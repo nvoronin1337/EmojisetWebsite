@@ -11,7 +11,7 @@ def stream_task(keys, keywords, discard, twarc_method, languages, result_type, f
     return streamer.result
 
 
-def stream_large(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount=None, finish_time=None, email="", extract_primary=[], extract_secondary=[]):
+def stream_large(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0):
     streamer = Large_Streamer(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount, finish_time, email, extract_primary, extract_secondary)
     streamer.stream()
     streamer.flush_results(ignore_amount=True)
@@ -19,7 +19,7 @@ def stream_large(keys, keywords, discard, twarc_method, languages, result_type, 
 
     with open(filename, 'w', encoding="utf-8") as f:
         started_at = 'Started at: ' + streamer.started_at
-        finished_at = 'Finished at: ' + strftime("%a, %d %b %Y %X", gmtime())
+        finished_at = 'Finished at: ' + strftime("%a, %d %b %Y %X", gmtime()) 
         collected = 'Collected tweets: ' + str(streamer.tweet_count)
         discarded = 'Discarded tweets: ' + str(streamer.discarded)
         print(started_at, file=f)

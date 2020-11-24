@@ -140,7 +140,7 @@ def run_large_task():
 	twarc_method = query_json["twarc_method"]
 
 	job = None
-	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, user_email, extract_primary, extract_secondary)
+	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, user_email, extract_primary, extract_secondary, offset)
 	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
