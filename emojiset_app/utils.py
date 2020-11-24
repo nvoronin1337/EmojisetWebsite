@@ -69,7 +69,6 @@ def split_filter_keywords(keywords):
     keywords = keywords.split(',')
     for key in keywords:
         key = key.strip()
-        key = key.strip('"')
         keyword_list.append(key)
     return keyword_list
 

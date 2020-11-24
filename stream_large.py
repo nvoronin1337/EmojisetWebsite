@@ -337,7 +337,10 @@ class Large_Streamer():
 				text = status['extended_tweet']['full_text']
 			else:
 				# ---if not a retweet and not tuncated---*
-				text = status[text_param_name]
+				if text_param_name in status:
+					text = status[text_param_name]
+				else:
+					text = ""
 
 		id_str = ""
 		if "id_str" in status:
