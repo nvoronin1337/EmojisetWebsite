@@ -131,7 +131,7 @@ class Large_Streamer():
 			app_auth = True
 		else:
 			app_auth = False
-		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=5, app_auth=app_auth, connection_errors=3)
+		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=10, app_auth=app_auth, connection_errors=10)
 		# ---Save paramaeters passed to the constructor
 		self.keywords = keywords
 		self.max_tweets = max_tweets
@@ -509,10 +509,14 @@ class Large_Streamer():
 			for row in data:
 				csv_row = {}
 				col_index = 0
+				all_empty = True
 				for value in row:
-					csv_row[colnames[col_index]] = value
+					if value:
+						csv_row[colnames[col_index]] = value
+						all_empty = False
 					col_index += 1
-				writer.writerow(csv_row)
+				if not all_empty:
+					writer.writerow(csv_row)
 
 
 	def flush_results(self, ignore_amount=False):

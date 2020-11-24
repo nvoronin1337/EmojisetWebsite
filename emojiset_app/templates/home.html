@@ -5,7 +5,7 @@
   <title>Home</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Bootstrap CSS -->
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -15,12 +15,16 @@
   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='home_css.css') }}" /> 
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
-  <!--<link rel="stylesheet" href="home_css.css" />-->
+  <!--<link rel="stylesheet" href="home_css.css" /> -->
   <!-- JQuery -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <!-- Link to our JS scripts -->
   <script type="text/javascript" src="{{ url_for('static', filename='home.js') }}"></script>
+
+</head>
+
+<body id="myPage">
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -33,9 +37,6 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
 
-</head>
-
-<body id="myPage">
   <!-- Navbar -->
   <!--Navigation bar (Navbar: Home, Team, Research, About*-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
@@ -88,124 +89,116 @@
     </div>
   </nav>
 
-  <!-- Image Header -->
-  <div class="w3-container w3-animate-opacity">
-    <br>
-    <div id="about">
-      <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
-        <div class="row">
-          <div class="col">
-            <div class="w3-section w3-justify">
-              <div id="salem">
-                <a href="https://wit.edu/directory/salem-othman" target="_blank">
-
-                  <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:70%;"
-                    class="w3-circle w3-hover-opacity">
-                </a>
-
-                <h4><b>Salem Othman</b></h4>
-              </div>
+ <!-- Image Header -->
+ <div class="w3-container w3-animate-opacity">
+  <br>
+  <div id="about">
+    <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
+      <div class="row">
+        <div class="col">
+          <div class="w3-section w3-justify">
+            <div id="salem">
+              <a href="https://wit.edu/directory/salem-othman" target="_blank">
+                <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman" style="width:100%;" class="w3-circle w3-hover-opacity"> 
+              </a>
+              <h4><b>Salem Othman</b></h4>
             </div>
           </div>
-          <div class="col-7">
-            <h2><b>Biography</b></h2>
-
-            <h4>
-              I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
-              Technology.
-              I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya
-              in
-              2001.
-              After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s
-              degree in
-              November 2006
-              from
-              Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State
-              University.
-            </h4>
-            <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
-              <h4>🎓 My Google Scholar 🎓</h4>
-            </a>
-
-          </div>
-          <div class="col">
+        </div>
+        <div id="salembio" class="col">
+          <h2><b>Biography</b></h2>              
+          <h4>
+            I am an assistant professor in the School of Computing and Data Science at the Wentworth Institute of
+            Technology.
+            I graduated with a Bachelor in Science in Computer Science from Omar Al-Mukhtar University, Beyda, Libya
+            in
+            2001.
+            After receiving my B.S., I worked as a database programmer for many clients. I received my Master’s
+            degree in
+            November 2006
+            from
+            Sirte University, Libya. In 2018, I received my Ph.D. degree in Computer Science at Kent State
+            University.
+          </h4>
+          <a href="https://scholar.google.com/citations?user=wR-qmhwAAAAJ&hl=en">
+            <h5>🎓 My Google Scholar 🎓</h5>
+          </a>  
+        </div>
+        <div class="col">
+          <div id="salemres" class="w3-section" style="width:100%;">
             <h2><b>Research Interests</b></h2>
-            <div class="w3-section w3-justify">
-              <h4>
-                <ul>
-                  <li>Social Sensing</li>
-                  <li>Social Network Analysis</li>
-                  <li>Big Data Analytics</li>
-                  <li>Machine learning</li>
-                  <li>Natural language processing</li>
-                  <li>Emojiset Mining</li>
-                  <li>Epidemiology</li>
-                </ul>
-              </h4>
-
-            </div>
+            <h4>
+              <ul>
+                <li>Social Sensing</li>
+                <li>Social Network Analysis</li>
+                <li>Big Data Analytics</li>
+                <li>Machine learning</li>
+                <li>Natural language processing</li>
+                <li>Emojiset Mining</li>
+                <li>Epidemiology</li>
+              </ul>
+            </h4>
           </div>
-
-        </div>
-      </form>
-    </div>
-  </div>
-
-
-
-  <!-- Work Row -->
-  <div class="w3-row-padding w3-theme-l1" id="work">
-
-    <div class="w3-center">
-      <h2><b>Current Projects</b></h2>
-      <p></p>
-    </div>
-
-    <div class="w3-half">
-      <div class="w3-card w3-white">
-        <div id="box1" class="w3-container w3-center">
-          <h2><b>Emojiset Mining</b></h2>
-          <!--<h4>In progress (Stable)</h4>-->
-          <a href="javascript: void(0)" onclick="GoToEmojiset(); return false;">
-
-            <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emojiset Page" style="width:98%">
-          </a>
-          <hr>
-
-          <p>
-            The Emojiset Mining team has created a website that can analyze emojisets from tweets and infer the
-            meaning behind them.
-            The code is capable of pulling tweets given various settings, and can either provide a small or large data
-            set, which can be sent to users via email.
-            A user can test the website using a demo, but must acquire a Twitter developer account and sign up to access
-            all of the features.
-          </p>
         </div>
       </div>
-    </div>
-
-    <div class="w3-half">
-      <div class="w3-card w3-white">
-        <div id="box2" class="w3-container w3-center">
-          <h2><b>Epidemiology</b></h2>
-          <!--<h4>In progress</h4>-->
-
-          <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page" style="width:70%">
-          <hr>
-          <p>
-            The team has implemented a new model named Biased Majority rule model which consists in model that
-            resembles how opinions spread through majorities.
-            The model contains 3 states: Adopter, Rejector and Undecided and includes a bias parameter that can be
-            modified by the user.
-          </p>
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
+</div>
 
-  </div>
+
+      <!-- Work Row -->
+                    <div class="w3-row-padding w3-theme-l1" id="work">
+
+                        <div class="w3-center">
+                            <h2><b>Current Projects</b></h2>
+                            <p></p>
+                        </div>
+
+                        <div class="w3-half">
+                            <div class="w3-card w3-white">
+                                <div id="box1" class="w3-container w3-center">
+                                    <h2><b>Emojiset Mining</b></h2>
+                                    <!--<h4>In progress (Stable)</h4>-->
+                                    <a href="javascript: void(0)" onclick="GoToEmojiset(); return false;">
+                                        
+                                        <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emojiset Page" style="width:98%">
+                                    </a>
+                                    <hr>
+
+                                    <p>
+                                        The Emojiset Mining team has created a website that can analyze emojisets from tweets and infer the
+                                        meaning behind them.
+                                        The code is capable of pulling tweets given various settings, and can either provide a small or large data
+                                        set, which can be sent to users via email.
+                                        A user can test the website using a demo, but must acquire a Twitter developer account and sign up to access
+                                        all of the features.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-half">
+                            <div class="w3-card w3-white">
+                                <div id="box2" class="w3-container w3-center">
+                                    <h2><b>Epidemiology</b></h2>
+                                    <!--<h4>In progress</h4>-->
+                                    
+                                    <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page" style="width:70%">
+                                    <hr>
+                                    <p>
+                                        The team has implemented a new model named Biased Majority rule model which consists in model that
+                                        resembles how opinions spread through majorities.
+                                        The model contains 3 states: Adopter, Rejector and Undecided and includes a bias parameter that can be
+                                        modified by the user.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+</div>
   <!-- Team Container -->
-  <div class="w3-container w3-padding-64 w3-center w3-theme-l1" id="team">
+  <div class="w3-container w3-padding-64 w3-center w3-theme-l1">
     <div data-spy="scroll" data-target="#navbar-scroll" data-offset="0">
       <h1><b>Our team</b></h1>
     </div>
@@ -222,7 +215,7 @@
           <div class="col">
             <div class="w3-center">
               <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
-                <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin"
+               <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}" alt="Nikita Voronin"
                   class="w3-circle w3-hover-opacity">
               </a>
               <h4><b>Nikita Voronin</b></h4>
@@ -274,7 +267,7 @@
     </div>
     <br>
     <div class="row">
-      <!-- Starts second row for the last 4 people-->
+      <!-- Starts second row for 4 people-->
       <div class="w3-half w3-container">
         <div class="row">
           <div class="col">
@@ -305,31 +298,88 @@
         <div class="row">
           <div class="col">
             <div class="w3-center">
-              <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
-                <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi"
-                  class="w3-circle w3-hover-opacity">
-              </a>
-              <h4><b>Endi Caushi</b></h4>
-              <p>Emojiset Mining</p>
-              <br>
+                <a href="https://www.linkedin.com/in/endicaushi/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}" alt="Endi Caushi"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Endi Caushi</b></h4>
+                <p>Emojiset Mining</p>
+                <br>
             </div>
           </div>
 
           <div class="col">
             <div class="w3-center">
-              <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
-                <img id="face" src="{{ url_for('static', filename='images/phil.png') }}" alt="Phillip Roesch"
-                  class="w3-circle w3-hover-opacity">
-              </a>
-              <h4><b>Phillip Roesch</b></h4>
-              <p>Emojiset Mining</p>
-              <br>
+                <a href="https://www.linkedin.com/in/phillip-roesch-06205513b/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/phil.png') }}" alt="Phillip Roesch"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Phillip Roesch</b></h4>
+                <p>Emojiset Mining</p>
+                <br>
             </div>
           </div>
         </div>
       </div>
     </div>
     <!--Finishes second row-->
+    <br>
+    <div class="row">
+      <!-- Starts third row for 4 people-->
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/in/omarnassif/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/omar.jpg') }}" alt="Omar Abou Nassif Mourad"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Omar Abou Nassif Mourad</b></h4>
+              <p>Epidemiology</p>
+              <br>
+            </div>
+          </div>
+          <div class="col">
+            <div class="w3-center">
+              <a href="https://www.linkedin.com/" target="_blank">
+                <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}" alt="Joshua Moorehead"
+                  class="w3-circle w3-hover-opacity">
+              </a>
+              <h4><b>Joshua Moorehead</b></h4>
+              <p>Epidemiology</p>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w3-half w3-container">
+        <div class="row">
+          <div class="col">
+            <div class="w3-center">
+                <a href="https://www.linkedin.com/in/garvin-gerard/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}" alt="Garvin Gerard"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Garvin Gerard</b></h4>
+                <p>Epidemiology</p>
+                <br>
+            </div>
+          </div>
+          <div class="col">
+            <div class="w3-center">
+                <a href="https://www.linkedin.com/in/hasaif/" target="_blank">
+                  <img id="face" src="{{ url_for('static', filename='images/hasan.png') }}" alt="Hasan Saif"
+                    class="w3-circle w3-hover-opacity">
+                </a>
+                <h4><b>Hasan Saif</b></h4>
+                <p>Emojiset Mining</p>
+                <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Finishes third row-->
   </div>
 
   <!-- Contact Container -->

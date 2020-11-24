@@ -1,7 +1,6 @@
 body {
   font-family: 'Noto Sans JP', sans-serif;
 }
-
 .center {
   display: block;
   margin-left: auto;
@@ -23,21 +22,18 @@ body {
 
 #salem {
     text-align: center;
+    min-width : 11rem;
+    max-width : 13rem;
+    margin: auto;
+
 }
 
-#about {
-    /* center the div */
-    right: 0;
-    left: 0;
-    margin-right: auto;
-    margin-left: auto;
-    /* give it dimensions */
-    min-height: 10em;
-    width: 90%;
- 
+#salembio {
+  min-width : 12rem;
 }
 
-#p
-{
-  width: 100%;
+#salemres {
+    min-width : 19rem;
+    max-width : 20rem;
+    margin: auto;
 }
