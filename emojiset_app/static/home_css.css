@@ -1,6 +1,7 @@
 body {
   font-family: 'Noto Sans JP', sans-serif;
 }
+
 .center {
   display: block;
   margin-left: auto;
@@ -8,10 +9,15 @@ body {
   width: 13%;
 }
 
-#box1, #box2 {
-    line-height: unset;
-    min-height: 60rem;
-    width: 100%;
+#work {
+  overflow: hidden; 
+  border-collapse: separate;
+  border-spacing: 0px 1em;
+}
+
+#box {
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
 }
 
 #face {
@@ -29,7 +35,10 @@ body {
 }
 
 #salembio {
-  min-width : 12rem;
+  text-align: justify;
+  min-width : 10rem;
+  padding-left: 13%;
+  padding-right: 13%;
 }
 
 #salemres {
