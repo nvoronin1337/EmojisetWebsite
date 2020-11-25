@@ -21,11 +21,11 @@ from emojiset_app.utils import debug
 
 # Helper functions for saving json, csv and formatted txt files
 def save_json(variable, filename):
-  with io.open(filename, "w", encoding="utf-8") as f:
+  with io.open(filename, "a+", encoding="utf-8") as f:
     f.write(str(json.dumps(variable, indent=4, ensure_ascii=False)))
 
 def save_csv(data, filename):
-  with io.open(filename, "w", encoding="utf-8") as handle:
+  with io.open(filename, "a+", encoding="utf-8") as handle:
     handle.write(u"Source,Target,Weight\n")
     for source, targets in sorted(data.items()):
       for target, count in sorted(targets.items()):
@@ -33,7 +33,7 @@ def save_csv(data, filename):
           handle.write(source + u"," + target + u"," + str(count) + u"\n")
 
 def save_text(data, filename):
-  with io.open(filename, "w", encoding="utf-8") as handle:
+  with io.open(filename, "a+", encoding="utf-8") as handle:
     for item, count in data.most_common():
       handle.write(str(count) + "\t" + item + "\n")
 
@@ -131,7 +131,7 @@ class Large_Streamer():
 			app_auth = True
 		else:
 			app_auth = False
-		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=10, app_auth=app_auth, connection_errors=10)
+		self.twarc = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, http_errors=3, app_auth=app_auth)
 		# ---Save paramaeters passed to the constructor
 		self.keywords = keywords
 		self.max_tweets = max_tweets
@@ -189,7 +189,6 @@ class Large_Streamer():
 
 		self.save_dir = 'results/' + self.email + '/' + self.current_datetime
 		if not os.path.exists(self.save_dir):
-			print("Creating directory: " + self.save_dir)
 			os.makedirs(self.save_dir)
 
 
@@ -288,39 +287,31 @@ class Large_Streamer():
 		return False
 
 
-	def parse_tweet(self, status):
-		sys.stdout.write("\r")
-		sys.stdout.flush()
-		
+	def parse_tweet(self, status):	
 		self.tweet_count += 1
 
 		self.tweets[self.tweet_count] = status
 
-		if "created_at" in status:
-			self.timestamp = status['created_at']
-		else:
-			self.timestamp = ""
+		if self.extract_primary[0] == 'true':
+			if "created_at" in status:
+				self.timestamp = status['created_at']
+			else:
+				self.timestamp = ""
 
 		screen_name = ""
-		if "user" in status:
-			if "screen_name" in status["user"]:
-				screen_name = status["user"]["screen_name"]
-		self.tweet_username = screen_name
-
-		retweeted = retweeted_user(status)
-		if retweeted != None:
-			self.influencer_frequency_dist[retweeted] += 1
-		else:
-			self.influencer_frequency_dist[screen_name] += 1
+		if self.extract_primary[3] == 'true':
+			if "user" in status:
+				if "screen_name" in status["user"]:
+					screen_name = status["user"]["screen_name"]
+			self.tweet_username = screen_name
 
 	# Tweet text can be in either "text" or "full_text" field...
+		text = ""
 		text_param_name = None
 		if "full_text" in status:
 			text_param_name = "full_text"
 		elif "text" in status:
 			text_param_name = "text"
-
-		text = ""
 			
 		if screen_name and 'retweeted_status' in status:
 			# ---if tweet is a retweet---*
@@ -343,14 +334,16 @@ class Large_Streamer():
 					text = ""
 
 		id_str = ""
-		if "id_str" in status:
-			id_str = status["id_str"]
-		self.tweet_id = id_str
+		if self.extract_primary[2] == 'true':
+			if "id_str" in status:
+				id_str = status["id_str"]
+			self.tweet_id = id_str
 
 	# Assemble the URL to the tweet we received...
 		tweet_url = None
-		if "id_str" != None and "screen_name" != None:
-			tweet_url = "https://twitter.com/" + screen_name + "/status/" + id_str
+		if self.extract_primary[1] == 'true':
+			if id_str != None and screen_name != None:
+				tweet_url = "https://twitter.com/" + screen_name + "/status/" + id_str
 
 	# ...and capture it
 		if tweet_url != None:
@@ -358,80 +351,82 @@ class Large_Streamer():
 
 		if text != None:
 			self.tweets_text = text
-			self.emojisets = self.extract_emoji_sequences(text)
+			if self.extract_primary[5] == 'true':
+				self.emojisets = self.extract_emoji_sequences(text)
 
 	# Record mapping graph between users
-		interactions = get_interactions(status)
-		if interactions != None:
-			for user in interactions:
-				self.mentioned_frequency_dist[user] += 1
-				if screen_name not in self.user_user_graph:
-					self.user_user_graph[screen_name] = {}
-				if user not in self.user_user_graph[screen_name]:
-					self.user_user_graph[screen_name][user] = 1
-				else:
-					self.user_user_graph[screen_name][user] += 1
+		if self.extract_secondary[4] == 'true' or self.extract_secondary[5] == 'true':
+			interactions = get_interactions(status)
+			if interactions != None:
+				for user in interactions:
+					self.mentioned_frequency_dist[user] += 1
+					if screen_name not in self.user_user_graph:
+						self.user_user_graph[screen_name] = {}
+					if user not in self.user_user_graph[screen_name]:
+						self.user_user_graph[screen_name][user] = 1
+					else:
+						self.user_user_graph[screen_name][user] += 1
 
 	# Record mapping graph between users and hashtags
-		hashtags = get_hashtags(status)
-		if hashtags != None:
-			self.hashtags = ','.join(hashtags)
-			if len(hashtags) > 1:
-				hashtag_interactions = []
-	# This code creates pairs of hashtags in situations where multiple
-	# hashtags were found in a tweet
-	# This is used to create a graph of hashtag-hashtag interactions
-				for comb in combinations(sorted(hashtags), 2):
-					hashtag_interactions.append(comb)
-				if len(hashtag_interactions) > 0:
-					for inter in hashtag_interactions:
-						item1, item2 = inter
-					if item1 not in self.hashtag_hashtag_graph:
-						self.hashtag_hashtag_graph[item1] = {}
-					if item2 not in self.hashtag_hashtag_graph[item1]:
-						self.hashtag_hashtag_graph[item1][item2] = 1
-					else:
-						self.hashtag_hashtag_graph[item1][item2] += 1
-				for hashtag in hashtags:
-					self.hashtag_frequency_dist[hashtag] += 1
-					if screen_name not in self.user_hashtag_graph:
-						self.user_hashtag_graph[screen_name] = {}
-					if hashtag not in self.user_hashtag_graph[screen_name]:
-						self.user_hashtag_graph[screen_name][hashtag] = 1
-					else:
-						self.user_hashtag_graph[screen_name][hashtag] += 1
-		else:
-			self.hashtags = ""
+		if self.extract_primary[5] == 'true':
+			hashtags = get_hashtags(status)
+			if hashtags != None:
+				self.hashtags = ','.join(hashtags)
+				if self.extract_secondary[2] == 'true' or self.extract_secondary[3] == 'true':
+					if len(hashtags) > 1:
+						hashtag_interactions = []
+			# This code creates pairs of hashtags in situations where multiple
+			# hashtags were found in a tweet
+			# This is used to create a graph of hashtag-hashtag interactions
+						for comb in combinations(sorted(hashtags), 2):
+							hashtag_interactions.append(comb)
+						if len(hashtag_interactions) > 0:
+							for inter in hashtag_interactions:
+								item1, item2 = inter
+							if item1 not in self.hashtag_hashtag_graph:
+								self.hashtag_hashtag_graph[item1] = {}
+							if item2 not in self.hashtag_hashtag_graph[item1]:
+								self.hashtag_hashtag_graph[item1][item2] = 1
+							else:
+								self.hashtag_hashtag_graph[item1][item2] += 1
+						for hashtag in hashtags:
+							self.hashtag_frequency_dist[hashtag] += 1
+							if screen_name not in self.user_hashtag_graph:
+								self.user_hashtag_graph[screen_name] = {}
+							if hashtag not in self.user_hashtag_graph[screen_name]:
+								self.user_hashtag_graph[screen_name][hashtag] = 1
+							else:
+								self.user_hashtag_graph[screen_name][hashtag] += 1
+			else:
+				self.hashtags = ""
 
-		urls = get_urls(status)
-		if urls != None:
-			self.urls = ','.join(urls)
-			for url in urls:
-				self.url_frequency_dist[url] += 1
-		else:
-			self.urls = ""
+		if self.extract_primary[7] == 'true':
+			urls = get_urls(status)
+			if urls != None:
+				self.urls = ','.join(urls)
+			else:
+				self.urls = ""
 
-		image_urls = get_image_urls(status)
-		if image_urls != None:
-			self.image_urls = ','.join(image_urls)
-			for url in image_urls:
-				if url not in self.all_image_urls:
-					self.all_image_urls.append(url)
-		else:
-			self.image_urls = ""
+		if self.extract_primary[8] == 'true':
+			image_urls = get_image_urls(status)
+			if image_urls != None:
+				self.image_urls = ','.join(image_urls)
+				if self.extract_secondary[1] == 'true':
+					for url in image_urls:
+						if url not in self.all_image_urls:
+							self.all_image_urls.append(url)
+			else:
+				self.image_urls = ""
 
 	# Iterate through image URLs, fetching each image if we haven't already
 		if self.extract_secondary[1] == 'true':
-			print("Fetching images.")
 			pictures_dir = os.path.join(self.save_dir, "images")
 			if not os.path.exists(pictures_dir):
-				print("Creating directory: " + pictures_dir)
 				os.makedirs(pictures_dir)
 			for url in self.all_image_urls:
 				m = re.search("^http:\/\/pbs\.twimg\.com\/media\/(.+)$", url)
 				if m != None:
 					filename = m.group(1)
-					print("Getting picture from: " + url)
 					save_path = os.path.join(pictures_dir, filename)
 					if not os.path.exists(save_path):
 						response = requests.get(url, stream=True)
@@ -441,24 +436,25 @@ class Large_Streamer():
 
 	# Output a bunch of files containing the data we just gathered
 		
-		outputs = self.construct_secondary_outputs()
-		json_outputs = outputs[0]
-		for name, dataset in json_outputs.items():
-			filename = os.path.join(self.save_dir, name)
-			save_json(dataset, filename)
+		if self.tweet_count % 100 == 0:
+			outputs = self.construct_secondary_outputs()
+			json_outputs = outputs[0]
+			for name, dataset in json_outputs.items():
+				filename = os.path.join(self.save_dir, name)
+				save_json(dataset, filename)
+				self.tweets = {}
 
-	# These files are created in a format that can be easily imported into Gephi
-		csv_outputs = outputs[1]
+		# These files are created in a format that can be easily imported into Gephi
+			csv_outputs = outputs[1]
 
-		for name, dataset in csv_outputs.items():
-			filename = os.path.join(self.save_dir, name)
-			save_csv(dataset, filename)
+			for name, dataset in csv_outputs.items():
+				filename = os.path.join(self.save_dir, name)
+				save_csv(dataset, filename)
 
-		text_outputs = outputs[2]
-		for name, dataset in text_outputs.items():
-			filename = os.path.join(self.save_dir, name)
-			save_text(dataset, filename)
-		
+			text_outputs = outputs[2]
+			for name, dataset in text_outputs.items():
+				filename = os.path.join(self.save_dir, name)
+				save_text(dataset, filename)
 		self.flush_results()
 		
 
@@ -552,10 +548,7 @@ class Large_Streamer():
 
 		self.temporary_rows.append(values)
 
-		if len(col_names) > 0 and (len(self.temporary_rows) >= 75 or ignore_amount):
-			sys.stdout.write("Collected " + str(self.tweet_count) + " tweets. ")
-			sys.stdout.flush()
-			print("Saving data.")
+		if len(col_names) > 0 and (len(self.temporary_rows) >= 100 or ignore_amount):
 			filename = os.path.join(self.save_dir, "extracted_data.csv")
 			self.result_to_csv(filename, col_names, self.temporary_rows)
 			self.temporary_rows = []

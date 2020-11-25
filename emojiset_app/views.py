@@ -135,6 +135,7 @@ def run_large_task():
 		tweet_amount = int(tweet_amount)
 	if time_length:
 		finish_time = calendar.timegm(time.strptime(time_length, "%Y-%m-%dT%H:%M")) + (int(offset) * 60)
+	
 	query_json = loads(SavedQuery.query.get(query_id).saved_query)
 	
 	twarc_method = query_json["twarc_method"]
@@ -146,7 +147,6 @@ def run_large_task():
 	job.meta['discarded_tweets'] = 0
 	job.meta['query'] = query_json
 	job.meta['cancel_flag'] = 0
-
 	job.save_meta()
 
 	query_for_response = ""
@@ -308,16 +308,17 @@ def delete_task():
 @login_required
 def save_finished_task():
 	running_task = RunningTask.query.filter_by(user_id=current_user.id).first()
-	now = time.localtime()
-	current_time = time.strftime("%Y-%m-%d %H:%M:%S", now)
-	finished_task = FinishedTask(
-		task_query = running_task.task_query,
-		started_on = running_task.started_on,
-		finished_on = current_time,
-		user_id = current_user.id
-	)
-	db.session.add(finished_task)
-	db.session.commit()
+	if running_task:
+		now = time.localtime()
+		current_time = time.strftime("%Y-%m-%d %H:%M:%S", now)
+		finished_task = FinishedTask(
+			task_query = running_task.task_query,
+			started_on = running_task.started_on,
+			finished_on = current_time,
+			user_id = current_user.id
+		)
+		db.session.add(finished_task)
+		db.session.commit()
 	return jsonify({})
 
 
