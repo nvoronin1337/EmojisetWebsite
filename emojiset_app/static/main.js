@@ -436,6 +436,7 @@ $(document).ready(function () {
 
 	$('#collapseOne').on('show.bs.collapse', function () {
 		let load_queries_url = document.location.href + "/load_queries"
+		let html_delete_query_btn = '<button id="delete_query" type="button" class="btn btn-danger btn-sm" style="float: right; margin: 0.5rem">Delete query</button>'
 		$.ajax({
 			url: load_queries_url,
 			method: 'GET',
@@ -447,27 +448,29 @@ $(document).ready(function () {
 				let html_saved_search_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>Post Type</th></thead><tbody>'
 				let html_saved_filter_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th colspan="2">Keywords</th><th>Discard Emojis?</th><th>Language</th><th>Location</th><th>User</th></thead><tbody>'
 				let html_saved_sample_queries_table = '<div class="table-responsive"><table class="table table-striped"><thead class="thead-dark" style="opacity: 0.9;"><th>Discard Emojis?</th></thead><tbody>'
-
+				let rows_search = ""
+				let rows_filter = ""
+				let rows_sample = ""
 				for (let query_id in res[0]) {
 					let json_query = JSON.parse(res[0][query_id])
 					let twarc_method = json_query["twarc_method"]
 
 					if (twarc_method == "search") {
 						found_search = true
-						languages = json_query['form_data']['languages']
-						loc = json_query['form_data']['location']
+						let languages = json_query['form_data']['languages']
+						let loc = json_query['form_data']['location']
 						if (!languages) {
 							languages = 'all'
 						}
 						if (!loc) {
 							loc = 'world'
 						}
-						html_saved_search_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + json_query['form_data']['result_type'] + '</td></tr>'
+						rows_search = '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + json_query['form_data']['result_type'] + '</td></tr>' + rows_search
 					} else if (twarc_method == "filter") {
 						found_filter = true
-						languages = json_query['form_data']['languages']
-						loc = json_query['form_data']['location']
-						follow = json_query['form_data']['follow']
+						let languages = json_query['form_data']['languages']
+						let loc = json_query['form_data']['location']
+						let follow = json_query['form_data']['follow']
 						if (!languages) {
 							languages = 'all'
 						}
@@ -477,15 +480,16 @@ $(document).ready(function () {
 						if (!follow) {
 							follow = 'all'
 						}
-						html_saved_filter_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + follow + '</td></tr>'
+						rows_filter = '<tr id=' + query_id + ' class="clickable-row"><td colspan="2">' + json_query['keywords'] + '</td><td>' + json_query['discard'] + '</td><td>' + languages + '</td><td>' + loc + '</td><td>' + follow + '</td></tr>' + rows_filter
 					} else if (twarc_method == "sample") {
 						found_sample = true
-						html_saved_sample_queries_table += '<tr id=' + query_id + ' class="clickable-row"><td>' + json_query['discard'] + '</td></tr>'
+						rows_sample = '<tr id=' + query_id + ' class="clickable-row"><td>' + json_query['discard'] + '</td></tr>' + rows_sample
 					}
 				}
-				html_saved_search_queries_table += "</tbody></table></div>"
-				html_saved_filter_queries_table += "</tbody></table></div>"
-				html_saved_sample_queries_table += "</tbody></table></div>"
+
+				html_saved_search_queries_table += rows_search + "</tbody></table>" + html_delete_query_btn + "</div>"
+				html_saved_filter_queries_table += rows_filter + "</tbody></table>" + html_delete_query_btn + "</div>"
+				html_saved_sample_queries_table += rows_sample + "</tbody></table>" + html_delete_query_btn + "</div>"
 
 				if (found_search)
 					$("#saved_search_queries_container").html(html_saved_search_queries_table)
@@ -500,12 +504,35 @@ $(document).ready(function () {
 					let id = this.id.replace("select", '')
 					$('#selected_query').val("Selected " + id);
 				});
+
+				$('#delete_query').click(function (e) {
+					e.preventDefault()
+					$('#delete_query').attr('disabled', 'true')
+					let selected_query_id = $('#selected_query').val().replace("Selected ", "")
+					let delete_query_url = document.location.href + "/delete_query/" + selected_query_id
+					$.ajax({
+						url: delete_query_url,
+						method: "GET",
+						dataType: "json",
+						success: function (data, status, request) {
+							var row = document.getElementById(selected_query_id);
+							row.parentNode.removeChild(row);
+							$('#delete_query').removeAttr("disabled")
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(textStatus)
+						}
+					});
+					
+				})
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				console.log(textStatus)
 			}
 		});
 	})
+	$('#collapseOne').collapse('show')
+	
 
 	function check_users_running_task() {
 		let load_task_url = document.location.href + "/load_task"
