@@ -193,18 +193,27 @@ class Large_Streamer():
 
 
 	def stream(self):
-		 # ---stream tweets---*
-		try:
-			if 'true' in self.extract_primary or 'true' in self.extract_secondary:
-				self.get_tweet_stream()
-		# ---error handling---*
-		except KeyboardInterrupt:
-			print("Keyboard interrupt...")
-			return
-		except Exception:
-			print("Error. Quitting...")
-			traceback.print_exc()
-			return
+		# ---stream tweets---*
+		finished = False
+		allowed_reconnections = 10
+		current_reconnections = 0
+		if 'true' in self.extract_primary or 'true' in self.extract_secondary:
+			while(not finished):
+				try:
+					self.get_tweet_stream()
+				# ---error handling---*
+				except KeyboardInterrupt:
+					print("Keyboard interrupt...")
+					return
+				except Exception:
+					print("Error...")
+				
+				current_reconnections += 1
+				if current_reconnections == allowed_reconnections:
+					finished = True
+				else:
+					if self.requested_limit_reached() or self.twarc_method != 'filter':
+						finished = True
 
 
 	def get_tweet_stream(self):
@@ -255,26 +264,29 @@ class Large_Streamer():
 			if self.contains_emoji(tweet):
 				self.parse_tweet(tweet)
 				self.current_tweets += 1                                                       # counter of tweets w/ emojis to update progress bar*
-				self.job.refresh()     
-				if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
-					self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
-				elif self.finish_time:
-					self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
-				self.job.save_meta()                                                           # saves new update to progress bar*
+				if self.current_tweets % 100 == 0:	
+					self.job.refresh()     
+					if self.max_tweets:                                                        # refreshes progress bar every 150 milliseconds (established in main.js)*
+						self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)     # updates progress bar (tweets with emojis / # of specified tweets) as a percentage*
+					elif self.finish_time:
+						self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
+					self.job.save_meta()                                                           # saves new update to progress bar*
 			else:
-				self.discarded += 1                                                            # counter of tweets w/o emojis*
-				self.job.refresh()                                                             # refreshes # of discarded tweets every 150 milliseconds (established in main.js)*
-				self.job.meta['discarded_tweets'] = self.discarded                             
-				self.job.save_meta()                                                           # saves new update to # of discarded tweets message*
+				self.discarded += 1     
+				if self.current_tweets % 100 == 0:                                                       # counter of tweets w/o emojis*
+					self.job.refresh()                                                             # refreshes # of discarded tweets every 150 milliseconds (established in main.js)*
+					self.job.meta['discarded_tweets'] = self.discarded                             
+					self.job.save_meta()                                                           # saves new update to # of discarded tweets message*
 		else:   
 			self.parse_tweet(tweet)
 			self.current_tweets += 1
-			self.job.refresh()
-			if self.max_tweets:                                                       
-				self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)   
-			elif self.finish_time:
-				self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
-			self.job.save_meta()
+			if self.current_tweets % 100 == 0:
+				self.job.refresh()
+				if self.max_tweets:                                                       
+					self.job.meta['progress'] = round((self.current_tweets / self.max_tweets) * 100,2)   
+				elif self.finish_time:
+					self.job.meta['progress'] = 100 - round(((self.finish_time - time.time()) / self.total_time) * 100,2)
+				self.job.save_meta()
 
 
 	# ---checks to see if any emojis are present---*
