@@ -251,11 +251,17 @@ def save_query():
 	db.session.commit()
 	return jsonify({})
 
+@app.route("/emojiset/delete_query/<query_id>", methods=["GET"])
+@login_required
+def delete_query(query_id):
+	SavedQuery.query.filter_by(id=query_id).delete()
+	db.session.commit()
+	return jsonify({})
+
 
 @app.route("/emojiset/load_queries", methods=["GET"])
 @login_required
 def load_queries():
-	user_id = current_user.id
 	saved_queries = SavedQuery.query.filter_by(user_id=current_user.id).group_by(SavedQuery.saved_query).all()
 	response = {}
 	for q in saved_queries:
