@@ -361,3 +361,17 @@ def get_file_list():
 def download(subfolder, file_name):
 	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER']) + "/" + current_user.email.split('@')[0] + '/' + str(subfolder)
 	return send_from_directory(directory=uploads, filename=file_name, as_attachment=True)
+
+
+@app.route("/contact_us", methods=["POST"])
+def contact_us():
+	contact_data = {}
+	contact_data['name'] = request.form.get('name')
+	contact_data['email'] = request.form.get('email')
+	contact_data['message'] = request.form.get('message')
+	if 'bug' in request.form:
+		contact_data['bug'] = 'Yes'
+	else:
+		contact_data['bug'] = 'No'
+	send_contact_us_message(contact_data)
+	return jsonify({}), 200

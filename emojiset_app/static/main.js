@@ -270,7 +270,7 @@ $(document).ready(function () {
 					$('#discarded_tweets_lbl span').text(data[0].discarded_tweets);
 					setTimeout(function () {
 						check_job_status(status_url);
-					}, 150);
+					}, 250);
 			}
 		});
 	}
@@ -616,7 +616,7 @@ $(document).ready(function () {
 					$("#task-progress small").text(data[0].progress.toFixed(1) + '%');
 					setTimeout(function () {
 						check_long_job_status(status_url)
-					}, 150)
+					}, 1000)
 			}
 		});
 	}

@@ -24,6 +24,29 @@ def send_message(user_email):
     msg.attach(content)
     s.sendmail(fromEmail, toEmail, msg.as_string())
 
+def send_contact_us_message(form):
+    MAIL_USERNAME = 'testemojiset@gmail.com'
+    MAIL_PASSWORD = 'Em0jiset!'
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.ehlo()
+    s.starttls()
+    s.ehlo()
+    s.login(MAIL_USERNAME, MAIL_PASSWORD)
+    
+    toEmail = 'othmans1@wit.edu'
+    fromEmail = MAIL_USERNAME
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = 'SOGOResearch Message from ' + form['name']
+    msg['From'] = fromEmail
+    body = "Email: " + form['email'] + "\n"
+    body += "Is this a bug report? " + form['bug'] + "\n"
+    body += form['message']
+
+    content = MIMEText(body, 'plain')
+    msg.attach(content)
+    s.sendmail(fromEmail, toEmail, msg.as_string()) 
+
 def load_key():
     """
     Loads the key named `secret.key` from the current directory.

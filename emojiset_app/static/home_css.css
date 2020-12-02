@@ -15,9 +15,16 @@ body {
   border-spacing: 0px 1em;
 }
 
+#boxes {
+    padding-left: 10%;
+    padding-right: 10%;
+    margin: auto;
+}
+
 #box {
   margin-bottom: -99999px;
   padding-bottom: 99999px;
+  display:block;
 }
 
 #face {
@@ -37,12 +44,37 @@ body {
 #salembio {
   text-align: justify;
   min-width : 10rem;
-  padding-left: 13%;
-  padding-right: 13%;
+
 }
 
 #salemres {
     min-width : 19rem;
     max-width : 20rem;
     margin: auto;
+}
+
+#about {
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%;
+}
+
+#pubs {
+  
+  padding-left: 20%;
+  padding-right: 20%;
+  margin: auto;
+  overflow: hidden; 
+  border-collapse: separate;
+
+}
+#pubs2 {
+  
+  padding-left: 24.8%;
+  padding-right: 24.8%;
+  margin: auto;
+  overflow: hidden; 
+  border-collapse: separate;
+
 }
