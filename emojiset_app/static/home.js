@@ -5,8 +5,8 @@ function GoToEmojiset() {
 
 $(document).ready(function () {
     $('#send').on('click', function(e){
-		alert('clicked')
-        e.preventDefault()
+		e.preventDefault()
+		$('#contact_modal').modal('show'); 
         let contact_us_url = location.href + "/contact_us"
         $.ajax({
 			url: contact_us_url,
@@ -14,7 +14,7 @@ $(document).ready(function () {
 			method: "POST",
 			dataType: "json",
 			success: function (data, status, request) {
-				$('#contact_modal').modal('show'); 
+				console.log('mail sent')
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				console.log(textStatus)
