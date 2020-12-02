@@ -18,7 +18,7 @@ def send_message(user_email):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = 'Finished Collecting Tweets'
     msg['From'] = fromEmail
-    body = 'We have finished collecting tweets for you! To download your results please log in to your account and go to the collect large dataset page. Please note that you have 7 days to download your results since they will be deleted after that.'
+    body = 'We have finished collecting tweets for you! Please follow this link to download your results: https://www.sogoresearch.com/emojiset. Please note that you have 7 days to download your results since they will be deleted after that.'
 
     content = MIMEText(body, 'plain')
     msg.attach(content)
@@ -34,7 +34,7 @@ def send_contact_us_message(form):
     s.ehlo()
     s.login(MAIL_USERNAME, MAIL_PASSWORD)
     
-    toEmail = 'othmans1@wit.edu'
+    toEmail = 'voro0612@gmail.com'
     fromEmail = MAIL_USERNAME
     msg = MIMEMultipart('alternative')
     msg['Subject'] = 'SOGOResearch Message from ' + form['name']

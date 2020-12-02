@@ -28,9 +28,6 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
     </script>
@@ -46,24 +43,23 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('home_page') }}">
-                        <i class="fa fa-home"></i> Home <span class="sr-only">(current)</span>
+                        <em class="fa fa-home"></em> Home <span class="sr-only">(current)</span>
                     </a>
-                </li>
+                    </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#team"><i class="fa fa-group"></i> Team</a>
-                </li>
+                    <a class="nav-link" href="#teams"><em class="fa fa-group"></em> Team</a>
+                    </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-search"></i>
+                        <em class="fa fa-search"></em>
                         Research
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
                         <a class="dropdown-item" href="">Epidemiology</a>
-                        <a class="dropdown-item" href="">Other projects</a>
                     </div>
-                </li>
+                    </li>
             </ul>
         </div>
         <div class="mx-auto order-0">
@@ -77,42 +73,43 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#contact">
-                        <i class="fa fa-envelope"></i> Contact <span class="sr-only">(current)</span>
+                        <em class="fa fa-envelope"></em> Contact <span class="sr-only">(current)</span>
                     </a>
-                </li>
+                    </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink-4" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle-o"></i> Profile </a>
+                        aria-haspopup="true" aria-expanded="false"><em class="fa fa-user-circle-o"></em> Profile </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-cyan"
                         aria-labelledby="navbarDropdownMenuLink-4">
                         <a class="dropdown-item" href="{{ url_for('user.register') }}">Register</a>
                         <a class="dropdown-item" href="{{ url_for('user.edit_user_profile') }}">My account</a>
                         <a class="dropdown-item" href="{{ url_for('user.logout') }}">Log out</a>
                     </div>
-                </li>
+                    </li>
             </ul>
         </div>
     </nav>
 
     <!-- Image Header -->
-    <div class="w3-container w3-animate-opacity">
+    <div class="w3-container w3-animate-opacity w3-theme-l1">
         <br>
         <div id="about">
-            <form class="w3-container w3-padding-16 w3-white w3-margin-bottom">
+            <form class="w3-container w3-padding-16 w3-margin-bottom">
                 <div class="row">
                     <div class="col">
                         <div class="w3-section w3-justify">
                             <div id="salem">
-                                <a href="https://wit.edu/directory/salem-othman" target="_blank">
+                                <a href="https://wit.edu/directory/Salem-othman" target="_blank"
+                                    rel="noopener noreferrer">
                                     <img src="{{ url_for('static', filename='images/salem.png') }}" alt="Salem Othman"
                                         style="width:100%;" class="w3-circle w3-hover-opacity">
                                 </a>
-                                <h4><b>Salem Othman</b></h4>
+                                <h4><strong>Salem Othman</strong></h4>
                             </div>
                         </div>
                     </div>
                     <div id="salembio" class="col">
-                        <h2><b>Biography</b></h2>
+                        <h2><strong>Biography</strong></h2>
                         <h4>
                             I am an assistant professor in the School of Computing and Data Science at the Wentworth
                             Institute of
@@ -136,7 +133,7 @@
                     </div>
                     <div class="col">
                         <div id="salemres" class="w3-section" style="width:100%;">
-                            <h2><b>Research Interests</b></h2>
+                            <h2><strong>Research Interests</strong></h2>
                             <h4>
                                 <ul>
                                     <li>Social Sensing</li>
@@ -156,10 +153,9 @@
     </div>
 
     <!-- Publications -->
-    <div class="w3-theme-l1">
+    <div class="w3-container w3-theme-l2 w3-padding-16">
         <div class="w3-center">
-            <br>
-            <h2><b>Publications</b></h2>
+            <h2><strong>Publications</strong></h2>
             <br>
         </div>
         <div id="pubs" style="color:black">
@@ -168,14 +164,15 @@
                     <br>
                     <div class="w3-card w3-white w3-center">
                         <div class="card-header">
-                            <b>Automatic Extraction of Emojiset</b>
+                            <strong>Automatic Extraction of Emojiset</strong>
                         </div>
                         <div class="w3-container">
                             <div class="w3-left-align card-body">
                                 <blockquote class="blockquote mb-0">
                                     <h5>Caleb Franco, William Bernier, Phil Roesch, Salem Othman</h5>
                                     <footer class="blockquote-footer"><cite title="Source Title"><a
-                                                href="https://saiconference.com/Computing" target="_blank">Computing
+                                                href="https://saiconference.com/Computing" target="_blank"
+                                                rel="noopener noreferrer">Computing
                                                 Conference 2021</a></cite></footer>
                                 </blockquote>
                             </div>
@@ -186,14 +183,15 @@
                     <br>
                     <div id="box" class="w3-card w3-white  w3-center">
                         <div class="card-header">
-                            <b>Analyzing Co-occurrence Networks of Emojis on Twitter</b>
+                            <strong>Analyzing Co-occurrence Networks of Emojis on Twitter</strong>
                         </div>
                         <div class="w3-container">
                             <div class="w3-left-align card-body">
                                 <blockquote class="blockquote mb-0">
                                     <h5>Hasan Alsaif, Salem Othman</h5>
                                     <footer class="blockquote-footer"><cite title="Source Title"><a
-                                                href="https://saiconference.com/Computing" target="_blank">Computing
+                                                href="https://saiconference.com/Computing" target="_blank"
+                                                rel="noopener noreferrer">Computing
                                                 Conference 2021</a></cite></footer>
                                 </blockquote>
                             </div>
@@ -208,14 +206,15 @@
                     <br>
                     <div class="w3-card w3-white w3-center">
                         <div class="card-header">
-                            <b>Analyzing Music Genre Popularity via Tweets</b>
+                            <strong>Analyzing Music Genre Popularity via Tweets</strong>
                         </div>
                         <div class="w3-container">
                             <div class="w3-left-align card-body">
                                 <blockquote class="blockquote mb-0">
                                     <h5>Jose Fossi, Adam Dzwonkowski</h5>
                                     <footer class="blockquote-footer"><cite title="Source Title"><a
-                                                href="https://saiconference.com/Computing" target="_blank">Computing
+                                                href="https://saiconference.com/Computing" target="_blank"
+                                                rel="noopener noreferrer">Computing
                                                 Conference 2021</a></cite></footer>
                                 </blockquote>
                             </div>
@@ -229,63 +228,56 @@
 
     <!-- Work Row -->
 
-    <div id="boxes" class="w3-row-padding w3-theme-l1">
+    <div id="boxes" class="w3-container w3-padding-16 w3-row-padding w3-theme-l2">
 
         <div class="w3-center">
-            <br>
-            <h2><b>Current Projects</b></h2>
+            <h2><strong>Current Projects</strong></h2>
         </div>
         <div class="row w3-row-padding" id="work">
             <div class="col w3-half" style="width:55%">
                 <br>
                 <div class="w3-card w3-white">
                     <div class="w3-container w3-center">
-                        <h3><b>Emojiset Mining</b></h3>
-                        <!--<h4>In progress (Stable)</h4>-->
+                        <h3><strong>Emojiset Mining</strong></h3>
                         <a href="javascript: void(0)" onclick="GoToEmojiset(); return false;">
-
                             <img src="{{ url_for('static', filename='images/emoji.PNG') }}" alt="Emojiset Page"
                                 style="width:70%">
                         </a>
-                        <hr>
-                        <div class="w3-justify">
-                            <h4>
-                                The Emojiset Mining team has created a website that can analyze emojisets from tweets
-                                and infer the
-                                meaning behind them.
-                                The code is capable of pulling tweets given various settings, and can either provide a
-                                small or large data
-                                set, which can be sent to users via email.
-                                A user can test the website using a demo, but must acquire a Twitter developer account
-                                and sign up to access
-                                all of the features.
-                            </h4>
-                        </div>
                     </div>
+                </div>
+                <div class="w3-justify">
+                    <h4>
+                        The Emojiset Mining team has created a website that can analyze emojisets from tweets
+                        and infer the
+                        meaning behind them.
+                        The code is capable of pulling tweets given various settings, and can either provide a
+                        small or large data
+                        set, which can be sent to users via email.
+                        A user can test the website using a demo, but must acquire a Twitter developer account
+                        and sign up to access
+                        all of the features.
+                    </h4>
                 </div>
             </div>
 
             <div class="col w3-half" style="width:55%">
                 <br>
                 <div class="w3-card w3-white">
-                    <div id="box" class="w3-container w3-center">
-                        <h3><b>Epidemiology</b></h3>
-                        <!--<h4>In progress</h4>-->
-
+                    <div class="w3-container w3-center">
+                        <h3><strong>Epidemiology</strong></h3>
                         <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page"
                             style="width:70%">
-                        <hr>
-                        <div class="w3-justify">
-                            <h4>
-                                The team has implemented a new model named Biased Majority rule model which consists in
-                                model that
-                                resembles how opinions spread through majorities.
-                                The model contains 3 states: Adopter, Rejector and Undecided and includes a bias
-                                parameter that can be
-                                modified by the user.
-                            </h4>
-                        </div>
                     </div>
+                </div>
+                <div class="w3-justify">
+                    <h4>
+                        The team has impliented a new model named Biased Majority rule model which consists in
+                        model that
+                        resembles how opinions spread through majorities.
+                        The model contains 3 states: Adopter, Rejector and Undecided and includes a bias
+                        parameter that can be
+                        modified by the user.
+                    </h4>
                 </div>
             </div>
         </div>
@@ -293,9 +285,9 @@
 
 
     <!-- Team Container -->
-    <div class="w3-container w3-padding-64 w3-center w3-theme-l1">
+    <div id="teams" class="w3-container w3-padding-16 w3-center w3-theme-l1">
         <div data-spy="scroll" data-target="#navbar-scroll" data-offset="0">
-            <h1><b>My teams</b></h1>
+            <h1><strong>My Teams</strong></h1>
         </div>
         <p>Meet the team! (click their portrait to view their personal page)</p>
         <br>
@@ -309,11 +301,12 @@
                 <div class="row">
                     <div class="col">
                         <div class="w3-center">
-                            <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank">
+                            <a href="https://www.linkedin.com/in/nikita-voronin-5a4a3b153/" target="_blank"
+                                rel="noopener noreferrer">
                                 <img id="face" src="{{ url_for('static', filename='images/nikita.jpg') }}"
                                     alt="Nikita Voronin" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Nikita Voronin</b></h4>
+                            <h4><strong>Nikita Voronin</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -321,11 +314,11 @@
 
                     <div class="col">
                         <div class="w3-center">
-                            <a href="https://www.linkedin.com" target="_blank">
+                            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
                                 <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}"
                                     alt="Caleb Franco" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Caleb Franco</b></h4>
+                            <h4><strong>Caleb Franco</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -336,11 +329,12 @@
                 <div class="row">
                     <div class="col">
                         <div class="w3-center">
-                            <a href="https://www.linkedin.com/in/adam-dzwonkowski/" target="_blank">
+                            <a href="https://www.linkedin.com/in/adam-dzwonkowski/" target="_blank"
+                                rel="noopener noreferrer">
                                 <img id="face" src="{{ url_for('static', filename='images/adam.jpg') }}"
                                     alt="Adam Dzwonkowski" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Adam Dzwonkowski</b></h4>
+                            <h4><strong>Adam Dzwonkowski</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -349,11 +343,11 @@
                     <div class="col">
                         <div class="w3-center">
                             <a href="https://www.linkedin.com/in/sancho-rodr%C3%ADguez-corrales-340891113/"
-                                target="_blank">
-                                <img id="face" src="{{ url_for('static', filename='images/adam.jpg') }}"
+                                target="_blank" rel="noopener noreferrer">
+                                <img id="face" src="{{ url_for('static', filename='images/sancho.jpg') }}"
                                     alt="Sancho Rodríguez" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Sancho Rodríguez</b></h4>
+                            <h4><strong>Sancho Rodríguez</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -368,11 +362,11 @@
                 <div class="row">
                     <div class="col">
                         <div class="w3-center">
-                            <a href="https://www.linkedin.com/" target="_blank">
+                            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
                                 <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}"
                                     alt="Martin King" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Martin King</b></h4>
+                            <h4><strong>Martin King</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -384,7 +378,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}"
                                     alt="Edwin Armas" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Edwin Armas</b></h4>
+                            <h4><strong>Edwin Armas</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -399,7 +393,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/endi.jpg') }}"
                                     alt="Endi Caushi" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Endi Caushi</b></h4>
+                            <h4><strong>Endi Caushi</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -412,7 +406,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/phil.png') }}"
                                     alt="Phillip Roesch" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Phillip Roesch</b></h4>
+                            <h4><strong>Phillip Roesch</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -432,7 +426,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/omar.jpg') }}"
                                     alt="Omar Abou Nassif Mourad" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Omar Abou Nassif Mourad</b></h4>
+                            <h4><strong>Omar Abou Nassif Mourad</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -443,7 +437,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}"
                                     alt="Joshua Moorehead" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Joshua Moorehead</b></h4>
+                            <h4><strong>Joshua Moorehead</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -459,7 +453,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/placeholder_face.png') }}"
                                     alt="Garvin Gerard" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Garvin Gerard</b></h4>
+                            <h4><strong>Garvin Gerard</strong></h4>
                             <p>Epidemiology</p>
                             <br>
                         </div>
@@ -470,7 +464,7 @@
                                 <img id="face" src="{{ url_for('static', filename='images/hasan.png') }}"
                                     alt="Hasan Saif" class="w3-circle w3-hover-opacity">
                             </a>
-                            <h4><b>Hasan Saif</b></h4>
+                            <h4><strong>Hasan Saif</strong></h4>
                             <p>Emojiset Mining</p>
                             <br>
                         </div>
@@ -479,6 +473,25 @@
             </div>
         </div>
         <!--Finishes third row-->
+    </div>
+
+    <div id="contact_modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message sent</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Thank you for contacting us!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Contact Container -->
@@ -511,8 +524,8 @@
                             <input class="w3-input" type="text" id="message" name="message" required>
                         </div>
                         <input class="w3-check" type="checkbox" id="bug" name="bug">
-                        <label>Is this a bug report?</label>
-                        <button id="send" type="submit" class="w3-button w3-right w3-theme">Send</button>
+                            <label>Is this a bug report?</label>
+                            <button id="send" type="submit" class="w3-button w3-right w3-theme">Send</button>
                     </form>
                 </div>
             </div>
@@ -522,15 +535,15 @@
     <!-- Footer -->
     <footer class="w3-container w3-padding-32 w3-center w3-theme-l1">
         <h4>Follow Us</h4>
-        <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i
-                class="fa fa-twitter"></i></a>
+        <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><em
+                class="fa fa-twitter"></em></a>
         <p></p>
 
         <div style="position:relative;bottom:100px;z-index:1;" class="w3-tooltip w3-right">
             <span class="w3-text w3-padding w3-teal w3-hide-small">Go To Top</span>
             <a class="w3-button w3-theme" href="#myPage">
                 <span class="w3-xlarge">
-                    <i class="fa fa-chevron-circle-up"></i>
+                    <em class="fa fa-chevron-circle-up"></em>
                 </span>
             </a>
         </div>
@@ -539,7 +552,7 @@
     <script>
         // Used to toggle the menu on smaller screens when clicking on the menu button
         function openNav() {
-            var x = document.getElementById("navDemo");
+            var x = document.getElientById("navDemo");
             if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
             } else {

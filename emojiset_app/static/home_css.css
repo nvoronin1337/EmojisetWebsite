@@ -15,9 +15,9 @@ body {
   border-spacing: 0px 1em;
 }
 
-#boxes {
-    padding-left: 10%;
-    padding-right: 10%;
+#boxes, #teams {
+    padding-left: 8%;
+    padding-right: 8%;
     margin: auto;
 }
 
@@ -57,7 +57,7 @@ body {
     left: 0;
     margin-right: auto;
     margin-left: auto;
-    width: 90%;
+    width: 100%;
 }
 
 #pubs {
