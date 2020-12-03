@@ -76,7 +76,7 @@ class FinishedTask(db.Model):
     started_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     finished_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
-
+    chunk = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
 
 class SavedResultDirectory(db.Model):
     __tablename__ = 'saved_result_directory'
