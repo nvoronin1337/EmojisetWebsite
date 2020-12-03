@@ -40,7 +40,7 @@ def send_contact_us_message(form):
     msg['Subject'] = 'SOGOResearch Message from ' + form['name']
     msg['From'] = fromEmail
     body = "Email: " + form['email'] + "\n"
-    body += "Is this a bug report? " + form['bug'] + "\n"
+    body += "Is this a bug report? " + form['bug'] + "\n\n"
     body += form['message']
 
     content = MIMEText(body, 'plain')

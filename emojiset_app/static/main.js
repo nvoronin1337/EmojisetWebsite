@@ -437,6 +437,8 @@ $(document).ready(function () {
 	$('#collapseOne').on('show.bs.collapse', function () {
 		let load_queries_url = document.location.href + "/load_queries"
 		let html_delete_query_btn = '<button id="delete_query" type="button" class="btn btn-danger btn-sm" style="float: right; margin: 0.5rem">Delete query</button>'
+		let html_delete_query_btn_filter = '<button id="delete_query_filter" type="button" class="btn btn-danger btn-sm" style="float: right; margin: 0.5rem">Delete query</button>'
+		let html_delete_query_btn_sample = '<button id="delete_query_sample" type="button" class="btn btn-danger btn-sm" style="float: right; margin: 0.5rem">Delete query</button>'
 		$.ajax({
 			url: load_queries_url,
 			method: 'GET',
@@ -488,8 +490,8 @@ $(document).ready(function () {
 				}
 
 				html_saved_search_queries_table += rows_search + "</tbody></table>" + html_delete_query_btn + "</div>"
-				html_saved_filter_queries_table += rows_filter + "</tbody></table>" + html_delete_query_btn + "</div>"
-				html_saved_sample_queries_table += rows_sample + "</tbody></table>" + html_delete_query_btn + "</div>"
+				html_saved_filter_queries_table += rows_filter + "</tbody></table>" + html_delete_query_btn_filter + "</div>"
+				html_saved_sample_queries_table += rows_sample + "</tbody></table>" + html_delete_query_btn_sample + "</div>"
 
 				if (found_search)
 					$("#saved_search_queries_container").html(html_saved_search_queries_table)
@@ -504,8 +506,47 @@ $(document).ready(function () {
 					let id = this.id.replace("select", '')
 					$('#selected_query').val("Selected " + id);
 				});
-
 				$('#delete_query').click(function (e) {
+					e.preventDefault()
+					$('#delete_query').attr('disabled', 'true')
+					let selected_query_id = $('#selected_query').val().replace("Selected ", "")
+					let delete_query_url = document.location.href + "/delete_query/" + selected_query_id
+					$.ajax({
+						url: delete_query_url,
+						method: "GET",
+						dataType: "json",
+						success: function (data, status, request) {
+							var row = document.getElementById(selected_query_id);
+							row.parentNode.removeChild(row);
+							$('#delete_query').removeAttr("disabled")
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(textStatus)
+						}
+					});
+					
+				})	
+				$('#delete_query_filter').click(function (e) {
+					e.preventDefault()
+					$('#delete_query').attr('disabled', 'true')
+					let selected_query_id = $('#selected_query').val().replace("Selected ", "")
+					let delete_query_url = document.location.href + "/delete_query/" + selected_query_id
+					$.ajax({
+						url: delete_query_url,
+						method: "GET",
+						dataType: "json",
+						success: function (data, status, request) {
+							var row = document.getElementById(selected_query_id);
+							row.parentNode.removeChild(row);
+							$('#delete_query').removeAttr("disabled")
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(textStatus)
+						}
+					});
+					
+				})
+				$('#delete_query_sample').click(function (e) {
 					e.preventDefault()
 					$('#delete_query').attr('disabled', 'true')
 					let selected_query_id = $('#selected_query').val().replace("Selected ", "")
@@ -530,6 +571,7 @@ $(document).ready(function () {
 				console.log(textStatus)
 			}
 		});
+		
 	})
 	$('#collapseOne').collapse('show')
 	

@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_admin import Admin
 from flask_user import current_user
+from flask_migrate import Migrate
 
 import emoji
 import redis
@@ -72,6 +73,7 @@ mail = Mail(app)
 secret_key = load_key()
 # Initialize Flask-SQLAlchemy
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 from emojiset_app.models import User, Role, EmojisetModelView, SavedQuery, RunningTask, FinishedTask
 from emojiset_app.forms import CustomUserManager

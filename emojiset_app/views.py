@@ -49,7 +49,6 @@ def run_small_task():
 		'consumer_key': current_user.consumer_key,
 		'consumer_secret': current_user.consumer_secret
 	}
-	user_email = current_user.email
 	# read values that are always present
 	keywords = ""
 	if 'keywords' in request.form:
@@ -273,6 +272,7 @@ def load_queries():
 @login_required
 def save_task():
 	running_task = RunningTask(
+		user_email = current_user.email,
 		task_query = request.form["task-query"],
 		status_url = request.form["status-url"],
 		cancel_url = request.form["cancel-url"],
@@ -318,6 +318,7 @@ def save_finished_task():
 		now = time.localtime()
 		current_time = time.strftime("%Y-%m-%d %H:%M:%S", now)
 		finished_task = FinishedTask(
+			user_email = running_task.user_email,
 			task_query = running_task.task_query,
 			started_on = running_task.started_on,
 			finished_on = current_time,

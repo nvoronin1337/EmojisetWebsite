@@ -18,10 +18,12 @@ def stream_large(keys, keywords, discard, twarc_method, languages, result_type, 
     filename =  os.path.join(streamer.save_dir, 'task_info.txt')
 
     with open(filename, 'w', encoding="utf-8") as f:
+        query = "Query: " + streamer.keywords
         started_at = 'Started at: ' + streamer.started_at
         finished_at = 'Finished at: ' + strftime("%a, %d %b %Y %X", gmtime()) 
         collected = 'Collected tweets: ' + str(streamer.tweet_count)
         discarded = 'Discarded tweets: ' + str(streamer.discarded)
+        print(query, file=f)
         print(started_at, file=f)
         print(finished_at, file=f)
         print(collected, file=f)

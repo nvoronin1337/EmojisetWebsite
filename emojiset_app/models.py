@@ -60,6 +60,7 @@ class SavedQuery(db.Model):
 class RunningTask(db.Model):
     __tablename__ = 'running_tasks'
     id = db.Column(db.Integer(), primary_key=True)
+    user_email = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     task_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     status_url = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     cancel_url = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
@@ -70,6 +71,7 @@ class RunningTask(db.Model):
 
 class FinishedTask(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
+    user_email = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     task_query = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     started_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
     finished_on = db.Column(db.String(255, collation='NOCASE'),nullable=False, server_default='')
