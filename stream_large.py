@@ -121,7 +121,7 @@ def get_image_urls(status):
 ## Tweet Streamer class
 #  Uses Twarc API to stream tweets from twitter
 class Large_Streamer():
-	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0):
+	def __init__(self, keys, keywords, discard, twarc_method, lang, result_type, follow, geo, max_tweets=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0, file_name="extracted_data.csv"):
 		# ---Configuring Twarc API---*
 		self.consumer_key = keys['consumer_key']
 		self.consumer_secret = keys['consumer_secret']
@@ -186,6 +186,7 @@ class Large_Streamer():
 		self.tweet_count = 0
 
 		self.temporary_rows = []
+		self.file_name = file_name
 
 		self.save_dir = 'results/' + self.email + '/' + self.current_datetime
 		if not os.path.exists(self.save_dir):
@@ -561,7 +562,7 @@ class Large_Streamer():
 		self.temporary_rows.append(values)
 
 		if len(col_names) > 0 and (len(self.temporary_rows) >= 100 or ignore_amount):
-			filename = os.path.join(self.save_dir, "extracted_data.csv")
+			filename = os.path.join(self.save_dir, self.file_name)
 			self.result_to_csv(filename, col_names, self.temporary_rows)
 			self.temporary_rows = []
 

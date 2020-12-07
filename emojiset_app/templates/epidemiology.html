@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Epidemiology</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='epidem.css') }}" />
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"
+        integrity="sha384-T2yuo9Oe71Cz/I4X9Ac5+gpEa5a8PpJCDlqKYO0CfAuEszu1JrXLl8YugMqYe3sM" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript">
+        Bokeh.set_log_level("info");
+    </script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='epidem.js') }}"></script>
+</head>
+
+<body id="myPage">
+
+
+    <!-- Navbar -->
+    <!--Navigation bar (Navbar: Home, Team, Research, About*-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
+
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('home_page') }}">
+                        <em class="fa fa-home"></em> Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#teams"><em class="fa fa-group"></em> Team</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <em class="fa fa-search"></em>
+                        Research
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
+                        <a class="dropdown-item" href="{{ url_for('epidemiology') }}">Epidemiology</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="">SOGOResearch</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">
+                        <em class="fa fa-envelope"></em> Contact <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink-4" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"><em class="fa fa-user-circle-o"></em> Profile </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-cyan"
+                        aria-labelledby="navbarDropdownMenuLink-4">
+                        <a class="dropdown-item" href="{{ url_for('user.register') }}">Register</a>
+                        <a class="dropdown-item" href="{{ url_for('user.edit_user_profile') }}">My account</a>
+                        <a class="dropdown-item" href="{{ url_for('user.logout') }}">Log out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-7 mx-auto">
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <!-- For demo purpose -->
+                    <div id="header_container" class="row mb-4">
+                        <div class="col-lg-8 mx-auto text-center">
+                            <h2 class="display-4">Epidemiology Research</h2>
+                            <br>
+                            <p id="epid_description" class="lead mb-0">
+                                Branch of medical science that deals with investigating the factors that causes
+                                diseases/disorders to be present/absent in a society
+                                Epidemiology is the method used to find the cause of health outcomes and diseases in
+                                populations by viewing the patients collectively
+                                It is used by researchers, medical practitioners, the government and sometimes even the
+                                general population since different behaviours within society can affect the spread of
+                                certain viruses, as we have seen with COVID-19.
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="sr-only" for="inlineFormInputGroupUsername">Bias</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">bias</div>
+                                    </div>
+                                    <input type="number" id="bias" name="bias" placeholder="bias probability"
+                                        class="form-control" min="0" max="1" step="0.001"
+                                        oninput="validity.valid||(value='');">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="sr-only" for="inlineFormInputGroupUsername">Fraction_Adopter</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">adopter</div>
+                                    </div>
+                                    <input type="number" id="adopter" name="adopter"
+                                        placeholder="fraction of adopter people" class="form-control" min="0" max="1"
+                                        step="0.001" oninput="validity.valid||(value='');">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="sr-only" for="inlineFormInputGroupUsername">Fraction_Rejector</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">rejector</div>
+                                    </div>
+                                    <input type="number" id="rejector" name="rejector"
+                                        placeholder="fraction of rejector people" class="form-control" min="0" max="1"
+                                        step="0.001" oninput="validity.valid||(value='');">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="sr-only" for="inlineFormInputGroupUsername">QGroup</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">QGroup</div>
+                                    </div>
+                                    <input type="number" id="q_group" name="q_group"
+                                        placeholder="number of people in a group" class="form-control" min="0"
+                                        max="1024" step="1" oninput="validity.valid||(value='');">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="submit" name="submit" type="submit"
+                        class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
+                        Visualize
+                    </button>
+                    <div class="container">
+                        <div id="model_container" class="row justify-content-center">
+                            <div class="col">
+                                <div id="model">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+#thicc {
+    border: 1px solid black;
+}
+
+#head_size {
+  max-width: 30rem;
+  margin: auto;
+}

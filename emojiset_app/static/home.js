@@ -3,6 +3,11 @@ function GoToEmojiset() {
     location.href = emojiset_url
 }
 
+function GoToEpidemiology(){
+	let epidemiology_url = document.location.href.split('#')[0] + "epidemiology"
+    location.href = epidemiology_url
+}
+
 $(document).ready(function () {
     $('#send').on('click', function(e){
 		e.preventDefault()

@@ -11,8 +11,8 @@ def stream_task(keys, keywords, discard, twarc_method, languages, result_type, f
     return streamer.result
 
 
-def stream_large(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0):
-    streamer = Large_Streamer(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount, finish_time, email, extract_primary, extract_secondary)
+def stream_large(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount=None, finish_time=None, email="", extract_primary=[], extract_secondary=[], offset=0, file_name="extracted_data.csv"):
+    streamer = Large_Streamer(keys, keywords, discard, twarc_method, languages, result_type, follow, geo, tweet_amount, finish_time, email, extract_primary, extract_secondary, file_name)
     streamer.stream()
     streamer.flush_results(ignore_amount=True)
     filename =  os.path.join(streamer.save_dir, 'task_info.txt')

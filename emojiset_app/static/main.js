@@ -669,6 +669,13 @@ $(document).ready(function () {
 		let tweet_amount = $('#tweet_amount_long').val()
 		let date_input = $('#date-length').val()
 		let time_input = $('#time-length').val()
+		let file_name = $('#filename_input').val()
+		if(file_name == ""){
+			file_name = "extracted_data"
+		}else{
+			file_name = file_name.split(".")[0]
+		}
+		file_name += ".csv"
 
 		let time_length = ""
 
@@ -701,7 +708,8 @@ $(document).ready(function () {
 					'time_length': time_length,
 					'time_offset': offset,
 					'extract_primary': checked_primary,
-					'extract_secondary': checked_secondary
+					'extract_secondary': checked_secondary,
+					'file_name': file_name
 				},
 				method: "POST",
 				dataType: "json",

@@ -13,6 +13,8 @@ import time
 import calendar
 import os
 import emoji
+from emojiset_app.epidemiology.TestMajority import MMR
+
 
 # The Home page is accessible to anyone
 @app.route('/')
@@ -28,10 +30,35 @@ def emojiset_mining():
 	return render_template("emojiset_mining_small.html")
 
 
+@app.route("/docs", methods=['GET'])
+@login_required
+def documentation():
+	return render_template("document.html")
+
+
 @app.route("/emojiset_big_dataset", methods=['GET'])
 @login_required
 def emojiset_mining_large():
 	return render_template("large_set.html")
+
+
+@app.route("/epidemiology")
+def epidemiology():
+	return render_template("epidemiology.html")
+
+
+@app.route("/epidemiology/mmr", methods=['POST'])
+def mmr():
+	bias = float(request.form.get("bias"))
+	adopter = float(request.form.get("adopter"))
+	rejector = float(request.form.get("rejector"))
+	q = int(request.form.get("q_group"))
+	plot_html = MMR(bias, adopter, rejector, q)
+
+	response = {
+		"plot_html": plot_html
+	}
+	return jsonify(response), 200
 
 
 # --- this URL can't be directly accessed by user ---*
@@ -76,7 +103,7 @@ def run_small_task():
 	else:
 		tweet_amount = int(tweet_amount)
 
-# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
+	# ---to use additional settings properly we need to make sure that the query is constructed correctly---*
 	if twarc_method == 'search':
 		if form_data:
 			keywords = construct_search_query(keywords, form_data['additional_settings'], form_data['operator'])
@@ -128,6 +155,7 @@ def run_large_task():
 	offset = request.form["time_offset"]
 	extract_primary = request.form.getlist('extract_primary[]')
 	extract_secondary = request.form.getlist('extract_secondary[]')
+	file_name = request.form['file_name']
 
 	finish_time = None
 	if tweet_amount:
@@ -140,7 +168,7 @@ def run_large_task():
 	twarc_method = query_json["twarc_method"]
 
 	job = None
-	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, user_email, extract_primary, extract_secondary, offset)
+	job = long_task_q.enqueue(stream_large, twitter_keys, query_json["keywords"], query_json["discard"], twarc_method, query_json["form_data"]['languages'], query_json["form_data"]['result_type'], query_json["form_data"]['follow'], query_json["form_data"]['location'], tweet_amount, finish_time, user_email, extract_primary, extract_secondary, offset, file_name=file_name)
 	
 	job.meta['progress'] = 0
 	job.meta['discarded_tweets'] = 0
@@ -249,6 +277,7 @@ def save_query():
 	db.session.add(saved_query)
 	db.session.commit()
 	return jsonify({})
+
 
 @app.route("/emojiset/delete_query/<query_id>", methods=["GET"])
 @login_required

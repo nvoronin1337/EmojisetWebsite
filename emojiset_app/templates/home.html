@@ -57,7 +57,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
-                        <a class="dropdown-item" href="">Epidemiology</a>
+                        <a class="dropdown-item" href="{{ url_for('epidemiology') }}">Epidemiology</a>
                     </div>
                     </li>
             </ul>
@@ -265,8 +265,10 @@
                 <div class="w3-card w3-white">
                     <div class="w3-container w3-center">
                         <h3><strong>Epidemiology</strong></h3>
+                        <a href="javascript: void(0)" onclick="GoToEpidemiology(); return false;">
                         <img src="{{ url_for('static', filename='images/majority.PNG') }}" alt="Epidemiology Page"
                             style="width:70%">
+                        </a>
                     </div>
                 </div>
                 <div class="w3-justify">

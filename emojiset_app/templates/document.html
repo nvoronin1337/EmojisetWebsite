@@ -1,0 +1,225 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Documentation</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='document_css.css') }}" />
+    <!-- <link rel="stylesheet" href="document_css.css"> -->
+    	<!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+</head>
+
+<body id="myPage">
+
+
+    <!-- Navbar -->
+    <!--Navigation bar (Navbar: Home, Team, Research, About*-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="opacity: 0.9;">
+
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('home_page') }}">
+                        <em class="fa fa-home"></em> Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#teams"><em class="fa fa-group"></em> Team</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <em class="fa fa-search"></em>
+                        Research
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('emojiset_mining') }}">Emojiset Mining</a>
+                        <a class="dropdown-item" href="{{ url_for('epidemiology') }}">Epidemiology</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="">SOGOResearch</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">
+                        <em class="fa fa-envelope"></em> Contact <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink-4" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"><em class="fa fa-user-circle-o"></em> Profile </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-cyan"
+                        aria-labelledby="navbarDropdownMenuLink-4">
+                        <a class="dropdown-item" href="{{ url_for('user.register') }}">Register</a>
+                        <a class="dropdown-item" href="{{ url_for('user.edit_user_profile') }}">My account</a>
+                        <a class="dropdown-item" href="{{ url_for('user.logout') }}">Log out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--begin-->
+    <div class="w3-center">
+        <br>
+        <h2><b>Documentation</b></h2>
+        <br>
+    </div>
+
+    <div id="head_size">
+        <div class="w3-container w3-padding-16">
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+                <h2><b>Small Dataset</b></h2>
+                <h3><a class="nav-link" href="#sec1"><i class="fa fa-group"></i>- Historical Search / Real Time Filter / Random Sample</a></h3>
+                <hr id="thicc">
+                <h2><b>Large Dataset</b></h2>
+                <h3><a class="nav-link" href="#sec2"><i class="fa fa-group"></i>- Saved Queries</a></h3>
+                <h3><a class="nav-link" href="#sec3"><i class="fa fa-group"></i>- Main Output</a></h3>
+                <h3><a class="nav-link" href="#sec4"><i class="fa fa-group"></i>- Additional Files</a></h3>
+            </form>
+        </div>
+    </div>
+    <div id="pad">
+        <div id="sec1" class="w3-container w3-padding-16">
+            <h1><b>Small Dataset</b></h1>
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+                <h2><b>Historical Search (HS) / Real Time Filter (RTF) / Random Sample (RS)</b></h2>
+                <hr>
+                <h4>Keywords (HS, RTF)</h4>
+                <h5>Users may type any combination of words or emojis they would like to search for.
+                    <br>If a tweet collected does not contain the specified keyword(s), it is 
+                    because it is a retweet of a tweet that <i>does</i> contain the information.
+                    <br>Having emojis side-by-side will look for the specific emoji sequence.
+                    <br>Emojis and words can be inputted together.
+                    <br><b>Separating keywords with a comma is considered an OR statement. Having a space between keywords is considered AND.
+                    <br>ie: socks shoes, 🧤, pants 👗👔 = socks AND shoes OR 🧤 OR pants AND 👗👔</b>
+                </h5><hr>
+                <h4>Discard Tweets Without Emojis (HS, RTF, RS)</h4>
+                <h5>Setting the switch to 😊 only pulls tweets with emojis, having it set to ❌ 
+                    pulls all tweets regardless if they have emojis or not.</h5><hr>
+                <h4>Tweet Amount (HS, RTF, RS)</h4>
+                <h5>Users can input any positive integer with a maximum value of 10000, 
+                    if a user leaves the entry blank only 100 tweets will be pulled.</h5><hr>
+                <h4>Date (HS)</h4>
+                <h5>The user may gather tweets within a specific period of time. The default is all tweets within the past week.
+                    <br>With a standard API key, tweets can only be pulled from up to a week back. 
+                    <br>With a premium or enterprise API key, tweets can be pulled from any time.</h5><hr>
+                <h4>Language (HS, RTF)</h4>
+                <h5>Select the language of the tweets you would like to gather.</h5><hr>
+                <h4>Verified Users (HS)</h4>
+                <h5>Toggle if tweets are only from verified users or all users.</h5><hr>
+                <h4>From/To/Mentioned User (HS, RTF)</h4>
+                <h5>From: Gather tweets from specified users.
+                    <br>To: Gather tweets that were sent to the specified user.
+                    <br>Mentioned: Gather tweets where the specified users are mentioned.
+                </h5><hr>
+                <h4>Location (HS, RTF)</h4>
+                <h5>Collect tweets given the radius around the specified longitude and latitude.</h5><hr>
+                <h4>Likes (HS)</h4>
+                <h5>Gather tweets within the specifed range of likes. Default minimum is 0, default maximum is infinity.</h5><hr>
+                <h4>Post Type (HS)</h4>
+                <h5>Most recent: searches for tweets in reverse chronological order.
+                    <br>Most popular: Searches for tweets from most to least popular.
+                </h5><hr>
+                <h4>Settings (and/all) (HS)</h4>
+                <h5>Decides whether the settings used above will apply AND or OR to one another. 
+                    <br>If "all" is selected, all of the settings' must be fulfilled for the tweet to not be discarded (AND).
+                    <br>If "any" is selected, only 1 of the fields above must be fulfilled for the tweet to be eligible (OR).
+                </h5><hr>
+                <h4><b>Once the query is finished:</b></h4>
+                <h5>💾Query : Saves the query onto your account for use in the large dataset.
+                    <br>❌ : Removes the tweets from the page.
+                    <br><b>Download full results</b> : Downloads the full list of tweets as an xls file.
+                </h5>
+            </form>
+        </div>
+        <br>
+        <div id="sec2" class="w3-container w3-padding-16">
+            <h1><b>Large Dataset</b></h1>
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+                <h2><b>Saved Queries</b></h2>
+                <hr>
+                <h5>Select a saved query from the small dataset to use for a large dataset. 
+                    <br>Queries are saved onto a user's account, and can be deleted manually from here. 
+                    <br>A query <b>MUST</b> be saved from the small dataset in order to be used for the large dataset search.</h5>
+                    <hr>
+                    <h4>Progress / Currently Running Task</h4>
+                    <h5>Information about the progress and result of the query is stored in the <b>task_info.txt</b> file.</h5>
+            </form>
+        </div>
+        <div id="sec3" class="w3-container w3-padding-16">
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+                <h2><b>Main Output File</b></h2>
+                <h5>The file name is <b>extracted_data.csv</b>.</h5>
+                <hr>
+                <h4>File Name</h4>
+                <h5>Set a custom name for the output file.</h5><hr>
+                <h4>Created At</h4>
+                <h5>Create a column in the output file with the date the tweet was created at.</h5><hr>
+                <h4>Tweet URL</h4>
+                <h5>Create a column in the output file with the URL of the tweet.</h5><hr>
+                <h4>Tweet ID</h4>
+                <h5>Create a column in the output file with the ID. The ID is at the end of the tweet's URL.
+                    <h6>ie: twitter.com/USER/status/<b>123456789</b></h6>
+                </h5><hr>
+                <h4>Username</h4>
+                <h5>Create a column in the output file with the name of the user who posted the tweet.</h5><hr>
+                <h4>Tweet Text</h4>
+                <h5>Create a column in the output file with the text of the tweet (excluding links).</h5><hr>
+                <h4>Emojiset</h4>
+                <h5>Create a column in the output file with the emojis from the tweet.</h5><hr>
+                <h4>Hastags</h4>
+                <h5>Create a column in the output file with the hashtags associated with the tweet.</h5><hr>
+                <h4>URLs</h4>
+                <h5>Create a column in the output file with the links from the tweet.</h5><hr>
+                <h4>Image URLs</h4>
+                <h5>Create a column in the output file with the image links from the tweet.</h5>
+            </form>
+        </div>
+        <div id="sec4" class="w3-container w3-padding-16">
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+                <h2><b>Additional Files</b></h2>
+                <h5>The file name is <b>full_tweets.json</b>.</h5>
+                <hr>
+                <h4>Full Tweet Data</h4>
+                <h5>Provides all possible data from the tweet.</h5><hr>
+                <h4>Images</h4>
+                <h5>Provides the image URLs for the tweet.</h5><hr>
+                <h4>Hashtags Used Together</h4>
+                <h5>Provides the hashtags used within the tweet.</h5><hr>
+                <h4>Hashtags the User has Utilized</h4>
+                <h5>Provides the hashtags used in unrelated tweets by the user who posted the tweet.</h5><hr>
+                <h4>Mentioned Users</h4>
+                <h5>Provides the users mentioned in the tweet.</h5><hr>
+                <h4>Users Other Users Mentioned</h4>
+                <h5>Provides the users that other users mentioned in response to the tweet.</h5><hr>
+                <h4>Users Who Posted or Retweeted</h4>
+                <h5>Provides the users who posted or retweeted the tweet.</h5>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
