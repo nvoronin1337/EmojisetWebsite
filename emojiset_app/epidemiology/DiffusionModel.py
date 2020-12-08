@@ -126,6 +126,8 @@ class DiffusionModel(object):
     
     def set_initial_status(self, configuration):
         import future.utils
+        import numpy as np
+        
         self.__validate_configuration(configuration)
         nodes_cfg = configuration.get_nodes_configuration()
         
