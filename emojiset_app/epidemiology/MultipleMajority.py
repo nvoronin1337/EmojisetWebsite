@@ -5,9 +5,8 @@ Created on Thu Jul  9 09:02:03 2020
 @author: mooreheadj
 """
 
+
 from emojiset_app.epidemiology.DiffusionModel import DiffusionModel
-import numpy as np
-import random
 
 
 __author__ = "Joshua Moorehead"
@@ -16,6 +15,9 @@ __email__ = "mooreheadj@wit.edu"
 class MultipleMajority(DiffusionModel):
     """
     """
+   
+    import numpy as np
+    import random
     
     def __init__(self, graph, denom, seed = None):
         """
