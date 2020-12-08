@@ -18,7 +18,6 @@ import codecs
 #Network Topology
 #graph = nx.erdos_renyi_graph(1000, .8)
 #graph = nx.dense_gnm_random_graph(1000, 5000)
-graph = nx.watts_strogatz_graph(1000, 5, .2)
 #graph = nx.random_regular_graph(5, 1000)
 #graph = nx.barabasi_albert_graph(1000, 5)
 #graph = nx.powerlaw_cluster_graph(1000, 5, 0.2)
@@ -26,6 +25,7 @@ graph = nx.watts_strogatz_graph(1000, 5, .2)
 #model selection
 
 def MMR(bias ,fraction_Adopter, fraction_Rejector, Q):
+    graph = nx.watts_strogatz_graph(1000, 5, .2)
     denom = bias;
     model = MultipleMajority(graph, denom)
     
