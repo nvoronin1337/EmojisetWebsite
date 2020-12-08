@@ -5,7 +5,8 @@ Created on Tue Jul 14 09:06:30 2020
 @author: mooreheadj
 """
 
-
+import six
+import abc
 
 __author__ = "Joshua Moorehead"
 __email__ = "mooreheadj@wit.edu"
@@ -16,12 +17,11 @@ class ConfigurationException(Exception):
 @six.add_metaclass(abc.ABCMeta)
 class DiffusionModel(object):
 
-    import abc
+
     import warnings
     import numpy as np
     import past.builtins
     import future.utils
-    import six
     import networkx as nx
     import tqdm
 
