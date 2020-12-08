@@ -18,12 +18,7 @@ class ConfigurationException(Exception):
 class DiffusionModel(object):
 
 
-    import warnings
-    import numpy as np
-    import past.builtins
-    import future.utils
-    import networkx as nx
-    import tqdm
+    
 
     """
     Partial Abstract class that defines Diffusion Models
@@ -44,6 +39,12 @@ class DiffusionModel(object):
         None.
 
         """
+        
+        import numpy as np
+        
+        
+        import networkx as nx
+
         np.random.seed(seed)
         self.discrete_state = True
         self.params = {
@@ -73,6 +74,8 @@ class DiffusionModel(object):
         self.initial_status = {}
     
     def __validate_configuration(self, configuration):
+        import warnings
+        import numpy as np
         """
         Validate the consistancy of a configuration object for the specific model
         :param configuration: a Configuration object instance
@@ -122,7 +125,7 @@ class DiffusionModel(object):
                 self.params['model']["fraction_Rejector"] = 0.05
     
     def set_initial_status(self, configuration):
-        
+        import future.utils
         self.__validate_configuration(configuration)
         nodes_cfg = configuration.get_nodes_configuration()
         
@@ -194,6 +197,7 @@ class DiffusionModel(object):
         """
         Check the consistancy of initial status
         """
+        import future.utils
         for n, s in future.utils.iteritems(self.status):
             if s not in valid_status:
                 self.status[n] = 0
@@ -201,6 +205,8 @@ class DiffusionModel(object):
     def iteration_bunch(self, bunch_size, node_status=True):
         """
         """
+        import past.builtins
+        import tqdm
         system_status = []
         for it in tqdm.tqdm(past.builtins.xrange(0, bunch_size)):
             its = self.iteration(node_status)
@@ -210,12 +216,14 @@ class DiffusionModel(object):
     def get_info(self):
         """
         """
+        import future.utils
         info = {k: v for k, v in future.utils.iteritems(self.params) if k not in ['nodes', 'edges', 'status']}
         if 'Adopter_nodes' in self.params['status']:
             info['selected_initial_Adopter'] = True
         return info['model']
     
     def reset(self, Adopter_nodes=None, Rejector_nodes = None):
+        import numpy as np
         """
         """
         self.actual_iteration = 0
@@ -265,6 +273,7 @@ class DiffusionModel(object):
     
     @staticmethod
     def check_status_similarity(actual, previous):
+        import future.utils
         for n, v in future.utils.iteritems(actual):
             if n not in previous:
                 return False
@@ -275,6 +284,7 @@ class DiffusionModel(object):
     def status_delta(self, actual_status):
         """
         """
+        import future.utils
         actual_status_count = {}
         old_status_count = {}
         delta = {}

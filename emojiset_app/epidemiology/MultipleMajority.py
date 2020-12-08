@@ -16,9 +16,9 @@ class MultipleMajority(DiffusionModel):
     """
     """
    
-    import numpy as np
-    import random
     
+    
+
     def __init__(self, graph, denom, seed = None):
         """
         Parameters
@@ -70,6 +70,8 @@ class MultipleMajority(DiffusionModel):
         None.
 
         """
+        import numpy as np
+        import random
         self.clean_initial_status(list(self.available_statuses.values()))
         
         if self.actual_iteration == 0:
