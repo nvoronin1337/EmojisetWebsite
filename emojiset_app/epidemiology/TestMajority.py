@@ -14,6 +14,8 @@ def MMR(bias, fraction_Adopter, fraction_Rejector, Q):
     from emojiset_app.utils import debug
     from bs4 import BeautifulSoup
     import codecs
+    from bokeh.embed import file_html
+    from bokeh.resources import CDN
 
     graph = nx.watts_strogatz_graph(1000, 5, .2)
     denom = bias;
@@ -31,11 +33,7 @@ def MMR(bias, fraction_Adopter, fraction_Rejector, Q):
     
     viz = DiffusionTrend(model, trends)
     p = viz.plot(width=500, height=500)
-    output_file("mmr.html")
-    save(p)
-
-    f = open("mmr.html", "r")
-    document = f.read()
+    document = file_html(p, CDN)
     soup = BeautifulSoup(document, 'html.parser')
     plot = str(soup.find('body')).replace('<body>', "").replace("</body>", "")
     return plot
