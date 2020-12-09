@@ -120,7 +120,7 @@ def clean_old_results():
     try:
         cleaner = FolderCleaner(path, days)
     except (TypeError, ValueError) as e:
-        debug(e, 'cleaner_errors.log')
+        pass
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=clean_old_results, trigger="interval", minutes=1)
