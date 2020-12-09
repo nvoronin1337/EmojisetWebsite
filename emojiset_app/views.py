@@ -13,7 +13,7 @@ import time
 import calendar
 import os
 import emoji
-from emojiset_app.epidemiology.TestMajority import MMR
+
 
 
 # The Home page is accessible to anyone
@@ -49,6 +49,7 @@ def epidemiology():
 
 @app.route("/epidemiology/mmr", methods=['POST'])
 def mmr():
+	from emojiset_app.epidemiology.TestMajority import MMR
 	bias = float(request.form.get("bias"))
 	adopter = float(request.form.get("adopter"))
 	rejector = float(request.form.get("rejector"))
