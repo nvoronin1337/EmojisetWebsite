@@ -142,3 +142,7 @@ Restart Apache:
 $ sudo service apache2 restart
 ```
 
+### Debugging
+```sh
+sudo tail var/log/apache2/error.log
+```
