@@ -146,3 +146,27 @@ $ sudo service apache2 restart
 ```sh
 sudo tail var/log/apache2/error.log
 ```
+
+### Migrating the website url from the IP to the domain page
+```sh
+<VirtualHost xx.xx.xx.xxx:80>          <<<CHANGE xx.xx.xx.xxx TO SERVER IP ADDRESS (ours is 69.43.72.217)
+                ServerName yourdomain.com(yours system ipaddress)     <<<CHANGE yourdomain.com TO WEBSITE URL (ours is sogoresearch.com)
+                ServerAdmin youemail@email.com                      <<< ADMIN EMAIL
+                WSGIScriptAlias / /var/www/html/flaskapp.wsgi
+                WSGIApplicationGroup %{GLOBAL}
+                WSGIProcessGroup %{GLOBAL}
+                WSGIDaemonProcess emojiset_app processes=2 threads=6
+                <Directory /var/www/html/EmojisetWebsite/emojiset_app/ >
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                Alias /static /var/www/html/EmojisetWebsite/emojiset_app/static
+                <Directory /var/www/FlaskApp/FlaskApp/static/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
