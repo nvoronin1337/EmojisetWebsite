@@ -35,5 +35,5 @@ def MMR(bias, fraction_Adopter, fraction_Rejector, Q):
     p = viz.plot(width=500, height=500)
     document = file_html(p, CDN)
     soup = BeautifulSoup(document, 'html.parser')
-    plot = str(soup.find('body')).replace('<body>', "").replace("</body>", "")
+    plot = str(soup.find('body')).replace('<body>', '').replace("</body>", "")
     return plot

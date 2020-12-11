@@ -1,14 +1,18 @@
 body {
-    background: #f5f5f5;
-    font-family: 'Noto Sans JP', sans-serif;
-    background: url('https://images.unsplash.com/photo-1528731708534-816fe59f90cb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -o-background-size: cover;
-  }
+  background: #f5f5f5;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: url('https://images.unsplash.com/photo-1528731708534-816fe59f90cb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
 
-  #epid_description {
-    text-align: justify;
-    min-width : 10rem;
-  }
+#epid_description {
+  text-align: justify;
+  min-width: 10rem;
+}
+
+.param_labels {
+  min-width: 1rem;
+}

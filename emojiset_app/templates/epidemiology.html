@@ -93,24 +93,56 @@
             <div class="col-lg-7 mx-auto">
                 <div class="bg-white rounded-lg shadow-sm p-5">
                     <!-- For demo purpose -->
-                    <div id="header_container" class="row mb-4">
-                        <div class="col-lg-8 mx-auto text-center">
-                            <h2 class="display-4">Epidemiology Research</h2>
+                    <div class="row mb-4">
+                        <div class="col-lg-8 mx-auto">
+                            <h2 class="display-4 text-center">Epidemiology Research</h2>
                             <br>
                             <p id="epid_description" class="lead mb-0">
-                                Branch of medical science that deals with investigating the factors that causes
-                                diseases/disorders to be present/absent in a society
-                                Epidemiology is the method used to find the cause of health outcomes and diseases in
-                                populations by viewing the patients collectively
-                                It is used by researchers, medical practitioners, the government and sometimes even the
-                                general population since different behaviours within society can affect the spread of
-                                certain viruses, as we have seen with COVID-19.
+                                Multiple Majority Rule model (MMR) is designed to model a three state system where there
+                                are two main opinions and an undecided population. The model includes a bias that can
+                                favour one opinion over another.
+                            </p>
+                        </div>
+                    </div>
+                    <div id="header_container" class="row mb-4">
+                        <div class="col mx-auto">
+                            <p>
+                                <strong>Adopter:</strong> This parameter represents the percentage of nodes that start
+                                as adopters. Its
+                                value is between zero and one.
+
+                                <br><br>
+
+                                <strong>Rejector:</strong> This parameter represents the percentage of nodes that start
+                                as rejectors. Its
+                                value is between zero and one.
+
+                                <br><br>
+
+                                If the sum of Adopter and Rejector is one, the MMR model behaves as a two-state system.
+                                However, if the sum of these two parameters does not sum to 1, the difference between
+                                the sum and one represents the undecided population, which models a three-state system.
+
+                                <br><br>
+
+                                <strong>Bias:</strong> Given the case where a Q-group contains two equal majorities, the
+                                bias value
+                                represents the probability that the Q-group will change their opinion to the adopter
+                                state. This value should only be set inclusively between zero and one.
+
+                                <br><br>
+
+                                <strong>Qgroup:</strong> It represents a group of people of size Q, which is a value
+                                from one to the
+                                maximum number of nodes. This is the group whose opinion is being influenced in each
+                                iteration.
                             </p>
                         </div>
                     </div>
                     <br>
+
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="sr-only" for="inlineFormInputGroupUsername">Bias</label>
                                 <div class="input-group">
@@ -123,7 +155,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="sr-only" for="inlineFormInputGroupUsername">Fraction_Adopter</label>
                                 <div class="input-group">
@@ -137,8 +169,9 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="sr-only" for="inlineFormInputGroupUsername">Fraction_Rejector</label>
                                 <div class="input-group">
@@ -151,7 +184,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="sr-only" for="inlineFormInputGroupUsername">QGroup</label>
                                 <div class="input-group">
@@ -165,15 +198,17 @@
                             </div>
                         </div>
                     </div>
+
                     <button id="submit" name="submit" type="submit"
                         class="subscribe btn btn-primary btn-block rounded-pill shadow-sm">
                         Visualize
                     </button>
+                    <br>
                     <div class="container">
-                        <div id="model_container" class="row justify-content-center">
-                            <div class="col">
+                        <div id="model_container" class="row">
+                            <div class="col-lg-8 mx-auto">
                                 <div id="model">
-
+                                    
                                 </div>
                             </div>
                         </div>
