@@ -31,3 +31,13 @@ $(document).ready(function () {
         }
     });
 });
+
+function GoToTeam() {
+	let url = location.href.replace('epidemiology', '') + "#team"
+	location.href = url
+}
+
+function GoToContact() {
+	let url = location.href.replace('epidemiology', '') + "#contact"
+	location.href = url
+}

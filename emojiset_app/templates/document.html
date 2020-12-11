@@ -12,9 +12,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='document_css.css') }}" />
-    <!-- <link rel="stylesheet" href="document_css.css"> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='document.js') }}"></script>
     	<!-- JQuery -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
@@ -37,7 +38,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#teams"><em class="fa fa-group"></em> Team</a>
+                    <a class="nav-link" href="#teams" onclick="GoToTeam(); return false"><em class="fa fa-group"></em> Team</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -62,7 +63,7 @@
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id="navbarNavDropdown">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#contact">
+                    <a class="nav-link" href="#contact" onclick="GoToContact(); return false">
                         <em class="fa fa-envelope"></em> Contact <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -89,14 +90,14 @@
 
     <div id="head_size">
         <div class="w3-container w3-padding-16">
-            <form class="w3-container w3-card-4 w3-padding-16 w3-white" action="/action_page.php" target="_blank">
+            <form class="w3-container w3-card-4 w3-padding-16 w3-white">
                 <h2><b>Small Dataset</b></h2>
-                <h3><a class="nav-link" href="#sec1"><i class="fa fa-group"></i>- Historical Search / Real Time Filter / Random Sample</a></h3>
+                <h3><a class="nav-link" href="#sec1">- Historical Search / Real Time Filter / Random Sample</a></h3>
                 <hr id="thicc">
                 <h2><b>Large Dataset</b></h2>
-                <h3><a class="nav-link" href="#sec2"><i class="fa fa-group"></i>- Saved Queries</a></h3>
-                <h3><a class="nav-link" href="#sec3"><i class="fa fa-group"></i>- Main Output</a></h3>
-                <h3><a class="nav-link" href="#sec4"><i class="fa fa-group"></i>- Additional Files</a></h3>
+                <h3><a class="nav-link" href="#sec2">- Saved Queries</a></h3>
+                <h3><a class="nav-link" href="#sec3">- Main Output</a></h3>
+                <h3><a class="nav-link" href="#sec4">- Additional Files</a></h3>
             </form>
         </div>
     </div>
