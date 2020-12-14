@@ -53,7 +53,7 @@ This is where your Flask configuration goes, which will apply to your live web s
                         Allow from all
                 </Directory>
                 Alias /static /var/www/html/EmojisetWebsite/emojiset_app/static
-                <Directory /var/www/FlaskApp/FlaskApp/static/>
+                <Directory /var/www/html/EmojisetWebsite/emojiset_app/static/>
                         Order allow,deny
                         Allow from all
                 </Directory>
@@ -68,6 +68,7 @@ We are now ready to enable the server.
 Run:
 ```sh
 $ sudo a2ensite FlaskApp
+$ sudo service apache2 start
 $ service apache2 reload
 ```
 Move to the directory where our application will be located:
