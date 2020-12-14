@@ -105,6 +105,7 @@ There is a requirements.txt file in /var/www/html/EmojisetWebsite
 ```sh
 $ cd /var/www/html/EmojisetWebsite
 $ sudo apt-get install libtool
+$ sudo apt-get install libxml2-dev
 $ sudo apt-get install autoconf
 $ sudo apt-get install bison flex
 $ sudo pip3 install -r requirements.txt
