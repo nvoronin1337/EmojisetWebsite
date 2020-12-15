@@ -34,7 +34,7 @@ def send_contact_us_message(form):
     s.ehlo()
     s.login(MAIL_USERNAME, MAIL_PASSWORD)
     
-    toEmail = 'voro0612@gmail.com'
+    toEmail = 'sothman@kent.edu'
     fromEmail = MAIL_USERNAME
     msg = MIMEMultipart('alternative')
     msg['Subject'] = 'SOGOResearch Message from ' + form['name']
