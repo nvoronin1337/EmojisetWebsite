@@ -28,5 +28,4 @@ def stream_large(keys, keywords, discard, twarc_method, languages, result_type, 
         print(finished_at, file=f)
         print(collected, file=f)
         print(discarded, file=f)
-    if email:
-        send_message(email)
+    send_message(email)
