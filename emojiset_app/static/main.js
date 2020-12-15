@@ -571,7 +571,6 @@ $(document).ready(function () {
 				console.log(textStatus)
 			}
 		});
-		
 	})
 	$('#collapseOne').collapse('show')
 	
