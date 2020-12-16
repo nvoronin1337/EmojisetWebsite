@@ -179,7 +179,10 @@ def run_large_task():
 
 	query_for_response = ""
 	if(twarc_method == 'search'):
-		query_for_response = query_json["keywords"] + "| Discard tweets without emojis: " + str(query_json['discard'])
+		keywords = query_json["keywords"]
+		for keyword in keywords:
+			keywords = keywords.replace(keyword, emoji.demojize(keyword))
+		query_for_response = keywords + "| Discard tweets without emojis: " + str(query_json['discard'])
 		if not query_json['form_data']['languages']:
 			query_for_response += " | Language: all"
 		else:
